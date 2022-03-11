@@ -357,7 +357,7 @@ async function fbSignUp() {
 //funday登出
 function logOut() {
     sessionStorage.clear("id,email,phone,mindx,cindx");
-    $("#header #join_button").show();
+    $("#header #login_blk").show();
     $("#header #menu").hide();
     window.location.reload();
 }
@@ -412,7 +412,7 @@ async function mailLoginCheck() {
             alert("帳號或密碼錯誤");
         } else {
             // 切換登入狀態
-            $("#header #join_button").hide();
+            $("#header #login_blk").hide();
             $("#header #menu").show();
             $("#myModal07").modal("hide");
             sessionStorage.setItem("mindx", res.data.mindx);
@@ -446,7 +446,7 @@ function fbLoginCheck() {
                     } else {
                         loginTo(myModal09, null);
                         document
-                            .getElementById("join_button")
+                            .getElementById("login_blk")
                             .classList.add("none");
                         document
                             .getElementById("menu")

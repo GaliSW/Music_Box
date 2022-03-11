@@ -64,6 +64,21 @@
     </head>
     <body class="home_page">
         <div class="all_wrap" id="app" v-cloak>
+            <div
+                id="fullscreen"
+                onclick="toggleFullScreen(document.documentElement)"
+            >
+                <img
+                    class="full_open"
+                    src="./images/web_icon/full_open.svg"
+                    alt=""
+                />
+                <img
+                    class="full_close none"
+                    src="./images/web_icon/full_close.svg"
+                    alt=""
+                />
+            </div>
             <!--header-->
             <div id="header">
                 <a id="logo" href="./"
@@ -291,7 +306,7 @@
                                             </div>
                                             <div class="tool_bar">
                                                 <div class="subtitles">
-                                                    <a href="#">中文字幕</a>
+                                                    <a href="#">中英字幕</a>
                                                 </div>
                                                 <div
                                                     class="teacher"

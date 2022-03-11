@@ -16,24 +16,34 @@ var app = new Vue({
         playstate: 0, //播放狀態 0:暫停 1:播放 ,
         videoList: {}, //相關推薦
         sidebar: {},
-        nowPlaying: 0,
+        nowPlaying: -1,
         player: null,
         recBlob: [], //單一錄音檔案
         dialogInt: "",
         rec: {},
         wave: {},
         mode: 0, //0:同步 1:錄音 2:影片
+        repeat: 0, //0:單句關 1:單句開
         vdTime: 0,
+        progress: "0%",
     },
     watch: {
         currentTime: function (val, oldVal) {
             //比對到歌詞秒數陣列
-            if (this.startTimeArr.indexOf(this.currentTime) !== -1) {
+
+            if (
+                this.startTimeArr.indexOf(this.currentTime) !== -1 &&
+                this.repeat == 0
+            ) {
                 //增加播放行數
                 this.nowPlaying++;
+                console.log(this.nowPlaying);
             }
         },
         nowPlaying: function () {
+            if (this.nowPlaying == 0) {
+                return false;
+            }
             //字幕滾動區
             const listWindowContent = document.querySelector(".subtitle");
             //字幕視窗高度
@@ -54,9 +64,9 @@ var app = new Vue({
             if (this.playMethods == 3) return; //單句模式不滾動
             // console.log(sutitleBlkHeight);
             //提前100px觸發
-            if (sutitleBlkTop > listWindowBottom) {
-                listWindowContent.scrollBy({
-                    top: sutitleBlkHeight + 10, //包含上下行距
+            if (this.repeat == 0) {
+                listWindowContent.scrollTo({
+                    top: sutitleBlkTop - listWindowTop, //包含上下行距
                     behavior: "smooth",
                 });
             }
@@ -130,13 +140,11 @@ var app = new Vue({
                         } else if (sec < 10) {
                             sec = "0" + sec;
                         }
-                        console.log(player);
                         app.allTime = `${allMin}:${sec}`;
-                        app.timer = setInterval(this.fnTimeChecking, 500);
+                        app.timer = setInterval(this.fnTimeChecking, 100);
                     }
                     function onPlayerStateChange(e) {
                         //-1:未開始 0:結束 1:正在播放 2:已暫停 3:緩衝 5:已插入影片
-                        console.log(e.data);
                         if (e.data == 1) {
                             app.playstate = 1;
                             app.timer = setInterval(app.fnTimeChecking, 500);
@@ -203,16 +211,41 @@ var app = new Vue({
                     this.currentTime = `0${min}:${sec}`;
                 } else if (min < 10 && sec > 10) {
                     this.currentTime = `0${min}:${sec}`;
-                } else if (min > 10 && sec < 10) {
+                } else if (min >= 10 && sec < 10) {
                     this.currentTime = `${min}:0${sec}`;
                 } else {
                     this.currentTime = `${min}:${sec}`;
                 }
             }
             //單句模式
-            // if(this.playMethods == 3){
-            //     this.fnSentenceRepeat();
-            // }
+            if (this.repeat == 1 && this.nowPlaying > -1) {
+                this.fnSentenceRepeat();
+            }
+        },
+        fnSentenceRepeat() {
+            //找到目前撥放的句數與下一句的句數
+            const sentence_start = this.startTimeArr[this.nowPlaying];
+            const nowIndex = this.nowPlaying;
+            const seekTime =
+                Number(sentence_start.slice(0, 2)) * 60 +
+                Number(sentence_start.slice(3, 5));
+            const sentence_end = this.startTimeArr[this.nowPlaying + 1];
+            this.playRadom = false;
+            //console.log('現在播放句數:'+this.nowPlaying ,'目前播放時間:'+ this.currentTime, '該句撥放結束時間:'+sentence_end, '前往句數'+sentence_start)
+            if (this.currentTime == sentence_end) {
+                const idName = "myAudio0";
+                const audio = document.getElementById(idName);
+                if (!audio.ended) {
+                    setTimeout(() => {
+                        audio.currentTime = seekTime;
+                        audio.play();
+                    }, 10);
+                }
+
+                player.seekTo(seekTime);
+                //回到該被重複的句數
+                this.nowPlaying = nowIndex;
+            }
         },
         playMode(mode) {
             this.mode = mode;
@@ -247,7 +280,6 @@ var app = new Vue({
                         if (!audio.ended) {
                             setTimeout(() => {
                                 audio.play();
-                                console.log("play");
                             }, 10);
                         }
 
@@ -258,7 +290,6 @@ var app = new Vue({
                         if (!audio.ended) {
                             setTimeout(() => {
                                 audio.play();
-                                console.log("play");
                             }, 10);
                         }
                         player.mute().playVideo();
@@ -268,7 +299,6 @@ var app = new Vue({
                         if (!audio.ended) {
                             setTimeout(() => {
                                 audio.play();
-                                console.log("play");
                             }, 10);
                         }
                         player.unMute().playVideo();
@@ -377,7 +407,9 @@ var app = new Vue({
                     });
                 },
                 function (msg, isUserNotAllow) {
+                    alert("未偵測到錄音裝置");
                     app.dialogCancel();
+                    location.reload();
                 }
             );
 
@@ -423,12 +455,11 @@ var app = new Vue({
                 document.getElementById("audioBox").append(audio);
 
                 //簡單利用URL生成播放地址，注意不用了時需要revokeObjectURL，否則霸占暫存
-                audio.src = (window.URL || webkitURL).createObjectURL(
-                    app.recBlob[0]
-                );
-                setTimeout(function () {
-                    (window.URL || webkitURL).revokeObjectURL(audio.src);
-                }, 1000);
+                audio.src = URL.createObjectURL(app.recBlob[0]);
+                console.log(audio.src);
+                // setTimeout(function () {
+                //     URL.revokeObjectURL(audio.src);
+                // }, 1000);
             });
         },
 
@@ -489,6 +520,8 @@ var app = new Vue({
             this.playstate = 0;
             player.pauseVideo();
             player.seekTo(0);
+            this.nowPlaying = -1;
+            this.mode = 0;
             this.recStop();
         },
         // ==========================================
@@ -496,6 +529,8 @@ var app = new Vue({
         // ==========================================
         reRec() {
             //刪除舊音檔
+            this.nowPlaying = -1;
+            this.mode = 0;
             player.pauseVideo();
             player.seekTo(0);
             app.recBlob.splice(0, 1);
@@ -536,83 +571,22 @@ var app = new Vue({
         // ==========================================
         // == 錄音上傳
         // ==========================================
-        uploadFile(blob) {
-            var formData = new FormData();
-            formData.append(
-                "upfile",
-                blob,
-                "<%=c_id%>-<%=m_id%>-<%=musicNo%>.mp3"
-            );
-            formData.append("member_id", "<%=m_id%>");
-            formData.append("customer_id", "<%=c_id%>");
-            formData.append("musicbox_id", "<%=musicNo%>");
-            var urls = "https://funday.asia/newmylessonmobile/api/FunKTVUpload";
-            /**
-             * 必須false才會避開jQuery對 formdata 的預設處理
-             * XMLHttpRequest會對 formdata 進行正確的處理
-             */
-
-            $("body").append(
-                '<div id="uploadPage" ><div class="uploadDiv"><img src="svg/icn-download.svg" /><div class="uploadLoading">檔案上傳中...</div><div id="parent"><div id="son"></div></div><div id="proess"></div></div></div>'
-            );
-            $.ajax({
-                type: "POST",
-                url: urls,
-                contentType: false, //让xhr自动处理Content-Type header，multipart/form-data需要生成随机的boundary
-                processData: false, //不要处理data，让xhr自动处理
-                data: formData,
-                processData: false,
-                //必須false才會自動加上正確的Content-Type
-                contentType: false,
-                xhr: function () {
-                    var xhr = $.ajaxSettings.xhr();
-                    if (onprogress && xhr.upload) {
-                        xhr.upload.addEventListener(
-                            "progress",
-                            onprogress,
-                            false
-                        );
-                        return xhr;
-                    }
-                },
-            });
-        },
-
         uploadFile() {
-            app.audioList();
-            const roleAry = []; // ex:[mp3_100,mp3_103]
-            if (this.role == "B") {
-                for (let i = 0; i < this.roleBindex.length; i++) {
-                    roleAry.push(`${this.roleBindex[i]}`);
-                }
-            } else if (this.role == "A") {
-                for (let i = 0; i < this.roleAindex.length; i++) {
-                    roleAry.push(`${this.roleAindex[i]}`);
-                }
-            }
-            // --------------------------------
-            let formData = new FormData();
-            for (i = 0; i < this.recBlob.length; i++) {
-                const p1 = roleAry[i];
-                const p2 = this.recBlob[i];
-                const p3 =
-                    this.cid +
-                    "-" +
-                    this.mid +
-                    "-" +
-                    this.videoId +
-                    "-" +
-                    roleAry[i] +
-                    ".mp3";
-                formData.append(p1, p2, p3);
-            }
-            formData.append("member_id", this.mid);
-            formData.append("customer_id", this.cid);
-            formData.append("news_id", this.videoId);
+            document.getElementById("uploadProgress").classList.remove("none");
+            var formData = new FormData();
+            const blob = this.recBlob[0];
+            const cid = sessionStorage.getItem("cindx");
+            const mid = this.member_id;
+            const vid = this.videoId.replace("#", "");
+            formData.append("upfile", blob, `${cid}-${mid}-${vid}.mp3`);
+            formData.append("member_id", `${mid}`);
+            formData.append("customer_id", `${cid}`);
+            formData.append("musicbox_id", `${vid}`);
+
             //上傳api
             axios({
                 method: "post",
-                url: "https://funday.asia/newmylessonmobile/api/InteractiveVideoUpload",
+                url: "https://funday.asia/newmylessonmobile/api/FunKTVUpload",
                 data: formData,
                 headers: {
                     "Content-Type": false,
@@ -632,24 +606,27 @@ var app = new Vue({
                 },
             })
                 .then(function (response) {
-                    document.querySelector(".function04").classList.add("none");
-                    setTimeout(function () {
-                        document.getElementById(
-                            "uploadProgress"
-                        ).style.display = "none";
-                    }, 1000);
                     setTimeout(function () {
                         document
-                            .querySelector(".function06")
-                            .classList.remove("none");
-                        document
-                            .querySelector(".demo_button")
+                            .getElementById("uploadProgress")
                             .classList.add("none");
-                    }, 1500);
+                    }, 1000);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+        },
+        // ==========================================
+        // == 單句模式
+        // ==========================================
+        repeatMode(e) {
+            if (app.repeat == 0) {
+                e.target.classList.add("repeat_check");
+                app.repeat = 1;
+            } else {
+                e.target.classList.remove("repeat_check");
+                app.repeat = 0;
+            }
         },
     },
     created() {

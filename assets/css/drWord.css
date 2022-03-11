@@ -24,26 +24,35 @@
     top: 8px;
 }
 .DrWord .Dr_title {
-    padding: 10px 20px 10px 10px;
+    padding: 10px 20px 0px 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 /* 單字 */
 .DrWord .Dr_title .word {
     width: 80%;
-    color: #61affe;
+    color: #ffb78c;
     font-weight: bold;
 }
 .DrWord .Dr_title .word h3 {
     font-weight: bold;
     letter-spacing: 1px;
     margin: 0;
+    font-size: 20px;
+}
+.DrWord .Dr_title .word h4 {
+    font-size: 12px;
+    margin: 0;
 }
 /* 收藏 */
 .DrWord .Dr_title .collect {
     width: 20%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .DrWord .Dr_title .collect .icon {
     margin-bottom: 5px;
@@ -52,15 +61,21 @@
 .DrWord .Dr_title .collect i {
     font-size: 20px;
 }
-.DrWord .Dr_title .collect i.fas.fa-heart {
-    color: #61affe;
+.DrWord .Dr_title .collect i.fas.fa-heart,
+.DrWord .Dr_title .collect i.far.fa-heart {
+    color: #ffb78c;
 }
 .DrWord .Dr_title .collect p {
     margin-bottom: 0;
+    color: #000;
+    background: #ffb78c;
+    border-radius: 50px;
+    width: 40px;
+    height: 15px;
 }
 
 .DrWord .Dr_content {
-    padding: 10px;
+    padding: 10px 10px 0 10px;
 }
 .DrWord .Dr_content .divider {
     display: flex;
@@ -85,9 +100,9 @@
     background-color: #fff;
 }
 .DrWord .Dr_content .inner {
-    border: 1xp solid purple;
+    /* border: 1px solid purple; */
     height: 300px;
-    padding: 1rem;
+    padding: 0px 10px;
     overflow-y: scroll;
 }
 
@@ -111,11 +126,16 @@
     display: inline-block;
     transition: color 0.1s linear;
     cursor: pointer;
+    margin-right: 4px;
 }
 .subtitle_items .en span:hover {
-    color: #61affe;
+    color: #ffb78c;
 }
-
+.subtitle_items .en .select {
+    color: #ffb78c;
+    font-weight: bold;
+    text-decoration: underline;
+}
 @media (max-width: 600px) {
     .DrWord {
         width: 100%;

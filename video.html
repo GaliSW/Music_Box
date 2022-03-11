@@ -23,6 +23,10 @@
   <link rel="stylesheet" href="assets/css/video_rwd_fix.css">
   <!-- 字典功能 css -->
   <link rel="stylesheet" href="assets/css/drWord.css">
+  <!-- 錄音功能 css -->
+  <link rel="stylesheet" href="assets/css/dubbing.css">
+  <!-- 控制欄 css -->
+  <link rel="stylesheet" href="assets/css/controlBar.css">
 
   <!-- Google Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
@@ -61,21 +65,35 @@
   crossorigin="anonymous"
   src="https://connect.facebook.net/en_US/sdk.js"
 ></script>
-<script src="//cdn.jsdelivr.net/npm/eruda"></script>
+<!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
 <script>
   eruda.init();
-</script>
+</script> -->
 </head>
 
 <body class="video_page">
   <div class="all_wrap" id="app" v-cloak>
     <!--header-->
     <div id="header">
-      <a id="logo" href="./"><span class="img"><img src="images/web_icon/LOGO.svg" alt="FUNDAY"></span><span class="txt">音樂盒</span></a>
+      <a id="logo" href="./"><span class="img"><img src="images/web_icon/funMusic.svg" alt="FUNDAY"></span><span class="txt"></span></a>
       <!--這裏的連結請到myjs.js裏去調整-->
-      <div id="join_button"><a href="#" data-toggle="modal" data-target="#myModal01">免費加入</a>
+      <div id="login_blk">
+        <div class="gift"><a href=""><img src="./images/web_icon/gift.svg" alt="">送禮卷</a></div>
+        <div class="myFav"><a href=""><img src="./images/web_icon/myFavBtn.svg" alt=""><span class="fav_rwd">我的收藏</span></a></div>
+        <div class="teacherBtn" @click="fnTutor" v-if="songInfo.tutor_url" :class="{teacherOpen:tutor }">解說</div>
+        
+        <div v-show="!recMode" class="singBtn" @click="choose(0)">歡唱</div>
+        <div id="join_button">
+          <div class="join_mobile"  data-toggle="modal" data-target="#myModal01"><img src="./images/web_icon/login.svg" alt=""></div>
+          <a href="#" data-toggle="modal" data-target="#myModal01">免費加入</a>
+        </div>
+        <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
+        <!-- <div id="menu">
+          <div class="logout_mobile" id="logout"><img src="./images/web_icon/logout.svg" alt=""></div> 
+          <span class="logout"><a href="#" id="logout"> 登出</a></span>
+        </div> -->
       </div>
-      <div id="menu"> <span class="my_collect"><a href="video_collect.html">我的收藏</a></span> <span class="logout"><a href="#" id="logout"> 登出</a></span></div>
+      
     </div>
 
     <!--main-body-->
@@ -84,8 +102,13 @@
         <!--這邊是影音部份-->
         <div id="video_frame_top">
           <div id="video_playing">
-            <div id="player_wrap">
-              <!-- youtube撥放器 -->
+			      <div class="countDown_wrapper none"></div>
+            <div class="countDown none">
+              <img class="countDownImg" src="" alt="" />
+            </div>
+            <div class="hint">{{hint}}</div>
+            <div id="player_wrap" :class="{disabled:tutor}">
+        <!-- youtube撥放器 -->
               <iframe type="text/html" 
                 :src="ytUrl" 
                 frameborder="0" 
@@ -93,88 +116,258 @@
                 enablejsapi="1" 
                 allow="autoplay; encrypted-media" 
                 allowfullscreen>
-            </iframe>
+              </iframe>
               <!-- youtube撥放器 -->
+            </div>
+            <div class="teacher_video_mobile"> 
+                      <div id="player_wrap_teacher_mobile"  v-show="tutor == true">
+                          <iframe
+                          type="text/html"
+                          :src="ytTutor_url"
+                          width="100%"
+                          frameborder="0"
+                          id="teacher_player"
+                          enablejsapi="1">
+                        </iframe>
+                      </div>
             </div>
             <div class="video_bar">
               <div class="subtitle">
-                <div class="en" v-show="captions == 1 || captions == 3">{{en_content}}</div>
-                <div class="tw" v-show="captions== 2 || captions == 3">{{ch_content}}</div>
+                <div class="en" v-show="captions == 1 || captions == 2">{{en_content}}</div>
+                <div class="tw" v-show="captions== 1 || captions == 3">{{ch_content}}</div>
               </div>
-              <div class="time_bar">
+              <!-- 錄音操作功能 -->
+              <div class="tool_bar_audio" v-if="recMode">
+              <!-- 錄音按鈕 -->
+              <div class="function01 ">
+                <div class="time_now ">
+                  <span>．</span>{{currentTime}}
+                </div>
+                <div
+                  class="buootn stop stopBtn"
+                  @click="recEnd"
+                >
+                  <a href="#">停止錄製</a>
+                </div>
+                <div
+                  class="buootn todo_Go startBtn none"
+                  @click="goRec"
+                >
+                  <a href="#">開始歡唱</a>
+                </div>
+              </div>
+
+              <!-- 播放/上傳按鈕 -->
+              <div class="function02 none">
+                <div class="dubbing_left">
+                  <div class="buootn upload">
+                    <a
+                      href="#"
+                      @click="reRec"
+                      >再唱一次</a
+                    >
+                  </div>
+                </div>
+                <div class="center">
+                  <div class="audio_control">
+                    <img src="./images/web_icon/buootn_same.svg" alt="">
+                    <span
+                      class="cut01"
+                      @click="playMode(1)"
+                      v-show="audioPlayMode == 0"
+                      ><a href="#">全部播放</a></span
+                    >
+                    <span
+                      @click="playMode(2)"
+                      class="cut02"
+                      v-show="audioPlayMode == 1"
+                      ><a href="#">原音播放</a></span
+                    >
+                    <span
+                      @click="playMode(0)"
+                      class="cut03"
+                      v-show="audioPlayMode == 2"
+                      ><a href="#">錄音播放</a></span
+                    >
+                  </div>
+                  <div class="play_bar">
+                    <!-- 播放 切換上下首 -->
+                    <span class="prev" @click="fnGoPrev"
+                      ><img
+                        src="images/web_icon/play_bar_prev.svg"
+                    /></span>
+                    <span class="Play" >
+                      <img src="./images/web_icon/Play_audio.svg" alt="play" v-if="playstate==0"  @click="fnPlayAudio(1)" id="play_btn" v-cloak>
+                      <img src="./images/web_icon/Pause_audio.svg" alt="pause" v-if="playstate==1"  @click="fnPlayAudio(0)" id="play_btn" v-cloak>
+                    </span>
+                    <span class="next" @click="fnGoNext"
+                      ><img
+                        src="images/web_icon/play_bar_next.svg"
+                    /></span>
+                  </div>
+                  <div
+                    class="repeat"
+                    @click="repeatMode($event)"
+                  >
+                  <img src="./images/web_icon/repeat_open.svg" alt="" v-show="singleMode">
+                    <img src="./images/web_icon/repeat_close.svg" alt="" v-show="!singleMode">
+                    <a href="#" :class="{repeat_check : singleMode }">單句重複</a>
+                  </div>
+                </div>
+                <div class="dubbing_right">
+                  <div
+                    class="buootn todo_Go"
+                    @click="uploadFile"
+                  >
+                    <a href="#">上傳音擋</a>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="uploadProgress" class="none">
+                上傳{{progress}}
+              </div>
+              </div>
+              <div class="time_bar" v-show="!recMode">
                 <div class="go_time">{{currentTime}}</div>
                 <div class="allTime_bar" @click="fnTimeBar"><span class="goTime_bar"></span> </div>
                 <div class="end_time">{{allTime}}</div>
               </div>
-              <div class="tool_bar">
+              <div class="tool_bar" v-if="!recMode">
                 <div class="left">
-                  <div class="buootn cutover04" >
+                  <div class="cc_desktop_blk" >
                     <!-- 字幕狀態 0:關閉 1:英文 2:中文 3:中英, -->
-                    <span class="cut01" @click="fnCaptions(1)" v-show="captions==1"><img src="images/web_icon/tool_bar_cut_c01.svg">英文</span> 
-                    <span class="cut02" @click="fnCaptions(2)" v-show="captions==2"><img src="images/web_icon/tool_bar_cut_c02.svg">中文</span> 
-                    <span class="cut03" @click="fnCaptions(3)" v-show="captions==3"><img src="images/web_icon/tool_bar_cut_c03.svg">中英</span>
-                    <span class="cut04" @click="fnCaptions(0)" v-show="captions==0"><img src="images/web_icon/tool_bar_cut_c04.svg">關閉</span>
+                    <span class="cc_en" @click="fnCaptions(2)" v-show="captions==2">英文字幕</span> 
+                    <span class="cc_zh" @click="fnCaptions(3)" v-show="captions==3">中文字幕</span> 
+                    <span class="cc_enzh" @click="fnCaptions(1)" v-show="captions==1">中英字幕</span>
+                    <span class="cc_none" @click="fnCaptions(0)" v-show="captions==0">關閉字幕</span>
                   </div>
-                  <div class="buootn cutover01">
-                    <!-- 播放方式 1:循環 2:單曲 3:單句, -->
-                    <span class="cut03" @click="fnPlayMethods(1)" v-show="playMethods==1"><img src="images/web_icon/tool_bar_cut_b02.svg">循環</span>
-                    <span class="cut02" @click="fnPlayMethods(2)" v-show="playMethods==2"><img src="images/web_icon/tool_bar_cut_a02.svg">單曲</span>
-                    <span class="cut01" @click="fnPlayMethods(3)" v-show="playMethods==3"><img src="images/web_icon/tool_bar_cut_a01.svg">單句</span>
+                  <div class="cc_mobile_blk" >
+                    <!-- 字幕狀態 0:關閉 1:英文 2:中文 3:中英, -->
+                    <span class="cc_en" @click="fnCaptions(2)" v-show="captions==2"><img src="./images/web_icon/EN.svg" alt=""></span> 
+                    <span class="cc_zh" @click="fnCaptions(3)" v-show="captions==3"><img src="./images/web_icon/ZH.svg" alt=""></span> 
+                    <span class="cc_enzh" @click="fnCaptions(1)" v-show="captions==1"><img src="./images/web_icon/ENZH.svg" alt=""></span>
+                    <span class="cc_none" @click="fnCaptions(0)" v-show="captions==0"><img src="./images/web_icon/None.svg" alt=""></span>
                   </div>
-                  <div class="buootn cutover02" v-if="playMethods==1">
-                    <span class="cut01" @click="playRadom=!true" v-show="playRadom==true"><img src="images/web_icon/tool_bar_cut_b01.svg">隨機</span>
-                    <span class="cut01" @click="playRadom=!false" v-show="playRadom==false" style="color: gray;"><img src="images/web_icon/tool_bar_cut_b03.svg">隨機</span>
-                  </div>
-                  <div class="buootn cutover05"> <span class="heart" @click="fnAddToCollection($event)" :data-videoId="songInfo.indx"   :class="{favorites:songInfo.Bookmark==1 }"></span>收藏</div>
                 </div>
                 <div class="middle">
-                  <div class="play_bar">
-                    <span class="prev" @click="fnGoPrev"><img src="images/web_icon/play_bar_prev.svg"></span> 
-                    <!-- fontawsome icon -->
-                    <span class="Play">
-                      <i v-if="playstate==0"  @click="fnPlay(1)" id="play_btn" class="far fa-play-circle"></i>
-                      <i v-if="playstate==1"  @click="fnPlay(0)" id="play_btn" class="far fa-pause-circle"></i>
-                    </span>
-                    <span class="next" @click="fnGoNext"><img src="images/web_icon/play_bar_next.svg"></span></div>
+                  <!-- 播放方式 1:循環 2:單曲 3:隨機, -->
+                <div class="cycle_desktop">
+                  <span class="cut03" @click="fnPlayMethods(1)" v-show="playMethods==1"><img src="images/web_icon/tool_bar_cut_b02.svg"></span>
+                  <span class="cut03" @click="fnPlayMethods(2)" v-show="playMethods==2"><img src="images/web_icon/tool_bar_cut_a01_open.svg"></span>
+                  <span class="cut01" @click="fnPlayMethods(3)" v-show="playMethods==3"><img src="images/web_icon/tool_bar_cut_b01.svg"></span>
+                </div>
+                <div class="play_desktop">
+                  <span class="prev" @click="fnGoPrev"><img src="images/web_icon/play_bar_prev.svg"></span> 
+                  <span class="Play" >
+                  <img src="./images/web_icon/Play.svg" alt="play" v-if="playstate==0"  @click="fnPlay(1)" id="play_btn" v-cloak>
+                  <img src="./images/web_icon/Pause.svg" alt="pause" v-if="playstate==1"  @click="fnPlay(0)" id="play_btn" v-cloak>
+                  </span>
+                  <span class="next" @click="fnGoNext"><img src="images/web_icon/play_bar_next.svg"></span>
+                </div>
+                  <!-- 單句模式 -->
+                <div class="single_desktop">
+                  <span class="cut01" @click="fnPlayMethods(4)" v-if="!singleMode"><img src="images/web_icon/tool_bar_cut_a02.svg"></span>
+                  <span class="cut01" @click="fnPlayMethods(5)"  v-else><img src="images/web_icon/tool_bar_cut_a02_open.svg"></span>
+                </div> 
                 </div>
                 <div class="right">
-                  <div class="buootn todo_Go" @click="startRecord"><a href="#">開始歡唱</a></div>
+                  <!-- 字幕狀態 0:關閉 1:英文 2:中文 3:中英, -->
+                  <!-- <div class="singBtn" @click="startRecord"><span class="sing_rwd">開始</span> 歡唱</div> -->
+                  <div class="favbtn"> 
+                    <span @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
+                    </span>
+                    收藏
+                  </div>
+                  <div class="share" @click="share"><img src="./images/web_icon/share.svg" alt="">分享</div>
+                  <div class="audio_tab" @click="tabChange">
+                    <img src="./images/web_icon/list_close.svg" alt="#" v-if="nowTab == 0">
+                    <img src="./images/web_icon/list_open.svg" alt="#" v-if="nowTab == 1">
+                  </div>
+                  <div class="favbtn_mobile"> 
+                    <span @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
+                    </span>
+                  </div>
+                  <div class="share_mobile" @click="share"><img src="./images/web_icon/share.svg" alt=""></div>
+                  <!-- <div>
+                    <input type="checkbox" id="teacher_btn">
+                    <label for="teacher_btn" class="teacher_btn_close">
+                      <img src="./images/web_icon/teacher_close.svg"alt="">
+                    </label>
+                    <label for="teacher_btn" class="teacher_btn_open">
+                      <img src="./images/web_icon/teacher_open.svg"alt="">
+                    </label>
+                  </div> -->
                 </div>
+              </div>
+            </div>
+            <div class="goRec" @click="startRecord" v-if="!recMode"><img src="./images/web_icon/goRec.svg" alt=""><p>開始歡唱</p></div>
+            <div class="teacherBtn_mobile" @click="fnTutor" v-if="songInfo.tutor_url">
+              <img  :src="tutor==true?'images/web_icon/teacher.svg':'images/web_icon/teacher_close.svg'" alt="">
+              <p :style="tutor==true? 'opacity:1':'opacity:0.5'">老師解說</p>
+            </div>
+            <div class="backBtn" v-if="recMode" @click="back">
+              <img src="./images/web_icon/back.svg" alt="">
+              <p>返回</p>
+            </div>
+            <div id="audioBox" class="none"></div>
+            <!-- 分享彈窗 -->
+            <div class="share_blk none">
+              <div class="share_top">
+                  <span>分享</span>
+                  <img src="./images/web_icon/share_close.svg" alt="close" style="cursor: pointer" @click="shareClose">
+              </div>
+              <div class="share_center">
+                  <div class="share_wrapper">
+                      <div class="copy_icon"><img  @click="copyURL" src="./images/web_icon/copy.svg" alt=""><p>複製連結</p></div>
+                      <div><a :href="lineurl"><img src="./images/web_icon/Line.svg" alt=""></a><p>Line</p></div>
+                      <div><a :href="fburl"><img src="./images/web_icon/FB.svg" alt=""></a><p>FB</p></div>
+                      <div><a :href="emailurl"><img src="./images/web_icon/Gmail.svg" alt=""></a><p>Gmail</p></div>
+                      <div><a :href="linkedinurl"><img src="./images/web_icon/Linkedin.svg" alt=""></a><p>Linkedin</p></div>
+                  </div>
+                  
+              </div>
+              <div class="share_bottom">
+                  <input id="copyUrl" type="text" :value="URL" readonly  unselectable="on" >
+                  <span @click="copyURL">複製</span>
               </div>
             </div>
           </div>
-          <div id="video_list">
+          <div id="video_list2">
+            <div class="chooseBlk none">
+              <div class="into" @click="choose(1)">開始歡唱</div>
+              <div class="leave" @click="choose(2)">離開歡唱</div>
+            </div>
             <!--這一塊是頁籤式電影列表切換-->
             <div class="teacher_lecture " v-if="songInfo.tutor_url">
-              <!-- mobile 老師解說 -->
-              <div class="teacher_bar only_pad">
-                <!-- 老師解說開關 -->
-                <div class="button video_switch" @click="tutor=!tutor">老師解說 
-                  <span><img :src="tutor==true?'images/web_icon/teacher_video_switch_icon02.svg':'images/web_icon/teacher_video_switch_icon02_off.svg'" class="button_icon"></span>
-                </div>
-                 <!-- 分段開關 -->
-                <div class="buootn cutover03" @click="paragraph=!paragraph">
-                  <span class="cut01" style="display: inline;"><img :src="paragraph==true?'images/web_icon/teacher_bar_cut_a01.svg':'images/web_icon/teacher_bar_cut_a02.svg'">{{paragraph==true?'分段':'整首' }}</span> 
-                </div>
-              </div>
-              <!-- mobile 老師解說 -->
+        	<!-- mobile 老師解說 -->
+        	<!-- <div class="teacher_bar only_pad">
+					<div class="button video_switch" @click="tutor=!tutor">老師解說 
+					<span>
+            <img :src="tutor==true?'images/web_icon/teacher_video_switch_icon02.svg':'images/web_icon/teacher_video_switch_icon02_off.svg'" class="button_icon"></span>
+					</div>
+					<div class="buootn cutover03" @click="paragraph=!paragraph">
+					<span class="cut01" style="display: inline;"><img :src="paragraph==true?'images/web_icon/teacher_bar_cut_a01.svg':'images/web_icon/teacher_bar_cut_a02.svg'">{{paragraph==true?'分段':'整首' }}</span> 
+					</div>
+				</div> -->
+				<!-- mobile 老師解說 -->
             </div>
              <!--這一塊是頁籤式電影列表切換-->
             <div class="switch_tab">
-              <ul class="tabs">
-                <li><a href="#tab1">中英字幕</a></li>
+              <ul class="tabs video_tab">
+                <li  @click="tabChange"><a href="#tab1">中英字幕</a></li>
                 <!--頁籤1-->
-                <li><a href="#tab2">歡唱排名</a></li>
+                <li  @click="tabChange"><a href="#tab2">歌手</a></li>
                 <!--頁籤2-->
               </ul>
               <div class="tab_container">
-                <div id="tab1" class="tab_content">
+                <div id="tab1" class="tab_content" v-show="nowTab == 0">
                   <!--頁籤1的內容-->
                   <div class="teacher_lecture " v-if="songInfo.tutor_url">
                     <!--老師解說這一塊在pc及平版以下有很大的差異，因此做2塊，這1塊要在寬911以下時要消失-->
                     <!-- PC 老師解說 -->
-                    <div class="teacher_video"> 
-                      <div id="player_wrap"  v-show="tutor == true">
+                    <div class="teacher_video" :class="{disabled:tutor}"> 
+                      <div id="player_wrap_teacher"  v-if="tutor == true">
                           <iframe
                           type="text/html"
                           :src="ytTutor_url"
@@ -186,38 +379,44 @@
                       </div>
                     </div>
                     <!-- PC 老師解說 -->
-                    <div class="teacher_bar no_pad" v-if="songInfo.tutor_url">
-                      <!-- 老師解說開關 -->
+                    <!-- <div class="teacher_bar no_pad" v-if="songInfo.tutor_url">
+                      
                       <div class="button video_switch" @click="tutor=!tutor">老師解說
                         <span> <img :src="tutor==true?'images/web_icon/teacher_video_switch_icon02.svg':'images/web_icon/teacher_video_switch_icon02_off.svg'" class="button_icon"></span></div>
-                      <!-- 分段開關 -->
+                      
                       <div class="buootn cutover03" @click="paragraph=!paragraph">
                         <span class="cut01" style="display: inline;"><img :src="paragraph==true?'images/web_icon/teacher_bar_cut_a01.svg':'images/web_icon/teacher_bar_cut_a02.svg'">{{paragraph==true?'分段':'整首' }}</span>  
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                   <ul class="subtitle_items" :class="{'off': tutor==true?'':'off'}">
+                    <div class="noWord" v-show="captions==0">無字幕模式</div>
                     <li v-for="(item,index) in subTitle" 
                       :data-seek="parseFloat(Math.round(item.time.split(':')[0]))*60 + parseFloat(parseFloat(item.time.split(':')[1]).toFixed(2))"  
                       :data-start="startTimeArr[index]" 
-                      :data-count="index+1" 
+                      :data-count="index" 
                       :data-tutorseek="item.Tutortime?parseFloat(Math.round(item.Tutortime.split(':')[0]))*60 + parseFloat(parseFloat(item.Tutortime.split(':')[1]).toFixed(2)):''"
-                      :class="{'active':nowPlaying == index+1}"
+                      :class="{'active':nowPlaying == index}"
+                      @click="fnSeekTo"
                       >
-                      <div class="play-single-line" @click="fnSeekTo"><img src="images/web_icon/subtitle_list_icon.svg" alt=""></div>
-                      <div>
-                        <div class="en"><span  v-for="(item,index) in subtitle_en[index]" @click.stop="fnSearchWord(item,$event)">{{item}}&nbsp;&nbsp</span> </div>
-                        <div class="tw">{{item.ch_content}}</div>
-                      </div>
+                      <!-- <div class="play-single-line" >
+                        <img src="images/web_icon/subtitle_list_icon.svg" alt="">
+                      </div> -->
+                      
+                        <div class="en" v-show="captions == 1 || captions == 2"><span  v-for="(item,index) in subtitle_en[index]" @click.stop="fnSearchWord(item,$event)">{{item}}</span> </div>
+                        <div class="tw" v-show="captions== 1 || captions == 3">{{item.ch_content}}</div>
+                      
                     </li>
                   </ul>
 
                   <!-- 字典功能 -->
                   <div class="DrWord" :class="{'active': DrWordModal == true}">
-                    <div class="close" @click="DrWordModal = false"><img src="images/web_icon/top_bar_close.svg"></div>
+                    <div class="close" @click="fnCloseDrWordModal"><img src="images/web_icon/top_bar_close.svg"></div>
                     <div class="Dr_title">
                       <div class="word">
                         <h3><!--塞入查詢的字--></h3>
+                        <h4>{{baseForm[1]}}{{baseForm[2]}}</h4>
+                        <h5>{{baseForm[3]}}</h5>
                         <!-- <span v-for="(item,index) in keyWordResult.baseform">{{item}}</span> -->
                       </div>
                       <div class="collect">
@@ -231,8 +430,8 @@
                     <div class="Dr_content">
                       <div class="inner" >
                         <div  v-for="(item,index) in keyWordResult">
-                          <p class="divider">{{item.attr}}</p>
-                          <ul>
+                          <p class="divider" v-if="index !=='baseform'">{{item.attr}}</p>
+                          <ul  v-if="index !=='baseform'">
                             <li v-for="(item2,index) in item.text">
                               <span v-for="(item3,index) in item2">{{item3}}</span>
                             </li>
@@ -243,14 +442,20 @@
                   </div>
                   <!-- 字典功能 -->
                 </div>
-                <div id="tab2" class="tab_content">
+                <div id="tab2" class="tab_content" v-show="nowTab == 1">
                   <!--頁籤2的內容-->
                   <ul class="voice_items">
                     <li v-for="(item,index) in likeData">
-                      <span class="sex" :class="{'woman':item.Sex==0, 'man':item.Sex==1}">{{item.Pmember_nickname}}</span>
+                      <span class="sex" :class="{'woman':item.Sex==0, 'man':item.Sex==1}"  v-cloak>{{item.Pmember_nickname}}</span>
                       <div class="digi">
-                        <span class="play_time"><span class="img click"></span>01:32</span> 
+                        <span class="play_time">
+                          <span :id="'audioPlay' + index" class="img" @click="playAudio(index)"></span>
+                          <span :class="'audioLength' + index"  v-cloak>{{audioTime[index]}}</span>
+                          <span :class="'audioTimer' + index"  class="none" v-cloak>{{audioTimer}}</span>
+                        </span> 
+                        
                         <span class="like" @click="fnLike(item.Pmember_id, item.Id, $event)"><span class="img" :class="{'click':item.HasPromote > 0}"></span>{{item.Promote}}</span>
+                        <div><audio class="none" :id="'audio' + index"  controls :src="item.RecordingFiles"></audio></div>
                       </div>
                     </li>
                   </ul>
@@ -271,8 +476,8 @@
                     :name="categoryId"
                     onclick="toVideo(this)"><img :src="item.Pic" class="img">
                     </div>
-                    <div class="tool_bar">
-                      <div class="subtitles"><a href="#">中文字幕</a></div>
+                    <div class="tool_bar video1200">
+                      <div class="subtitles"><a href="#">中英字幕</a></div>
                       <div class="teacher"  v-if="item.Tutor==1"><a href="#">老師解說</a></div>
                       <div class="blank"></div>
                       <div class="number video_icon"><img  class="icon"src="images/web_icon/video_icon.svg" >
@@ -283,7 +488,7 @@
                       </div>
                       <div class="heart" @click="fnAddToCollection($event)" :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
                     </div>
-                    <div class="title">
+                    <div class="title video1200">
                       <span class="song_title">{{item.Title}}</span>
                       <span class="singer"><a href="#">{{item.Singer}}</a></span></div>
                   </div>
@@ -296,9 +501,9 @@
       </div>
     </div>
     <!--這是只有手機版才有的部份-->
-    <div class="only_mobile page_bottom">
+    <!-- <div class="only_mobile page_bottom">
       <div class="recommend"><a href="#" id="open_recommend"><img src="images/web_icon/recommend_icon.svg">我要推薦</a> </div>
-    </div>
+    </div> -->
 
     <!--footer-->
     <div id="footer">
@@ -666,6 +871,9 @@
 </script>
 
 <!-- myjs -->
+<script src="assets/js/recorder.mp3.min.js"></script>
+    <script src="assets/js/extensions/frequency.histogram.view.js"></script>
+    <script src="assets/js/extensions/lib.fft.js"></script>
 <script src="assets/js/video.js"></script>
 <script src="assets/js/common.js"></script>
 <script src="assets/js/myjs.js?1225"></script>
