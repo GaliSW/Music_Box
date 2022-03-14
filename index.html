@@ -95,7 +95,7 @@
                 </div>
                 <div id="menu">
                     <span class="my_collect"
-                        ><a href="video_collect.html">我的收藏</a></span
+                        ><a href="./video_collect.html">我的收藏</a></span
                     >
                     <span class="logout"
                         ><a href="#" id="logout"> 登出</a></span
@@ -116,12 +116,42 @@
                                 >{{item.Category}}</a
                             >
                         </li>
-                        <div class="recommend">
-                            <a href="#" id="open_recommend"
-                                ><img
-                                    src="images/web_icon/recommend_icon.svg"
-                                />我要推薦</a
-                            >
+                        <div class="podcast">
+                            <img src="./images/web_icon/podcast.svg" alt="" />
+                        </div>
+                        <div class="radio" @click="fnRadio">
+                            <img
+                                class="radio_bg"
+                                src="./images/web_icon/radio.svg"
+                                alt=""
+                            />
+                            <img
+                                class="radio_gif"
+                                src="./images/web_icon/radio.gif"
+                                alt=""
+                                v-if="radio"
+                            />
+                            <img
+                                class="radio_play"
+                                src="./images/web_icon/radio_play.svg"
+                                alt=""
+                                v-if="!radio"
+                            />
+                            <img
+                                class="radio_play"
+                                src="./images/web_icon/radio_pause.svg"
+                                alt=""
+                                v-if="radio"
+                            />
+
+                            <audio
+                                id="Fun_audio"
+                                src="https://s1.phx.icastcenter.com:9008/stream"
+                            ></audio>
+                        </div>
+                        <div class="recommend" id="open_recommend">
+                            <a href="#">我要推薦</a>
+                            <img src="images/web_icon/pen.svg" />
                         </div>
                     </ul>
                 </div>
@@ -132,7 +162,7 @@
                     <div id="video_frame_top">
                         <!-- youtube撥放器 -->
 
-                        <div id="player_wrap">
+                        <div id="player_wrap_index">
                             <div
                                 @click="bannerToUrl"
                                 style="
@@ -165,7 +195,7 @@
                                     <li><a href="#tab2">熱門點閱</a></li>
                                     <!--頁籤2-->
                                 </ul>
-                                <div class="tab_container">
+                                <div class="tab_container index_container">
                                     <div id="tab1" class="tab_content">
                                         <!--頁籤1的內容-->
                                         <ul class="video_items">
@@ -353,18 +383,60 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="video_category podcast_mobile_blk">
+                                <div class="ga_title">Others 其他</div>
+                                <div class="podcast_mobile">
+                                    <div>
+                                        <img
+                                            src="./images/web_icon/podcast_mb.svg"
+                                            alt=""
+                                        />
+                                        <div>
+                                            <img
+                                                src="./images/web_icon/radio_play.svg"
+                                                alt=""
+                                            />
+                                            前往Podcast收聽
+                                        </div>
+                                    </div>
+                                    <div @click="fnRadio" class="radio_bg_mb">
+                                        <img
+                                            src="./images/web_icon/radio_mb.svg"
+                                            alt=""
+                                        />
+                                        <img
+                                            class="radio_gif_mb"
+                                            src="./images/web_icon/radio.gif"
+                                            alt=""
+                                            v-if="radio"
+                                        />
+                                        <div>
+                                            <img
+                                                src="./images/web_icon/radio_play.svg"
+                                                alt=""
+                                                v-if="!radio"
+                                            />
+                                            <img
+                                                src="./images/web_icon/radio_pause.svg"
+                                                alt=""
+                                                v-if="radio"
+                                            />
+                                            FUNDAY廣播
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="only_mobile page_bottom">
+                                <div class="recommend">
+                                    <a href="#" id="open_recommend"
+                                        ><img
+                                            src="images/web_icon/pen.svg"
+                                        />我要推薦</a
+                                    >
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <!--這是只有手機版才有的部份-->
-            <div class="only_mobile page_bottom">
-                <div class="recommend">
-                    <a href="#" id="open_recommend"
-                        ><img
-                            src="images/web_icon/recommend_icon.svg"
-                        />我要推薦</a
-                    >
                 </div>
             </div>
             <!--footer-->

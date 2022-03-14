@@ -16,6 +16,7 @@ var app = new Vue({
         member_id: "",
         customer_id: "",
         recommendMessage: "",
+        radio: false,
     },
     computed: {},
     methods: {
@@ -75,6 +76,17 @@ var app = new Vue({
                     }
                 })
                 .catch((error) => console.log(error));
+        },
+        //播放radio
+        fnRadio() {
+            const audio = document.getElementById("Fun_audio");
+            if (this.radio) {
+                this.radio = false;
+                audio.pause();
+            } else {
+                this.radio = true;
+                audio.play();
+            }
         },
     },
     created() {

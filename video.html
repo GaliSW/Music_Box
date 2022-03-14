@@ -79,7 +79,7 @@
       <!--這裏的連結請到myjs.js裏去調整-->
       <div id="login_blk">
         <div class="gift"><a href=""><img src="./images/web_icon/gift.svg" alt="">送禮卷</a></div>
-        <div class="myFav"><a href=""><img src="./images/web_icon/myFavBtn.svg" alt=""><span class="fav_rwd">我的收藏</span></a></div>
+        <div class="myFav" @click="toMyFav"><a href="#"><img src="./images/web_icon/myFavBtn.svg" alt=""><span class="fav_rwd">我的收藏</span></a></div>
         <div class="teacherBtn" @click="fnTutor" v-if="songInfo.tutor_url" :class="{teacherOpen:tutor }">解說</div>
         
         <div v-show="!recMode" class="singBtn" @click="choose(0)">歡唱</div>
@@ -126,7 +126,8 @@
                           :src="ytTutor_url"
                           width="100%"
                           frameborder="0"
-                          id="teacher_player"
+                          allow="autoplay; encrypted-media"
+                          id="teacher_player2"
                           enablejsapi="1">
                         </iframe>
                       </div>
@@ -367,11 +368,12 @@
                     <!--老師解說這一塊在pc及平版以下有很大的差異，因此做2塊，這1塊要在寬911以下時要消失-->
                     <!-- PC 老師解說 -->
                     <div class="teacher_video" :class="{disabled:tutor}"> 
-                      <div id="player_wrap_teacher"  v-if="tutor == true">
+                      <div id="player_wrap_teacher"  v-show="tutor == true">
                           <iframe
                           type="text/html"
                           :src="ytTutor_url"
                           width="100%"
+                          allow="autoplay; encrypted-media" 
                           frameborder="0"
                           id="teacher_player"
                           enablejsapi="1">

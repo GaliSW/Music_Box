@@ -5,8 +5,12 @@
     height: 600px;
     /* padding-bottom: 56.25%; */
 }
-
-#player_wrap iframe {
+#player_wrap_index {
+    position: relative;
+    width: 100%;
+}
+#player_wrap iframe,
+#player_wrap_index iframe {
     /* position: absolute;
     top: 0;
     left: 0;
@@ -106,7 +110,8 @@
         /* width: 100%; */
     }
     #player_wrap,
-    #player_wrap_teacher_mobile {
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
         height: 400px;
     }
     #player_wrap iframe {
@@ -115,13 +120,15 @@
 }
 @media (max-width: 480px) {
     #player_wrap,
-    #player_wrap_teacher_mobile {
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
         height: 300px;
     }
 }
 @media (max-width: 380px) {
     #player_wrap,
-    #player_wrap_teacher_mobile {
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
         height: 200px;
     }
 }

@@ -229,9 +229,32 @@ var app = new Vue({
                             },
                             // videoId: _.ytId,
                             events: {
-                                onReady: onPlayerReady,
-                                onStateChange: onPlayerStateChange, //偵測播放狀態
-                                onError: onPlayerError,
+                                onReady: onPlayerReady2,
+                                onStateChange: onPlayerStateChange2, //偵測播放狀態
+                                onError: onPlayerError2,
+                            },
+                        });
+                        player3 = new YT.Player("teacher_player2", {
+                            playerVars: {
+                                autoplay: 0,
+                                playsinline: 1,
+                                //loop: 1,
+                                rel: 0, //2018後就沒用了
+                                controls: 0,
+                                overlay: 0,
+                                showinfo: 0, //隱藏影片資訊
+                                modestbranding: 1, //隱藏logo
+                                fs: 0, //隱藏全螢幕按鈕
+                                cc_lang_pref: "en",
+                                cc_load_policy: 0, //隱藏字幕
+                                iv_load_policy: 3, //隱藏註釋
+                                autohide: 0, //播放時隱藏控制器
+                            },
+                            // videoId: _.ytId,
+                            events: {
+                                onReady: onPlayerReady3,
+                                onStateChange: onPlayerStateChange3, //偵測播放狀態
+                                onError: onPlayerError3,
                             },
                         });
                     };
@@ -287,6 +310,30 @@ var app = new Vue({
                         console.log("error");
                         console.log(evt);
                     }
+                    function onPlayerReady2(evt) {
+                        //取得影片長度 秒
+                        console.log(player2);
+                        // player2.mute().playVideo();
+                    }
+                    function onPlayerStateChange2(e) {
+                        console.log("Player2 state changed", e.data);
+                    }
+                    function onPlayerError2(evt) {
+                        console.log("error");
+                        console.log(evt);
+                    }
+                    function onPlayerReady3(evt) {
+                        //取得影片長度 秒
+                        console.log(player2);
+                        // player2.mute().playVideo();
+                    }
+                    function onPlayerStateChange3(e) {
+                        console.log("Player3 state changed", e.data);
+                    }
+                    function onPlayerError3(evt) {
+                        console.log("error");
+                        console.log(evt);
+                    }
                 })
                 .catch((error) => console.log(error));
         },
@@ -330,8 +377,7 @@ var app = new Vue({
             this.playstate = state;
             if (state == 1) {
                 player.unMute().playVideo();
-                player2.unMute().playVideo();
-                console.log(player2);
+                player3.playVideo();
             }
             if (state == 0) {
                 player.pauseVideo();
@@ -801,6 +847,16 @@ var app = new Vue({
                     this.likeData = res.data[Object.keys(res.data)];
                 })
                 .catch((error) => console.log(error));
+        },
+        //我的收藏
+        toMyFav() {
+            if (!this.member_id) {
+                // alert("請先登入");
+                $("#myModal07").modal("show");
+                return;
+            } else {
+                location.href = "./video_collect.html";
+            }
         },
         // ==========================================
         // === 分享 ===
