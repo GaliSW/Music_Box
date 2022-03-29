@@ -122,8 +122,9 @@ var app = new Vue({
                 if ($(".subtitle_items li.active").length == 0) return;
                 if (this.DrWordModal) return;
                 //字幕滾動區
-                const listWindowContent =
-                    document.querySelector(".subtitle_items");
+                const listWindowContent = document.querySelector(
+                    ".subtitle_items"
+                );
                 //字幕視窗高度
                 const listWindowHeight = listWindowContent.offsetHeight;
                 //字幕視窗上方與瀏覽器距離
@@ -212,8 +213,9 @@ var app = new Vue({
                     vm.tutorEndTime = tutorEndTime;
 
                     // 取得 youtube 網址轉換
-                    const youtubeId =
-                        vm.songInfo.url.split("https://youtu.be/")[1];
+                    const youtubeId = vm.songInfo.url.split(
+                        "https://youtu.be/"
+                    )[1];
                     //老師解說YtUrl
                     if (vm.songInfo.tutor_url !== "") {
                         vm.ytTutor_url = `https://www.youtube-nocookie.com/embed/${
@@ -233,8 +235,9 @@ var app = new Vue({
                     var tag = document.createElement("script");
                     tag.src = "https://www.youtube.com/iframe_api";
 
-                    var firstScriptTag =
-                        document.getElementsByTagName("script")[0];
+                    var firstScriptTag = document.getElementsByTagName(
+                        "script"
+                    )[0];
                     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
                     window.onYouTubeIframeAPIReady = () => {
                         player = new YT.Player("player", {
@@ -770,9 +773,14 @@ var app = new Vue({
             console.log(hash);
 
             hash = hash.split("&"); //['categoryId=1','videoId=1050']
-
-            vm.categoryId = hash[0].split("=")[1];
-            vm.videoId = hash[1].split("=")[1];
+            console.log(hash.length);
+            if (hash.length == 1) {
+                vm.videoId = hash[0].split("=")[1];
+                vm.categoryId = 1;
+            } else {
+                vm.categoryId = hash[0].split("=")[1];
+                vm.videoId = hash[1].split("=")[1];
+            }
             // ===產生分享網址===
             // *FB
             this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${vm.videoId}'))));`;
@@ -781,7 +789,7 @@ var app = new Vue({
             //*twitter
             this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*email
-            this.emailurl = `mailto:?to=&subject=FunMusic&body=https://music.funday.asia/video.html?${hash}`;
+            this.emailurl = `mailto:?to=&subject=FunMusic&body=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*Whatsapp
             this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*Linkedin
@@ -1259,8 +1267,9 @@ var app = new Vue({
             player.seekTo(0);
             this.recMode = true;
             const countDown = document.querySelector(".countDown");
-            const countDown_wrapper =
-                document.querySelector(".countDown_wrapper");
+            const countDown_wrapper = document.querySelector(
+                ".countDown_wrapper"
+            );
             countDown_wrapper.classList.remove("none");
             countDown.classList.remove("none");
             const img = document.querySelector(".countDownImg");
@@ -1320,8 +1329,9 @@ var app = new Vue({
             const audio = document.getElementById(idName);
             audio.remove();
             const countDown = document.querySelector(".countDown");
-            const countDown_wrapper =
-                document.querySelector(".countDown_wrapper");
+            const countDown_wrapper = document.querySelector(
+                ".countDown_wrapper"
+            );
             const function01 = document.querySelector(".function01");
             const function02 = document.querySelector(".function02");
             countDown_wrapper.classList.remove("none");
