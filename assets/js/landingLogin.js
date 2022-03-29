@@ -177,16 +177,13 @@ async function mailSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-    let ADid = 59;
-    if (sessionStorage.getItem("ADid") !== undefined) {
-        ADid = sessionStorage.getItem("ADid");
-    }
+
     const json = JSON.stringify({
         ID: mail,
         realname: name,
         sex: sex,
         tel: pass,
-        ADid: ADid,
+        ADid: 60,
     });
 
     await axios
@@ -248,9 +245,7 @@ function GetFbProfile(fbLogin) {
             sessionStorage.setItem("id", `FB${user.id}`);
             sessionStorage.setItem("email", `${user.email}`);
             if (fbLogin !== "fbLogin") {
-                // loginTo(myModal01, myModal06);
-                $("#myModal01").modal("hide");
-                $("#myModal06").modal("show");
+                loginTo(myModal01, myModal06);
             }
         }
     });
@@ -342,17 +337,14 @@ async function fbSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-    let ADid = 59;
-    if (sessionStorage.getItem("ADid") !== undefined) {
-        ADid = sessionStorage.getItem("ADid");
-    }
+
     const json = JSON.stringify({
         ID: fbid,
         FBFemail: mail,
         realname: name,
         sex: sex,
         tel: pass,
-        ADid: ADid,
+        ADid: 60,
     });
     await axios
         .post("https://funday.asia/api/Application.asp", json)
@@ -439,7 +431,7 @@ async function mailLoginCheck() {
             sessionStorage.setItem("nickName", res.data.nickname);
             sessionStorage.setItem("sex", res.data.sex);
             sessionStorage.setItem("pic", res.data.pic);
-            window.location.reload();
+            location.href = "./index.html";
         }
     });
 }
@@ -475,7 +467,7 @@ function fbLoginCheck() {
                             .classList.remove("none");
                         sessionStorage.setItem("mindx", res.data.mindx);
                         sessionStorage.setItem("cindx", res.data.cindx);
-                        location.reload();
+                        location.href = "./index.html";
                     }
                 });
         }

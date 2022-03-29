@@ -1,5 +1,5 @@
 .DrWord {
-    display: none;
+    /* display: none; */
     /* border: 1px solid red; */
     width: 300px;
     height: 420px;
@@ -7,12 +7,13 @@
     opacity: 0.95;
     box-shadow: 0 -1px 4px 0 rgb(0 0 0 / 25%);
     background-color: #4a4a4a;
-    position: absolute;
-    bottom: 100px;
-    z-index: 4;
+    position: fixed;
+    right: -100%;
+    top: -100%;
+    z-index: 998;
     font-family: "Lucida Grande", Helvetica, Arial, Verdana, "PingFang TC",
         "Heiti TC", "å¾®è»Ÿæ­£é»‘é«”", sans-serif;
-    border-radius: 20px;
+    border-radius: 4px;
 }
 
 .DrWord.active {
@@ -72,6 +73,7 @@
     border-radius: 50px;
     width: 40px;
     height: 15px;
+    line-height: 15px;
 }
 
 .DrWord .Dr_content {
@@ -128,15 +130,15 @@
     cursor: pointer;
     margin-right: 4px;
 }
-.subtitle_items .en span:hover {
+/* .subtitle_items .en span:hover {
     color: #ffb78c;
-}
+} */
 .subtitle_items .en .select {
     color: #ffb78c;
     font-weight: bold;
     text-decoration: underline;
 }
-@media (max-width: 600px) {
+@media (max-width: 991px) {
     .DrWord {
         width: 100%;
         height: 250px;
@@ -144,6 +146,8 @@
         position: fixed;
         left: 0;
         bottom: 0;
+        right: unset;
+        top: unset;
     }
     .DrWord .Dr_title {
         padding-bottom: 0px;
@@ -153,5 +157,8 @@
     }
     .DrWord .Dr_content .inner {
         height: 180px;
+    }
+    .DrWord .Dr_title .collect p {
+        font-size: 12px;
     }
 }

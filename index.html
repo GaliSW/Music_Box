@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>FUNDAY 音樂盒</title>
+        <title>FunMusic</title>
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
         <meta name="description" content="" />
         <meta name="keywords" content="" />
@@ -17,6 +17,11 @@
         />
 
         <!-- Font awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            referrerpolicy="no-referrer"
+        />
         <link href="assets/css/font-awesome.css" rel="stylesheet" />
         <!-- Bootstrap -->
         <link href="assets/css/bootstrap.css" rel="stylesheet" />
@@ -24,6 +29,12 @@
         <link href="assets/css/style.css?1230" rel="stylesheet" />
         <!-- Video RWD Fix -->
         <link rel="stylesheet" href="assets/css/video_rwd_fix.css" />
+        <!-- Podcast -->
+        <link rel="stylesheet" href="assets/css/podcast.css" />
+        <!-- Message Board -->
+        <link rel="stylesheet" href="assets/css/board.css" />
+        <!-- Notification -->
+        <link rel="stylesheet" href="assets/css/notification.css" />
 
         <!-- Google Fonts -->
         <link
@@ -61,9 +72,14 @@
             crossorigin="anonymous"
             src="https://connect.facebook.net/en_US/sdk.js"
         ></script>
+        <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <script>
+            eruda.init();
+        </script> -->
     </head>
     <body class="home_page">
         <div class="all_wrap" id="app" v-cloak>
+            <!-- full screen  -->
             <div
                 id="fullscreen"
                 onclick="toggleFullScreen(document.documentElement)"
@@ -84,28 +100,77 @@
                 <a id="logo" href="./"
                     ><span class="img"
                         ><img
-                            src="images/web_icon/LOGO.svg"
+                            src="images/web_icon/funMusic.svg"
                             alt="FUNDAY" /></span
-                    ><span class="txt">音樂盒</span></a
-                >
-                <div id="join_button">
-                    <a href="#" data-toggle="modal" data-target="#myModal01"
-                        >免費加入</a
-                    >
-                </div>
-                <div id="menu">
-                    <span class="my_collect"
-                        ><a href="./video_collect.html">我的收藏</a></span
-                    >
-                    <span class="logout"
-                        ><a href="#" id="logout"> 登出</a></span
-                    >
+                ></a>
+                <div id="login_blk">
+                    <div class="gift_index">
+                        <a href="./landing.html"
+                            ><img
+                                src="./images/web_icon/gift.svg"
+                                alt=""
+                            />送好禮</a
+                        >
+                    </div>
+                    <div class="myFav_index" @click="toMyFav">
+                        <a href="#"
+                            ><img
+                                src="./images/web_icon/myFavBtn.svg"
+                                alt=""
+                            /><span class="fav_rwd">我的收藏</span></a
+                        >
+                    </div>
+                    <div id="join_button">
+                        <div
+                            class="join_mobile"
+                            data-toggle="modal"
+                            data-target="#myModal01"
+                        >
+                            <img src="./images/web_icon/login.svg" alt="" />
+                        </div>
+                        <a href="#" data-toggle="modal" data-target="#myModal01"
+                            >免費加入</a
+                        >
+                    </div>
+                    <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
+                    <div id="menu">
+                        <div class="logout_mobile" id="logout">
+                            <img src="./images/web_icon/logout.svg" alt="" />
+                        </div>
+                        <span class="logout"
+                            ><a href="#" id="logout"> </a
+                        ></span>
+                    </div>
                 </div>
             </div>
+            <div class="notification_wrapper_mobile">
+                <div
+                    class="notification_mobile animate__animated"
+                    :class="{animate__fadeIn:notiChange}"
+                >
+                    <img
+                        v-if="notiPic == ''"
+                        src="./images/web_icon/head_default.svg"
+                        alt=""
+                    />
+                    <img v-else :src="notiPic" alt="" />
+                    <span
+                        v-cloak
+                        :class="[{male:notiSex == 1},{female:notiSex == 0}]"
+                        >{{notiName}}</span
+                    >
+                    <div class="wrapper" v-cloak>
+                        <p class="width">{{notiStatus}} &nbsp;&nbsp;&nbsp;</p>
+                        <p class="first">{{notiStatus}} &nbsp;&nbsp;&nbsp;</p>
+                        <p class="second">{{notiStatus}} &nbsp;&nbsp;&nbsp;</p>
+                    </div>
+                </div>
+            </div>
+            <div v-if="pre_height" class="pre_height">預載</div>
             <!--main-body-->
             <div id="main-body">
+                <!--這邊是側邊條-->
                 <div id="sidebar">
-                    <!--這邊是側邊條-->
                     <div class="navbar_button"></div>
                     <ul class="channel_list">
                         <li
@@ -116,20 +181,29 @@
                                 >{{item.Category}}</a
                             >
                         </li>
-                        <div class="podcast">
-                            <img src="./images/web_icon/podcast.svg" alt="" />
+                        <div class="podcast" @click="podcast = !podcast">
+                            <img
+                                src="./images/web_icon/podcast_mb.svg"
+                                alt=""
+                            />
+                            <img
+                                class="podcast_play"
+                                src="./images/web_icon/podcast_play.svg"
+                                alt=""
+                            />
+                            <span>前往Podcast收聽</span>
                         </div>
                         <div class="radio" @click="fnRadio">
                             <img
                                 class="radio_bg"
-                                src="./images/web_icon/radio.svg"
+                                src="./images/web_icon/radio_mb.svg"
                                 alt=""
                             />
                             <img
                                 class="radio_gif"
                                 src="./images/web_icon/radio.gif"
                                 alt=""
-                                v-if="radio"
+                                v-show="radio"
                             />
                             <img
                                 class="radio_play"
@@ -144,16 +218,52 @@
                                 v-if="radio"
                             />
 
-                            <audio
-                                id="Fun_audio"
-                                src="https://s1.phx.icastcenter.com:9008/stream"
-                            ></audio>
+                            <audio id="Fun_audio" :src="stream"></audio>
                         </div>
                         <div class="recommend" id="open_recommend">
                             <a href="#">我要推薦</a>
                             <img src="images/web_icon/pen.svg" />
                         </div>
                     </ul>
+                    <div class="notification_wrapper">
+                        <transition-group
+                            appear
+                            tag="ul"
+                            class="notification"
+                            name="fade"
+                        >
+                            <li
+                                v-cloak
+                                v-for="(item,index) in notifications"
+                                class="animate__animated animate__fadeInLeft"
+                                v-bind:key="item.Cdate"
+                            >
+                                <div>
+                                    <img
+                                        v-if="item.Pic == ''"
+                                        src="./images/web_icon/head_default.svg"
+                                        alt=""
+                                    />
+                                    <img v-else :src="item.Pic" alt="" />
+                                </div>
+                                <div>
+                                    <span
+                                        :class="[{male:item.Sex == 1},{female:item.Sex == 0}]"
+                                        >{{item.Nickname}}</span
+                                    >
+                                    <div class="wrapper">
+                                        <p class="width">{{item.Status}}</p>
+                                        <p class="first">
+                                            {{item.Status}}&nbsp;&nbsp;&nbsp;
+                                        </p>
+                                        <p class="second">
+                                            {{item.Status}}&nbsp;&nbsp;&nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </transition-group>
+                    </div>
                 </div>
 
                 <div id="video_frame">
@@ -176,16 +286,6 @@
                             <div id="player"></div>
                         </div>
 
-                        <!--這一塊是撥放器-->
-                        <!-- <div id="video_playing">
-          <a href="video.html"><img :src="banner.Pic" style="max-width:100%;"></a>
-          <div class="play_icon"><img src="images/web_icon/home_video_playing.svg"></div>
-          <div class="tag_bar">
-            <div class="subtitles"><a href="#">中文字幕</a></div>
-            <div class="teacher"><a href="#">老師解說</a></div>
-          </div>
-        </div> -->
-
                         <div id="video_list">
                             <!--這一塊是頁籤式電影列表切換-->
                             <div class="switch_tab">
@@ -202,7 +302,7 @@
                                             <li
                                                 v-for="(item,index) in HotRecording"
                                             >
-                                                <span class="decimal"
+                                                <span class="decimals"
                                                     >0{{index+1}}</span
                                                 ><!--這個span會由js自已填序號進來-->
                                                 <div class="item">
@@ -250,7 +350,7 @@
                                             <li
                                                 v-for="(item,index) in HotClick"
                                             >
-                                                <span class="decimal"
+                                                <span class="decimals"
                                                     >0{{index+1}}</span
                                                 >
                                                 <div class="item">
@@ -304,6 +404,7 @@
                             <div
                                 class="video_category ca01"
                                 v-for="(item, index) in vedioListData"
+                                v-if="item.title !== 'Rap饒舌樂'"
                             >
                                 <div
                                     class="ga_title"
@@ -336,13 +437,25 @@
                                             </div>
                                             <div class="tool_bar">
                                                 <div class="subtitles">
-                                                    <a href="#">中英字幕</a>
+                                                    <a
+                                                        href="#"
+                                                        :id="item.Id"
+                                                        :name="item.categoryId"
+                                                        onclick="toVideo(this)"
+                                                        >中英字幕</a
+                                                    >
                                                 </div>
                                                 <div
                                                     class="teacher"
                                                     v-if="item.Tutor==1"
                                                 >
-                                                    <a href="#">老師解說</a>
+                                                    <a
+                                                        href="#"
+                                                        :id="item.Id"
+                                                        :name="item.categoryId"
+                                                        onclick="toVideo(this)"
+                                                        >老師解說</a
+                                                    >
                                                 </div>
                                                 <div class="blank"></div>
                                                 <div class="number video_icon">
@@ -370,7 +483,12 @@
                                                     :class="{favorites : item.Bookmark==1 }"
                                                 ></div>
                                             </div>
-                                            <div class="title">
+                                            <div
+                                                class="title"
+                                                :id="item.Id"
+                                                :name="item.categoryId"
+                                                onclick="toVideo(this)"
+                                            >
                                                 <span class="song_title"
                                                     >{{item.Title}}</span
                                                 ><span class="singer"
@@ -385,8 +503,11 @@
                             </div>
                             <div class="video_category podcast_mobile_blk">
                                 <div class="ga_title">Others 其他</div>
-                                <div class="podcast_mobile">
-                                    <div>
+                                <div class="podcast_radio_mobile">
+                                    <div
+                                        class="podcast_mobile"
+                                        @click="podcast = !podcast"
+                                    >
                                         <img
                                             src="./images/web_icon/podcast_mb.svg"
                                             alt=""
@@ -428,13 +549,199 @@
                             </div>
                             <div class="only_mobile page_bottom">
                                 <div class="recommend">
-                                    <a href="#" id="open_recommend"
+                                    <a href="#" id="open_recommend_mb"
                                         ><img
                                             src="images/web_icon/pen.svg"
                                         />我要推薦</a
                                     >
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Podcast -->
+            <div class="podcast_pop" v-show="podcast">
+                <div class="pop_close" @click="podcast = !podcast">
+                    <img src="./images/web_icon/share_close.svg" alt="" />
+                </div>
+                <h1>前往收聽 Podcast</h1>
+                <h2>
+                    二十一世紀的生活壓力大，事業、家庭兩頭燒，在這個亂世之中，該如何找到身心的平衡與健康呢？
+                </h2>
+                <div class="link_blk">
+                    <a
+                        target="_blank"
+                        href="https://podcasts.apple.com/ee/podcast/funday-%E6%96%B0%E7%94%9F%E6%B4%BB/id1577312960"
+                    >
+                        <img
+                            src="./images/web_icon/applePodcast.svg"
+                            alt=""
+                        />ApplePodcast
+                    </a>
+                    <a
+                        target="_blank"
+                        href="https://player.soundon.fm/p/c7cf00a8-6987-4144-bc86-ca558d03bab2"
+                    >
+                        <img
+                            src="./images/web_icon/soundon.svg"
+                            alt=""
+                        />SoundOn
+                    </a>
+                </div>
+            </div>
+            <!-- message board -->
+            <div class="message_board_blk" :class="{boardOn:board}">
+                <div class="message_blur"></div>
+                <div
+                    class="board_close"
+                    :class="{remove:board}"
+                    @click="fnBoardOpen"
+                >
+                    <div v-for="(item,index) in boardMessage">
+                        <div class="head" v-show="boardNow == index">
+                            <img
+                                class="board_gif"
+                                src="./images/web_icon/board_gif.gif"
+                                alt=""
+                            />
+                            <div class="userHead">
+                                <img
+                                    v-show="item.imgUrl !== null"
+                                    v-cloak
+                                    :src="item.imgUrl"
+                                    alt=""
+                                    class="animate__animated animate__flipInX"
+                                />
+                                <img
+                                    v-show="item.imgUrl == null"
+                                    src="./images/web_icon/head_default.svg"
+                                    alt=""
+                                    class="animate__animated animate__flipInX"
+                                />
+                            </div>
+                        </div>
+                        <div
+                            v-show="boardNow == index"
+                            class="animate__animated animate__tada name"
+                        >
+                            <span :class="[item.sex == 1 ?'male':'female']"
+                                >{{item.name}}</span
+                            >
+                        </div>
+                        <div
+                            class="text animate__animated animate__flipInX"
+                            v-show="boardNow == index"
+                        >
+                            <span class="text_wrapper">
+                                <p class="width">{{item.content}}</p>
+                                <p class="first">
+                                    {{item.content}}&nbsp;&nbsp;&nbsp;
+                                </p>
+                                <p class="second">
+                                    {{item.content}}&nbsp;&nbsp;&nbsp;
+                                </p>
+                            </span>
+                        </div>
+                    </div>
+                    <img
+                        class="toggle"
+                        src="./images/web_icon/board_close.svg"
+                        alt=""
+                    />
+                </div>
+                <div class="board_open" :class="{open_blk:board}">
+                    <div class="content" :class="{add:board}">
+                        <ul id="content_blk">
+                            <li v-for="(item,index) in boardContent">
+                                <img
+                                    v-show="item.imgUrl !== null"
+                                    :src="item.imgUrl"
+                                    alt=""
+                                />
+                                <img
+                                    v-show="item.imgUrl == null"
+                                    src="./images/web_icon/head_default.svg"
+                                    alt=""
+                                />
+                                <div>
+                                    <span
+                                        :class="[item.sex == 1 ?'male':'female']"
+                                        >{{item.name}}</span
+                                    >
+                                    {{item.content}}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="send_bar">
+                        <div class="alertHint">{{alert}}</div>
+                        <img class="userPic" :src="pic" alt="" v-if="userPic" />
+                        <img
+                            class="userPic"
+                            src="./images/web_icon/head_default.svg"
+                            alt=""
+                            v-if="!userPic"
+                        />
+                        <div>
+                            <input
+                                id="message"
+                                v-on:keyup.enter="send"
+                                v-on:keydown="inputKeydown"
+                                type="text"
+                                placeholder="說點什麼..."
+                            />
+                            <img
+                                @click="emoji=!emoji"
+                                class="emoji"
+                                src="./images/web_icon/emoji.svg"
+                                alt=""
+                            />
+                            <img
+                                @click="send"
+                                class="send_mobile"
+                                src="./images/web_icon/send.svg"
+                                alt=""
+                            />
+                        </div>
+
+                        <img
+                            class="send_desktop"
+                            @click="send"
+                            src="./images/web_icon/send.svg"
+                            alt=""
+                        />
+                        <img
+                            @click="fnBoardToggle"
+                            class="toggle"
+                            src="./images/web_icon/board_open.svg"
+                            alt=""
+                        />
+                    </div>
+                    <div class="emoji_blk" :class="{emoji_open:emoji}">
+                        <div class="emoji_wrapper">
+                            <ul class="emoji_page1">
+                                <li @click="addEmoji($event)">&#128512;</li>
+                                <li @click="addEmoji($event)">&#128513;</li>
+                                <li @click="addEmoji($event)">&#128514;</li>
+                                <li @click="addEmoji($event)">&#128515;</li>
+                                <li @click="addEmoji($event)">&#128516;</li>
+                                <li @click="addEmoji($event)">&#128517;</li>
+                                <li @click="addEmoji($event)">&#128518;</li>
+                                <li @click="addEmoji($event)">&#128519;</li>
+                                <li @click="addEmoji($event)">&#128520;</li>
+                                <li @click="addEmoji($event)">&#128521;</li>
+                                <li @click="addEmoji($event)">&#128522;</li>
+                                <li @click="addEmoji($event)">&#128523;</li>
+                                <li @click="addEmoji($event)">&#128524;</li>
+                                <li @click="addEmoji($event)">&#128525;</li>
+                                <li @click="addEmoji($event)">&#128526;</li>
+                                <li @click="addEmoji($event)">&#128527;</li>
+                                <li @click="addEmoji($event)">&#128528;</li>
+                                <li @click="addEmoji($event)">&#128529;</li>
+                                <li @click="addEmoji($event)">&#128530;</li>
+                                <li @click="addEmoji($event)">&#128531;</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -476,7 +783,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
                             </div>
@@ -550,7 +857,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
                             </div>
@@ -666,7 +973,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
                             </div>
@@ -750,7 +1057,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
                             </div>
@@ -965,7 +1272,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
                             </div>
@@ -979,6 +1286,7 @@
                                 >
                                     <div class="input">
                                         <input
+                                            id="fb_account_mobile"
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
@@ -989,6 +1297,7 @@
                                     <div class="row">
                                         <div class="input col-xs-8">
                                             <input
+                                                id="fb_account_name"
                                                 name="account_name"
                                                 type="text"
                                                 placeholder="中文姓名"
@@ -1076,7 +1385,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="120px"
                                 />
                             </div>
@@ -1185,7 +1494,7 @@
                         <div id="login_body">
                             <div class="logo">
                                 <img
-                                    src="images/web_icon/LOGO.svg"
+                                    src="images/web_icon/funMusic.svg"
                                     width="120px"
                                 />
                             </div>
@@ -1301,8 +1610,13 @@
             $("#header #menu").hide();
         }
     </script>
-
-    <script src="assets/js/index.js"></script>
+    <!-- <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js"
+        integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    ></script> -->
+    <script type="module" src="assets/js/index.js"></script>
     <script src="assets/js/common.js"></script>
-    <script src="assets/js/myjs.js?1225"></script>
+    <script src="assets/js/myjs.js"></script>
 </html>

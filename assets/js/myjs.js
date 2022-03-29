@@ -43,6 +43,22 @@ $(function () {
     });
 });
 
+//Podcast
+$(".pop_close").click(() => {
+    $(".podcast_pop").toggle();
+});
+$(".podcast").click(() => {
+    $(".podcast_pop").toggle();
+});
+$(".podcast_mobile").click(() => {
+    $(".podcast_pop").toggle();
+});
+// setInterval(() => {
+//     $(".message_board_blk").css("transform", "rotateX(180deg)");
+//     setTimeout(() => {
+//         $(".message_board_blk").css("transform", "unset");
+//     }, 2000);
+// }, 5000);
 //愛心的點擊變色
 // $(".heart").click(function(){
 // 	var $this = $(this);

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FUNDAY 音樂盒 - 音樂內容</title>
+  <title>FunMusic - 音樂內容</title>
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
   <meta name="description" content="" />
   <meta name="keywords" content="" />
@@ -73,19 +73,42 @@
 
 <body class="video_page">
   <div class="all_wrap" id="app" v-cloak>
+     <!-- full screen  -->
+     <div
+     id="fullscreen"
+     onclick="toggleFullScreen(document.documentElement)"
+ >
+     <img
+         class="full_open"
+         src="./images/web_icon/full_open.svg"
+         alt=""
+     />
+     <img
+         class="full_close none"
+         src="./images/web_icon/full_close.svg"
+         alt=""
+     />
+ </div>
     <!--header-->
     <div id="header">
       <a id="logo" href="./"><span class="img"><img src="images/web_icon/funMusic.svg" alt="FUNDAY"></span><span class="txt"></span></a>
       <!--這裏的連結請到myjs.js裏去調整-->
       <div id="login_blk">
-        <div class="gift"><a href=""><img src="./images/web_icon/gift.svg" alt="">送禮卷</a></div>
+        <div class="gift"><a href="./landing.html"><img src="./images/web_icon/gift.svg" alt="">送好禮</a></div>
         <div class="myFav" @click="toMyFav"><a href="#"><img src="./images/web_icon/myFavBtn.svg" alt=""><span class="fav_rwd">我的收藏</span></a></div>
-        <div class="teacherBtn" @click="fnTutor" v-if="songInfo.tutor_url" :class="{teacherOpen:tutor }">解說</div>
+        <div class="teacherBtn" @click="fnTutor" v-if="tutorExist" :class="{teacherOpen:tutor }">解說</div>
         
         <div v-show="!recMode" class="singBtn" @click="choose(0)">歡唱</div>
         <div id="join_button">
           <div class="join_mobile"  data-toggle="modal" data-target="#myModal01"><img src="./images/web_icon/login.svg" alt=""></div>
           <a href="#" data-toggle="modal" data-target="#myModal01">免費加入</a>
+        </div>
+        <div  v-show="recMode" class="header_heart">
+            <span  @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
+            </span>
+        </div>
+        <div  v-show="recMode" class="header_share" @click="share">
+          <img src="./images/web_icon/share.svg" alt="">
         </div>
         <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
         <!-- <div id="menu">
@@ -97,17 +120,18 @@
     </div>
 
     <!--main-body-->
-    <div id="main-body">
+    <div id="main-body" style="padding-top:50px">
       <div id="video_frame">
         <!--這邊是影音部份-->
         <div id="video_frame_top">
           <div id="video_playing">
+            <div class="video_blur"></div>
 			      <div class="countDown_wrapper none"></div>
             <div class="countDown none">
               <img class="countDownImg" src="" alt="" />
             </div>
             <div class="hint">{{hint}}</div>
-            <div id="player_wrap" :class="{disabled:tutor}">
+            <div id="player_wrap" :class="{disabled:tutorMb}">
         <!-- youtube撥放器 -->
               <iframe type="text/html" 
                 :src="ytUrl" 
@@ -120,15 +144,17 @@
               <!-- youtube撥放器 -->
             </div>
             <div class="teacher_video_mobile"> 
-                      <div id="player_wrap_teacher_mobile"  v-show="tutor == true">
+                      <div id="player_wrap_teacher_mobile"  v-show="tutorMb == true">
                           <iframe
                           type="text/html"
                           :src="ytTutor_url"
                           width="100%"
                           frameborder="0"
-                          allow="autoplay; encrypted-media"
+                          allow="autoplay;encrypted-media"
                           id="teacher_player2"
-                          enablejsapi="1">
+                          autoplay="0"
+                          enablejsapi="1"
+                          allowfullscreen>
                         </iframe>
                       </div>
             </div>
@@ -253,21 +279,25 @@
                 </div>
                 <div class="middle">
                   <!-- 播放方式 1:循環 2:單曲 3:隨機, -->
-                <div class="cycle_desktop">
+                <div class="cycle_desktop" v-show="!tutorMb">
                   <span class="cut03" @click="fnPlayMethods(1)" v-show="playMethods==1"><img src="images/web_icon/tool_bar_cut_b02.svg"></span>
                   <span class="cut03" @click="fnPlayMethods(2)" v-show="playMethods==2"><img src="images/web_icon/tool_bar_cut_a01_open.svg"></span>
                   <span class="cut01" @click="fnPlayMethods(3)" v-show="playMethods==3"><img src="images/web_icon/tool_bar_cut_b01.svg"></span>
                 </div>
                 <div class="play_desktop">
                   <span class="prev" @click="fnGoPrev"><img src="images/web_icon/play_bar_prev.svg"></span> 
-                  <span class="Play" >
+                  <span class="Play" v-show="!tutorMb">
                   <img src="./images/web_icon/Play.svg" alt="play" v-if="playstate==0"  @click="fnPlay(1)" id="play_btn" v-cloak>
                   <img src="./images/web_icon/Pause.svg" alt="pause" v-if="playstate==1"  @click="fnPlay(0)" id="play_btn" v-cloak>
+                  </span>
+                  <span class="Play" v-show="tutorMb">
+                    <img src="./images/web_icon/Play.svg" alt="play" v-if="tutorstate==0"  @click="tutorPlay(1)" id="play_btn" v-cloak>
+                    <img src="./images/web_icon/Pause.svg" alt="pause" v-if="tutorstate==1"  @click="tutorPlay(0)" id="play_btn" v-cloak>
                   </span>
                   <span class="next" @click="fnGoNext"><img src="images/web_icon/play_bar_next.svg"></span>
                 </div>
                   <!-- 單句模式 -->
-                <div class="single_desktop">
+                <div class="single_desktop" v-show="!tutorMb">
                   <span class="cut01" @click="fnPlayMethods(4)" v-if="!singleMode"><img src="images/web_icon/tool_bar_cut_a02.svg"></span>
                   <span class="cut01" @click="fnPlayMethods(5)"  v-else><img src="images/web_icon/tool_bar_cut_a02_open.svg"></span>
                 </div> 
@@ -275,8 +305,8 @@
                 <div class="right">
                   <!-- 字幕狀態 0:關閉 1:英文 2:中文 3:中英, -->
                   <!-- <div class="singBtn" @click="startRecord"><span class="sing_rwd">開始</span> 歡唱</div> -->
-                  <div class="favbtn"> 
-                    <span @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
+                  <div class="favbtn" @click="fnAddToCollectionTop($event)" :data-videoId="songInfo.indx"> 
+                    <span  @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
                     </span>
                     收藏
                   </div>
@@ -303,7 +333,7 @@
               </div>
             </div>
             <div class="goRec" @click="startRecord" v-if="!recMode"><img src="./images/web_icon/goRec.svg" alt=""><p>開始歡唱</p></div>
-            <div class="teacherBtn_mobile" @click="fnTutor" v-if="songInfo.tutor_url">
+            <div class="teacherBtn_mobile" @click="fnTutor" v-if="tutorExist">
               <img  :src="tutor==true?'images/web_icon/teacher.svg':'images/web_icon/teacher_close.svg'" alt="">
               <p :style="tutor==true? 'opacity:1':'opacity:0.5'">老師解說</p>
             </div>
@@ -311,6 +341,11 @@
               <img src="./images/web_icon/back.svg" alt="">
               <p>返回</p>
             </div>
+            <div class="shareBtn_rec" v-if="recMode" @click="share">
+              <img src="./images/web_icon/share_rec.svg" alt="">
+              <p>分享</p>
+            </div>
+            
             <div id="audioBox" class="none"></div>
             <!-- 分享彈窗 -->
             <div class="share_blk none">
@@ -391,14 +426,15 @@
                       </div>
                     </div> -->
                   </div>
+                  <div class="noWord" v-show="captions==0">無字幕模式</div>
                   <ul class="subtitle_items" :class="{'off': tutor==true?'':'off'}">
-                    <div class="noWord" v-show="captions==0">無字幕模式</div>
                     <li v-for="(item,index) in subTitle" 
                       :data-seek="parseFloat(Math.round(item.time.split(':')[0]))*60 + parseFloat(parseFloat(item.time.split(':')[1]).toFixed(2))"  
                       :data-start="startTimeArr[index]" 
-                      :data-count="index" 
-                      :data-tutorseek="item.Tutortime?parseFloat(Math.round(item.Tutortime.split(':')[0]))*60 + parseFloat(parseFloat(item.Tutortime.split(':')[1]).toFixed(2)):''"
+                      :data-count="index"
+                      :data-tutorseek="tutorEndTime[index]"
                       :class="{'active':nowPlaying == index}"
+                      :id="'sIndex' + index"
                       @click="fnSeekTo"
                       >
                       <!-- <div class="play-single-line" >
@@ -409,40 +445,42 @@
                         <div class="tw" v-show="captions== 1 || captions == 3">{{item.ch_content}}</div>
                       
                     </li>
+                    <!-- 字典功能 -->
+                    <div class="DrWord" v-show="DrWordModal" v-cloak>
+                      <div class="close" @click="fnCloseDrWordModal"><img src="images/web_icon/top_bar_close.svg"></div>
+                      <div class="Dr_title">
+                        <div class="word">
+                          <h3><!--塞入查詢的字--></h3>
+                          <h4>{{baseForm[1]}}{{baseForm[2]}}</h4>
+                          <h5>{{baseForm[3]}}</h5>
+                          <!-- <span v-for="(item,index) in keyWordResult.baseform">{{item}}</span> -->
+                        </div>
+                        <div class="collect">
+                          <div class="icon">
+                            <i class="fas fa-heart" @click="deleteWord($event)" style="display: none;"><!--取消收藏--></i>
+                            <i class="far fa-heart" @click="fnWordsCollect"><!--收藏--></i></i>
+                          </div>
+                          <p class="fas" @click="deleteWord($event)" style="display: none;font-weight: 400;">收藏</p>
+                          <p class="far" @click="fnWordsCollect">收藏</p>
+                        </div>
+                      </div>
+                      <div class="Dr_content">
+                        <div class="inner" >
+                          <p v-if="NoWord"  v-cloak>無資料</p>
+                          <div  v-for="(item,index) in keyWordResult" v-cloak>
+                            <p class="divider" v-if="index !=='baseform'">{{item.attr}}</p>
+                            <ul  v-if="index !=='baseform'">
+                              <li v-for="(item2,index) in item.text">
+                                <span v-for="(item3,index) in item2">{{item3}}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- 字典功能 -->
                   </ul>
 
-                  <!-- 字典功能 -->
-                  <div class="DrWord" :class="{'active': DrWordModal == true}">
-                    <div class="close" @click="fnCloseDrWordModal"><img src="images/web_icon/top_bar_close.svg"></div>
-                    <div class="Dr_title">
-                      <div class="word">
-                        <h3><!--塞入查詢的字--></h3>
-                        <h4>{{baseForm[1]}}{{baseForm[2]}}</h4>
-                        <h5>{{baseForm[3]}}</h5>
-                        <!-- <span v-for="(item,index) in keyWordResult.baseform">{{item}}</span> -->
-                      </div>
-                      <div class="collect">
-                        <div class="icon">
-                          <i class="fas fa-heart" @click="deleteWord($event)" style="display: none;"><!--取消收藏--></i>
-                          <i class="far fa-heart" @click="fnWordsCollect"><!--收藏--></i></i>
-                        </div>
-                        <p>收藏</p>
-                      </div>
-                    </div>
-                    <div class="Dr_content">
-                      <div class="inner" >
-                        <div  v-for="(item,index) in keyWordResult">
-                          <p class="divider" v-if="index !=='baseform'">{{item.attr}}</p>
-                          <ul  v-if="index !=='baseform'">
-                            <li v-for="(item2,index) in item.text">
-                              <span v-for="(item3,index) in item2">{{item3}}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- 字典功能 -->
                 </div>
                 <div id="tab2" class="tab_content" v-show="nowTab == 1">
                   <!--頁籤2的內容-->
@@ -479,8 +517,12 @@
                     onclick="toVideo(this)"><img :src="item.Pic" class="img">
                     </div>
                     <div class="tool_bar video1200">
-                      <div class="subtitles"><a href="#">中英字幕</a></div>
-                      <div class="teacher"  v-if="item.Tutor==1"><a href="#">老師解說</a></div>
+                      <div class="subtitles"><a href="#" :id="item.Id"
+                        :name="categoryId"
+                        onclick="toVideo(this)">中英字幕</a></div>
+                      <div class="teacher"  v-if="item.Tutor==1"><a href="#":id="item.Id"
+                        :name="categoryId"
+                        onclick="toVideo(this)">老師解說</a></div>
                       <div class="blank"></div>
                       <div class="number video_icon"><img  class="icon"src="images/web_icon/video_icon.svg" >
                         <span class="digi">{{item.Recordings}}</span> 次
@@ -490,7 +532,9 @@
                       </div>
                       <div class="heart" @click="fnAddToCollection($event)" :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
                     </div>
-                    <div class="title video1200">
+                    <div class="title video1200"  :id="item.Id"
+                    :name="categoryId"
+                    onclick="toVideo(this)">
                       <span class="song_title">{{item.Title}}</span>
                       <span class="singer"><a href="#">{{item.Singer}}</a></span></div>
                   </div>
@@ -524,7 +568,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <div class="login_way mail"><a href="#"  data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal02" class="use_mail"  >使用電子信箱加入</a></div>
@@ -547,7 +591,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -592,7 +636,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">簡訊驗證</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -625,7 +669,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">修改手機號碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -726,17 +770,17 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">使用Facebook登入</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
-                <input name="account_mobile" type="password"  placeholder="手機(密碼)" >
+                <input  id="fb_account_mobile" name="account_mobile" type="password"  placeholder="手機(密碼)" >
                 <br/>
                 請填寫正確手機號碼以取得簡訊驗證碼，完成加入</div>
               <div class="row">
                 <div class="input col-xs-8">
-                  <input name="account_name" type="text" placeholder="中文姓名">
+                  <input  id="fb_account_name" name="account_name" type="text" placeholder="中文姓名">
                 </div>
                 <div class="radio col-xs-4">
                   <label>
@@ -769,7 +813,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
@@ -807,7 +851,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
           <div class="slogin">忘記密碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">

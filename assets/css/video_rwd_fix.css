@@ -11,18 +11,20 @@
 }
 #player_wrap iframe,
 #player_wrap_index iframe {
-    /* position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; */
     position: absolute;
-    top: 0;
-    left: 0;
-    /* transform: translateY(-50%); */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     z-index: 0;
+}
+#player_wrap_index {
+    overflow: hidden;
+}
+#player_wrap_index iframe {
+    width: 190%;
+    height: 150%;
 }
 #player_wrap_teacher {
     position: relative;
@@ -78,9 +80,10 @@
 #uploadProgress {
     color: #fff;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: -75%;
+    z-index: 3;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
     background-color: #fe7523;
     padding: 5px 10px;
     text-align: center;
@@ -90,7 +93,7 @@
     /* border: 1px solid red; */
     position: absolute;
     z-index: 2;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(25, 24, 27, 0.8);
@@ -104,8 +107,23 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    white-space: nowrap;
+}
+@media (max-width: 1530px) {
+    #player_wrap {
+        height: 460px;
+    }
 }
 @media (max-width: 991px) {
+    #uploadProgress {
+        top: -100px;
+    }
+    #player_wrap_index iframe {
+        height: 120%;
+    }
+    .hint {
+        top: 45%;
+    }
     .countDown img {
         /* width: 100%; */
     }
@@ -117,8 +135,15 @@
     #player_wrap iframe {
         height: 100%;
     }
+    .video_blur {
+        display: none;
+    }
 }
 @media (max-width: 480px) {
+    #player_wrap_index iframe {
+        height: 120%;
+        width: 150%;
+    }
     #player_wrap,
     #player_wrap_teacher_mobile,
     #player_wrap_index {
@@ -170,15 +195,29 @@
 }
 #fullscreen {
     position: fixed;
-    bottom: 20px;
+    bottom: 80px;
     right: 20px;
-    z-index: 999;
+    z-index: 997;
     cursor: pointer;
 }
 .teacher_video_mobile {
     display: none;
 }
-@media (max-width: 991px) {
+
+.video_blur {
+    position: absolute;
+    top: 0;
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 30%;
+    z-index: 1;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.8) 0.46%,
+        rgba(0, 0, 0, 0) 50.48%
+    );
+}
+@media (max-width: 1200px) {
     #fullscreen {
         display: none;
     }
@@ -196,3 +235,6 @@
 .tw {
     font-size: 14px;
 }
+/* .video_main_body {
+    padding-top: 50px !important;
+} */

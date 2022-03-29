@@ -29,6 +29,7 @@
 .single_desktop {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 .cycle_desktop span,
 .single_desktop span {
@@ -43,6 +44,7 @@
 .play_desktop span {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 .play_desktop .Play {
     margin: 0 25px;
@@ -82,6 +84,23 @@
     font-weight: 500;
     font-size: 14px;
     color: #fff;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.goRec img {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+.teacherBtn_mobile img {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 64px;
+    margin-bottom: 4px;
 }
 .backBtn {
     cursor: pointer;
@@ -94,13 +113,41 @@
     font-size: 14px;
     color: #fff;
     text-align: center;
+    z-index: 2;
+}
+.shareBtn_rec {
+    cursor: pointer;
+    position: absolute;
+    top: 33px;
+    right: 33px;
+    font-family: Noto Sans TC;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+    z-index: 2;
+}
+.backBtn img,
+.shareBtn_rec img {
+    width: 64px;
+    height: 64px;
+}
+.backBtn img {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
 }
 .teacherBtn_mobile {
     top: 134px;
 }
 .goRec p,
 .teacherBtn_mobile p,
-.backBtn p {
+.backBtn p,
+.shareBtn_rec p {
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.3);
 }
@@ -110,6 +157,9 @@
     display: none;
 }
 @media (max-width: 991px) {
+    .shareBtn_rec {
+        display: none;
+    }
     #video_playing .video_bar .tool_bar .prev {
         display: none;
     }
@@ -164,8 +214,13 @@
         transform: translate(-50%);
     }
     .backBtn {
+        /* width: 40px; */
         top: 15px;
         left: 15px;
+    }
+    .backBtn img {
+        width: 40px;
+        height: 40px;
     }
     .backBtn p {
         display: none;
@@ -190,7 +245,7 @@
     position: absolute;
     z-index: 999;
     background: #1e1e1e;
-    width: 800px;
+    width: 680px;
     height: 276px;
     top: 50%;
     left: 50%;
@@ -220,7 +275,7 @@
     display: flex;
     justify-content: space-around;
     /* padding: 0px 100px; */
-    width: 600px;
+    width: 480px;
     margin: 0 auto;
 }
 .share_blk .share_center .share_wrapper div {

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FUNDAY 音樂盒 - 我的收藏</title>
+<title>FunMusic - 我的收藏</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -18,6 +18,10 @@
 <link href="assets/css/bootstrap.css" rel="stylesheet">
 <!-- Main style sheet -->
 <link href="assets/css/style.css?1230" rel="stylesheet">
+<!-- Podcast -->
+<link rel="stylesheet" href="assets/css/podcast.css">
+<!-- Notification -->
+<link rel="stylesheet" href="assets/css/notification.css" />
 
 <!-- Google Fonts -->
 <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
@@ -53,41 +57,191 @@
 
 </head>
 <body class="category_page collect_page">
-<div class="all_wrap" id="app" v-cloak> 
+<div class="all_wrap" id="app" v-cloak  > 
   <!--header-->
   <div id="header">
-    <a id="logo" href="./"><span class="img"><img src="images/web_icon/LOGO.svg" alt="FUNDAY"></span><span class="txt">音樂盒</span></a>
-    <div id="join_button"><a href="#"  data-toggle="modal" data-target="#myModal01" >免費加入</a></div>
-    <div id="menu"> <span class="my_collect"><a href="video_collect.html">我的收藏</a></span> <span class="logout"><a href="#" id="logout"> 登出</a></span></div>
-  </div>
+    <a id="logo" href="./" class="collect_header"
+        ><span class="img"
+            ><img
+                src="images/web_icon/funMusic.svg"
+                alt="FUNDAY" /></span
+    ></a>
+    <div id="login_blk" class="collect_header">
+        <div class="gift_index">
+            <a href="./landing.html" style="margin-right: 28px;"
+                ><img
+                    src="./images/web_icon/gift.svg"
+                    alt=""
+                />送好禮</a
+            >
+        </div>
+        <div class="myFav_index" @click="toMyFav">
+          <a href="#"
+              ><img
+                  src="./images/web_icon/myFavBtn.svg"
+                  alt=""
+              /><span class="fav_rwd">我的收藏</span></a
+          >
+      </div>
+        <div id="join_button">
+            <div
+                class="join_mobile"
+                data-toggle="modal"
+                data-target="#myModal01"
+            >
+                <img src="./images/web_icon/login.svg" alt="" />
+            </div>
+            <a href="#" data-toggle="modal" data-target="#myModal01"
+                >免費加入</a
+            >
+        </div>
+        <div id="menu">
+            <div class="logout_mobile" id="logout">
+                <img src="./images/web_icon/logout.svg" alt="" />
+            </div>
+            <span class="logout"
+                ><a href="#" id="logout"> </a
+            ></span>
+        </div>
+    </div>
+    <img class="returnBtn" @click="goBack" src="./images/web_icon/return.svg" alt="">
+    <h1 class="header_title">我的收藏</h1>
+</div>
+  <div class="notification_wrapper_mobile">
+    <div
+        class="notification_mobile animate__animated"
+        :class="{animate__fadeIn:notiChange}"
+    >
+        <img
+            v-if="notiPic == ''"
+            src="./images/web_icon/head_default.svg"
+            alt=""
+        />
+        <img v-else :src="notiPic" alt="" />
+        <span
+            v-cloak
+            :class="[{male:notiSex == 1},{female:notiSex == 0}]"
+            >{{notiName}}</span
+        >
+        <div class="wrapper" v-cloak>
+            <p class="width">{{notiStatus}}</p>
+            <p class="first">{{notiStatus}}&nbsp;&nbsp;&nbsp;</p>
+            <p class="second">{{notiStatus}}&nbsp;&nbsp;&nbsp;</p>
+        </div>
+    </div>
+</div>
   <!--main-body-->
   <div id="main-body">
     <div id="sidebar"><!--這邊是側邊條-->
       <div class="navbar_button"></div>
       <ul class="channel_list">
         <li v-for="(item,index) in sidebar"><a :href="`./video_category.html?${item.CategoryId}`">{{item.Category}}</a></li>
+        <div class="podcast" @click="podcast = !podcast">
+          <img src="./images/web_icon/podcast.svg" alt="" />
+          <span>前往Podcast收聽</span>
+      </div>
+      <div class="radio" @click="fnRadio">
+          <img
+              class="radio_bg"
+              src="./images/web_icon/radio.svg"
+              alt=""
+          />
+          <img
+              class="radio_gif"
+              src="./images/web_icon/radio.gif"
+              alt=""
+              v-show="radio"
+          />
+          <img
+              class="radio_play"
+              src="./images/web_icon/radio_play.svg"
+              alt=""
+              v-if="!radio"
+          />
+          <img
+              class="radio_play"
+              src="./images/web_icon/radio_pause.svg"
+              alt=""
+              v-if="radio"
+          />
+
+          <audio id="Fun_audio" src=""></audio>
+      </div>
         <div class="recommend"> <a href="#" id="open_recommend"><img src="images/web_icon/recommend_icon.svg">我要推薦</a> </div>
       </ul>
+      <div class="notification_wrapper">
+        <transition-group
+            appear
+            tag="ul"
+            class="notification"
+            name="fade"
+        >
+            <li
+                v-cloak
+                v-for="(item,index) in notifications"
+                class="animate__animated animate__fadeInLeft"
+                v-bind:key="item.Cdate"
+            >
+                <div>
+                    <img
+                        v-if="item.Pic == ''"
+                        src="./images/web_icon/head_default.svg"
+                        alt=""
+                    />
+                    <img v-else :src="item.Pic" alt="" />
+                </div>
+                <div>
+                    <span
+                        :class="[{male:item.Sex == 1},{female:item.Sex == 0}]"
+                        >{{item.Nickname}}</span
+                    >
+                    <div class="wrapper">
+                        <p class="width">{{item.Status}}</p>
+                        <p class="first">
+                            {{item.Status}}&nbsp;&nbsp;&nbsp;
+                        </p>
+                        <p class="second">
+                            {{item.Status}}&nbsp;&nbsp;&nbsp;
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </transition-group>
+    </div>
     </div>
     <div id="video_frame"><!--這邊是影音部份-->
-     
       <div  id="video_frame_bottom" >
         <div class="category_videos only_pc"><!--因為pc及及手機版實在差太多無法RWD，因此切開，這裏放pc版如下-->
-          <div class="video_category ca01 my_Dubbing">
+          <div class="video_category ca01 my_Dubbing  pd_zero_collect" >
             <div class="ga_title">我的歡唱</div>
             <div class="video_items" >
-              <div class="items_list" v-if="dataMySong.length">
-                <div class="item" v-for="(item,index) in dataMySong">
-                  <div class="video_img"><a :href="`video.html?categoryId=${item.categoryId}&videoId=${item.Id}`"><img :src="item.Pic" class="img"></a></div>
-                    <div class="tool_bar">
-                      <div class="subtitles"><a href="#">中文字幕</a></div>
-                      <div class="teacher" v-if="item.Tutor==1"><a href="#">老師解說</a></div>
-                      <div class="blank"></div>
-                      <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
-                      <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
-                      <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
-                    </div>
-                    <div class="title"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
+              <div class="items_list_collect" v-if="dataMySong.length">
+                <div class="collect_item" v-for="(item,index) in dataMySong">
+                  <div class="collect_wrapper">
+                    <div class="video_img"  
+                    :id="item.Id"
+                    :name="item.CategoryId"
+                    onclick="toVideo(this)"><a ><img :src="item.Pic" class="img"></a><img class="singing_icon" src="./images/web_icon/singing.svg" alt=""></div>
+                      <div class="info">
+                        <div class="tool_bar">
+                          <div class="subtitles"  :id="item.Id"
+                          :name="item.CategoryId"
+                          onclick="toVideo(this)"><a href="#">中文字幕</a></div>
+                          <div class="teacher" v-if="item.Tutor==1"  :id="item.Id"
+                          :name="item.CategoryId"
+                          onclick="toVideo(this)"><a href="#">老師解說</a></div>
+                          <div class="blank"></div>
+                          <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
+                          <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
+                          <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                        </div>
+                        <div class="title"  :id="item.Id"
+                        :name="item.CategoryId"
+                        onclick="toVideo(this)"><span class="song_title">{{item.Title}} - </span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
+                    </div>    
+                    
+                  </div>
+                  
                 </div>
               </div>
               <div v-else>
@@ -95,30 +249,44 @@
               </div>
             </div>
           </div>
-          <div class="video_category ca02 my_favourite" >
+          <div class="video_category ca02 my_favourite  pd_zero_collect" :class="{item_less:favLess}">
             <div class="ga_title">我的最愛</div>
             <div class="video_items">
-              <div class="items_list"  v-if="dataFavorite.length">
-                <div class="item" v-for="(item,index) in dataFavorite">
-                  <div class="video_img"><a :href="`video.html?categoryId=${item.categoryId}&videoId=${item.Id}`"><img :src="item.Pic" class="img"></a></div>
-                    <div class="tool_bar">
-                      <div class="subtitles"><a href="#">中文字幕</a></div>
-                      <div class="teacher" v-if="item.Tutor==1"><a href="#">老師解說</a></div>
-                      <div class="blank"></div>
-                      <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
-                      <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
-                      <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+              <div class="items_list_collect"  v-if="dataFavorite.length">
+                <div class="collect_item" v-for="(item,index) in dataFavorite">
+                  <div class="collect_wrapper">
+
+                    <div class="video_img"  :id="item.Id"
+                    :name="item.CategoryId"
+                    onclick="toVideo(this)"><a><img :src="item.Pic" class="img"></a></div>
+                    <div class="info">
+                      <div class="tool_bar">
+                          <div class="subtitles"  :id="item.Id"
+                          :name="item.CategoryId"
+                          onclick="toVideo(this)"><a href="#">中文字幕</a></div>
+                          <div class="teacher" v-if="item.Tutor==1"  :id="item.Id"
+                          :name="item.CategoryId"
+                          onclick="toVideo(this)"><a href="#">老師解說</a></div>
+                          <div class="blank"></div>
+                          <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
+                          <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
+                          <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                        </div>
+                        <div class="title"  :id="item.Id"
+                        :name="item.CategoryId"
+                        onclick="toVideo(this)"><span class="song_title">{{item.Title}} - </span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
                     </div>
-                    <div class="title"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
+                  </div>
+
                 </div>
               </div>
-              <div v-else>
+              <div v-else  class="item_less">
                 <h3>目前無資料</h3>
               </div>
             </div>
           </div>
         </div>
-        <div class="category_videos only_mobile"> <!--因為pc及及手機版實在差太多無法RWD，因此切開另外放手機版如下-->
+        <div class="category_videos only_mobile" style="height: 100%"> <!--因為pc及及手機版實在差太多無法RWD，因此切開另外放手機版如下-->
           <div class="switch_tab">
             <ul class="tabs">
               <li class="ga_title" ><a href="#tab1">我的歡唱</a></li>
@@ -126,55 +294,75 @@
               <li class="ga_title"><a href="#tab2">我的最愛</a></li>
               <!--頁籤2-->
             </ul>
-            <div class="tab_container">
+            <div class="">
               <div id="tab1" class="tab_content"><!--頁籤1的內容-->
-                <div class="video_category ca01 my_Dubbing">
+                <div class="video_category ca01 my_Dubbing pd_zero_collect":class="{item_less_mb:songLessMb}" >
                   <div class="video_items">
-                    <div class="items_list"  v-if="dataMySong.length">
-                      <div class="item" v-for="(item,index) in dataMySong">
-                        <div class="video_img"
-                        :id="item.Id"
-                        :name="item.categoryId"
-                        onclick="toVideo(this)"><img :src="item.Pic" class="img"></div>
-                          <div class="tool_bar">
-                            <div class="subtitles"><a href="#">中文字幕</a></div>
-                            <div class="teacher" v-if="item.Tutor==1"><a href="#">老師解說</a></div>
-                            <div class="blank"></div>
-                            <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
-                            <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
-                            <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                    <div class="items_list_collect"  v-if="dataMySong.length">
+                      <div class="collect_item" v-for="(item,index) in dataMySong">
+                        <div class="collect_wrapper">
+                          <div class="video_img"
+                          :id="item.Id"
+                          :name="item.CategoryId"
+                          onclick="toVideo(this)"><img :src="item.Pic" class="img"><img class="singing_icon" src="./images/web_icon/singing.svg" alt=""></div>
+                          <div class="info">
+                            <div class="tool_bar">
+                              <div class="subtitles"  :id="item.Id"
+                              :name="item.CategoryId"
+                              onclick="toVideo(this)"><a href="#">中文字幕</a></div>
+                              <div class="teacher"  :id="item.Id"  v-if="item.Tutor==1"
+                              :name="item.CategoryId"
+                              onclick="toVideo(this)"><a href="#">老師解說</a></div>
+                              <div class="blank"></div>
+                              <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
+                              <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
+                              <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                            </div>
+                            <div class="title"  :id="item.Id"
+                            :name="item.CategoryId"
+                            onclick="toVideo(this)"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
                           </div>
-                          <div class="title"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
+                        </div>
                       </div>
                     </div>
-                    <div v-else>
-                      <h3>目前無資料</h3>
+                    <div v-else  class="item_less_mb">
+                      <h3 style="text-align:center">目前無資料</h3>
                     </div>
                   </div>
                 </div>
               </div>
               <div id="tab2" class="tab_content"><!--頁籤2的內容-->
-                <div class="video_category ca02 my_favourite">
+                <div class="video_category ca02 my_favourite  pd_zero_collect"  :class="{item_less_mb:favLessMb}">
                   <div class="video_items">
-                    <div class="items_list" v-if="dataFavorite.length">
-                      <div class="item" v-for="(item,index) in dataFavorite">
-                        <div class="video_img"
-                        :id="item.Id"
-                        :name="item.categoryId"
-                        onclick="toVideo(this)"><img :src="item.Pic" class="img"></div>
-                          <div class="tool_bar">
-                            <div class="subtitles"><a href="#">中文字幕</a></div>
-                            <div class="teacher" v-if="item.Tutor==1"><a href="#">老師解說</a></div>
-                            <div class="blank"></div>
-                            <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
-                            <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
-                            <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                    <div class="items_list_collect" v-if="dataFavorite.length">
+                      <div class="collect_item" v-for="(item,index) in dataFavorite">
+                        <div class="collect_wrapper">
+                          <div class="video_img"
+                          :id="item.Id"
+                    :name="item.CategoryId"
+                    onclick="toVideo(this)"><img :src="item.Pic" class="img"></div>
+                          <div class="info">
+                            <div class="tool_bar">
+                              <div class="subtitles"><a href="#"  :id="item.Id"
+                                :name="item.CategoryId"
+                                onclick="toVideo(this)">中文字幕</a></div>
+                              <div class="teacher" v-if="item.Tutor==1"><a href="#"  :id="item.Id"
+                                :name="item.CategoryId"
+                                onclick="toVideo(this)">老師解說</a></div>
+                              <div class="blank"></div>
+                              <div class="number video_icon"><img src="images/web_icon/video_icon.svg" class="icon" ><span class="digi">{{item.Recordings}}</span> 次</div>
+                              <div class="number view_icon"><img src="images/web_icon/view_icon.svg" class="icon" ><span class="digi">{{item.Clicks}}</span> 次</div>
+                              <div class="heart"  @click="fnAddToCollection($event)"  :data-videoId="item.Id" :class="{favorites : item.Bookmark==1 }"></div>
+                            </div>
+                            <div class="title"  :id="item.Id"
+                            :name="item.CategoryId"
+                            onclick="toVideo(this)"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
                           </div>
-                          <div class="title"><span class="song_title">{{item.Title}}</span><span class="singer"><a href="#">{{item.Singer}}</a></span></div>
+                        </div>
                       </div>
                     </div>
-                    <div v-else>
-                      <h3>目前無資料</h3>
+                    <div v-else  class="item_less_mb">
+                      <h3  style="text-align:center">目前無資料</h3>
                     </div>
                   </div>
                 </div>
@@ -185,7 +373,38 @@
       </div>
     </div>
   </div>
+  <div class="podcast_pop" v-show="podcast">
+    <div class="pop_close" @click="podcast = !podcast">
+        <img src="./images/web_icon/share_close.svg" alt="" />
+    </div>
+    <h1>前往收聽 Podcast</h1>
+    <h2>
+        二十一世紀的生活壓力大，事業、家庭兩頭燒，在這個亂世之中，該如何找到身心的平衡與健康呢？
+    </h2>
+    <div class="link_blk">
+        <a
+            target="_blank"
+            href="https://podcasts.apple.com/ee/podcast/funday-%E6%96%B0%E7%94%9F%E6%B4%BB/id1577312960"
+        >
+            <img
+                src="./images/web_icon/applePodcast.svg"
+                alt=""
+            />ApplePodcast
+        </a>
+        <a
+            target="_blank"
+            href="https://player.soundon.fm/p/c7cf00a8-6987-4144-bc86-ca558d03bab2"
+        >
+            <img
+                src="./images/web_icon/soundon.svg"
+                alt=""
+            />SoundOn
+        </a>
+    </div>
+  </div>
 </div>
+<!-- Podcast -->
+
 <!--footer-->
 <div id="footer">
   <div class="copyright">© 2021 Brainstorm Digital Communications Corp. All rights reserved.Privacy Policy</div>
@@ -203,7 +422,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <div class="login_way mail"><a href="#"  data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal02" class="use_mail"  >使用電子信箱加入</a></div>
@@ -226,7 +445,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -271,7 +490,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">簡訊驗證</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -304,7 +523,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">修改手機號碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -405,17 +624,17 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
           <div class="slogin">使用Facebook登入</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
-                <input name="account_mobile" type="password"  placeholder="手機(密碼)" >
+                <input  id="fb_account_mobile" name="account_mobile" type="password"  placeholder="手機(密碼)" >
                 <br/>
                 請填寫正確手機號碼以取得簡訊驗證碼，完成加入</div>
               <div class="row">
                 <div class="input col-xs-8">
-                  <input name="account_name" type="text" placeholder="中文姓名">
+                  <input  id="fb_account_name" name="account_name" type="text" placeholder="中文姓名">
                 </div>
                 <div class="radio col-xs-4">
                   <label>
@@ -448,7 +667,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
@@ -486,7 +705,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/LOGO.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
           <div class="slogin">忘記密碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -561,7 +780,19 @@ var app = new Vue({
       dataMySong:[],
       dataFavorite:[],
       member_id:'',
-      customer_id:''
+      customer_id:'',
+      radio: false,
+      podcast:false,
+      notifications: "", //推波
+        notiStatus: "", //手機板推播訊息
+        notiSex: "", //手機版推播性別
+        notiName: "", //手機版推播姓名
+        notiPic: "", //手機版推播頭像
+        notiIndex: -1, //手機版推播則數
+        notiChange: false, //手機版推播動畫開關
+        songLessMb:false,
+        favLess:false,
+        favLessMb:false,
     },
     computed:{
     
@@ -597,10 +828,14 @@ var app = new Vue({
         //我的歡唱
         axios.get(`https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9997&member_id=${this.member_id}`)
         .then( (res) => {
+          console.log(res)
           vm.CategoryTitleMySong = Object.keys(res.data)[0];
           //沒有值就push到data內
           if(res.data[vm.CategoryTitleMySong][0].Id=='') return;
             vm.dataMySong.push(...res.data[vm.CategoryTitleMySong]); 
+            if(vm.dataMySong.length < 4){
+              vm.songLessMb = true;
+            }
         })
         .catch( (error) => console.log(error));
 
@@ -611,12 +846,97 @@ var app = new Vue({
           vm.CategoryTitleFavorite = Object.keys(res.data)[0];
           if(res.data[vm.CategoryTitleFavorite][0].Id=='') return;
             vm.dataFavorite.push(...res.data[vm.CategoryTitleFavorite]); 
-            console.log(res.data[vm.CategoryTitleFavorite])
+            console.log(vm.dataFavorite.length)
+            if(vm.dataFavorite.length < 9){
+              vm.favLess = true;
+            }
+            if(vm.dataFavorite.length < 4){
+              vm.favLessMb = true;
+            }
         })
         .catch( (error) => console.log(error));
-      }
-    },
+      },
+      //播放radio
+      fnRadio() {
+            const audio = document.getElementById("Fun_audio");
+            if (this.radio) {
+                this.radio = false;
+                audio.pause();
+            } else {
+                this.radio = true;
+                audio.play();
+            }
+        },
+      //推播
+      notification() {
+            "use strict";
+            function getNotification() {
+                axios
+                    .get("https://funday.asia/api/musicboxweb/RealTimeList.asp")
+                    .then((response) => {
+                        // console.log(response.data.reverse());
+                        if (response.data.length !== 0) {
+                            const length = response.data.length;
+                            if (length < 7) {
+                                app.notifications = response.data.reverse();
+                            } else {
+                                app.notifications = response.data
+                                    .reverse()
+                                    .slice(0, 9);
+                            }
+                            console.log(length);
+                            if (app.notiIndex < length - 1) {
+                                app.notiIndex++;
+
+                                app.notiName =
+                                    app.notifications[app.notiIndex].Nickname;
+                                app.notiStatus =
+                                    app.notifications[app.notiIndex].Status;
+                                app.notiSex =
+                                    app.notifications[app.notiIndex].Sex;
+                                app.notiPic =
+                                    app.notifications[app.notiIndex].Pic;
+                                app.notiChange = true;
+                            } else {
+                                app.notiIndex = 0;
+                                app.notiName =
+                                    app.notifications[app.notiIndex].Nickname;
+                                app.notiStatus =
+                                    app.notifications[app.notiIndex].Status;
+                                app.notiSex =
+                                    app.notifications[app.notiIndex].Sex;
+                                app.notiPic =
+                                    app.notifications[app.notiIndex].Pic;
+
+                                app.notiChange = true;
+                            }
+                        }
+                        setTimeout(() => {
+                            app.notiChange = false;
+                        }, 2000);
+                    })
+                    .catch((error) => console.log(error));
+            }
+            getNotification();
+            setInterval(getNotification, 5000);
+        },
+      //我的收藏
+      toMyFav() {
+              if (!this.member_id) {
+                  // alert("請先登入");
+                  $("#myModal07").modal("show");
+                  return;
+              } else {
+                  location.href = "./video_collect.html";
+              }
+          },
+      //返回上一頁
+      goBack(){
+        window.history.back();
+      },
+        },
     created(){
+      this.notification();
       //取得分類id
       let vm = this;
       let hash = window.location.href;
@@ -633,6 +953,14 @@ var app = new Vue({
       axios.get(`https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${this.member_id}`)
       .then( (res) => {
         vm.sidebar = res.data.Category;
+        for (let i = 0; i < vm.sidebar.length; i++) {
+                        if (vm.sidebar[i].Category == "Folk/Country民歌/鄉村") {
+                            vm.sidebar[i].Category = "Country鄉村";
+                        }
+                        if (vm.sidebar[i].Category == "Rap饒舌樂") {
+                            vm.sidebar[i].Category = "";
+                        }
+                    }
       })
       .catch( (error) => console.log(error));
 
