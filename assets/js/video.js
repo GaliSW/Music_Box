@@ -770,7 +770,7 @@ var app = new Vue({
             console.log(hash);
 
             hash = hash.split("&"); //['categoryId=1','videoId=1050']
-
+            // console.log(hash.length);
             if (hash.length == 1) {
                 vm.videoId = hash[0].split("=")[1];
                 vm.categoryId = 1;
