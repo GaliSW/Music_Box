@@ -24,24 +24,24 @@
 
             if (url.indexOf("?") != -1) {
                 //之後去分割字串把分割後的字串放進陣列中
-                var ary1 = url.split("?");
+                const ary1 = url.split("?");
                 // console.log(ary1);
-                var name = ary1[1].split("&");
-                var adString = name[0].split("=");
+                const name = ary1[1].split("&");
+                const adString = name[0].split("=");
                 //  取得ADid值
-                var ADid = adString[1];
+                const ADid = adString[1];
                 console.log(name[1]);
                 sessionStorage.setItem("ADid", ADid);
 
                 if (name[1] == undefined) {
                     location.href = "index.html";
                 } else {
-                    var pageString = name[1].split("=");
+                    const pageString = name[1].split("=");
                     console.log(pageString);
-                    var cateString = name[2].split("=");
+                    const cateString = name[2].split("=");
                     console.log(cateString);
-                    var vId = pageString[1];
-                    var cateId = cateString[1];
+                    const vId = pageString[1];
+                    const cateId = cateString[1];
                     location.href = `video.html?categoryId=${cateId}&videoId=${vId}`;
                 }
             } else {

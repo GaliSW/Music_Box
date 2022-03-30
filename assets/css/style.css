@@ -1572,10 +1572,10 @@ body.video_page .video_category .video_items .items_list .item {
         /* height: 80vw; */
     }
     body.video_page .switch_tab ul.subtitle_items {
-        height: calc(100vh - 445px) !important;
+        height: calc(100vh - 515px) !important;
     }
     body.video_page .switch_tab ul.voice_items {
-        height: calc(100vh - 445px) !important;
+        height: calc(100vh - 515px) !important;
     }
     body.video_page .switch_tab ul.subtitle_items.off {
         /* height: calc(80vw - 50px); */
@@ -1593,10 +1593,10 @@ body.video_page .video_category .video_items .items_list .item {
         /* height: 40vw; */
     }
     body.video_page .switch_tab ul.subtitle_items {
-        height: calc(100vh - 315px) !important;
+        height: calc(100vh - 355px) !important;
     }
     body.video_page .switch_tab ul.voice_items {
-        height: calc(100vh - 315px) !important;
+        height: calc(100vh - 355px) !important;
     }
     body.video_page .switch_tab ul.subtitle_items.off {
         /* height: calc(50vw - 50px); */

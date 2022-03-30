@@ -89,7 +89,13 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     padding-right: 8px;
     vertical-align: middle;
 }
-
+.tool_bar_audio .buootn.todo_Go .done:before {
+    opacity: 0.6;
+}
+/* .tool_bar_audio .buootn.todo_Go .done {
+    pointer-events: none;
+    cursor: default;
+} */
 .tool_bar_audio .repeat,
 .tool_bar_audio .audio_control {
     font-family: Noto Sans TC;

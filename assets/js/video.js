@@ -771,8 +771,13 @@ var app = new Vue({
 
             hash = hash.split("&"); //['categoryId=1','videoId=1050']
 
-            vm.categoryId = hash[0].split("=")[1];
-            vm.videoId = hash[1].split("=")[1];
+            if (hash.length == 1) {
+                vm.videoId = hash[0].split("=")[1];
+                vm.categoryId = 1;
+            } else {
+                vm.categoryId = hash[0].split("=")[1];
+                vm.videoId = hash[1].split("=")[1];
+            }
             // ===產生分享網址===
             // *FB
             this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${vm.videoId}'))));`;
@@ -781,7 +786,7 @@ var app = new Vue({
             //*twitter
             this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*email
-            this.emailurl = `mailto:?to=&subject=FunMusic&body=https://music.funday.asia/video.html?${hash}`;
+            this.emailurl = `mailto:?to=&subject=FunMusic&body=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*Whatsapp
             this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*Linkedin
@@ -808,8 +813,8 @@ var app = new Vue({
                     break;
                 case 1:
                     document.querySelector(".chooseBlk").classList.add("none");
-                    player.seekTo(0);
-                    this.currentTime = "00:00";
+                    // player.seekTo(0);
+                    // this.currentTime = "00:00";
                     this.startRecord();
                     break;
                 case 2:
