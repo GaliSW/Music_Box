@@ -141,9 +141,10 @@
     cursor: pointer;
     margin-right: 4px;
 }
-/* .subtitle_items .en span:hover {
+.subtitle_items .en span:hover {
     color: #ffb78c;
-} */
+    text-decoration: underline;
+}
 .subtitle_items .en .select {
     color: #ffb78c;
     font-weight: bold;
@@ -171,5 +172,8 @@
     }
     .DrWord .Dr_title .collect p {
         font-size: 12px;
+    }
+    .subtitle_items .en span:hover {
+        color: unset;
     }
 }

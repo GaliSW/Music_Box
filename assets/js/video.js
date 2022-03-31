@@ -67,12 +67,13 @@ var app = new Vue({
         tutorstate: 1, //手機版解說播放狀態
         clicks: false, //影片是否已點擊
         tutorExist: false, //是否有老師解說
+        hasSinger: true, //是否有歌手歡唱
     },
     computed: {},
     watch: {
         currentTime: function (val, oldVal) {
             //比對到歌詞秒數陣列
-            console.log(val);
+            // console.log(val);
             if (
                 this.startTimeArr.indexOf(val) !== -1 &&
                 !this.singleMode &&
@@ -92,7 +93,7 @@ var app = new Vue({
                         `sIndex${subtitleIndex - 1}`
                     );
                     //下一句開始時間
-                    console.log(nowSub.attributes["data-tutorseek"].value);
+                    // console.log(nowSub.attributes["data-tutorseek"].value);
                     if (nowSub.attributes["data-tutorseek"].value !== "0") {
                         //老師講解結束時間
                         this.tutorMb = true;
@@ -179,7 +180,7 @@ var app = new Vue({
                     vm.subTitle = res.data.data;
                     vm.others = res.data.others;
                     vm.songInfo = res.data.info;
-                    console.log(res);
+                    // console.log(res);
                     //字串時間
                     vm.startTimeArr = vm.subTitle.map((ele, idx, array) => {
                         return (
@@ -335,6 +336,13 @@ var app = new Vue({
                         //		console.log("Player state changed", e.data);
                         //-1:未開始 0:結束 1:正在播放 2:已暫停 3:緩衝 5:已插入影片
                         if (e.data == 1) {
+                            if (Number(sessionStorage.getItem("mfree")) > 1) {
+                                player.stopVideo();
+                                // alert("您的試用已結束");
+                                $("#myModal01").modal("show");
+                                app.playstate = 0;
+                                return false;
+                            }
                             app.playstate = 1;
                             if (app.tutorExist) {
                                 player2.pauseVideo();
@@ -379,8 +387,8 @@ var app = new Vue({
                         }
                     }
                     function onPlayerError(evt) {
-                        console.log("error");
-                        console.log(evt);
+                        // console.log("error");
+                        // console.log(evt);
                     }
 
                     function onPlayerReady2(evt) {}
@@ -400,7 +408,7 @@ var app = new Vue({
                         player3.mute();
                     }
                     function onPlayerStateChange3(e) {
-                        console.log(e.data);
+                        // console.log(e.data);
                         if (e.data == 1) {
                             app.tutorstate = 1;
                             app.timer = setInterval(app.fnTimeChecking, 10);
@@ -494,6 +502,7 @@ var app = new Vue({
             }
             this.playstate = state;
             if (state == 1) {
+                player.setVolume(100);
                 player.unMute().playVideo();
             }
             if (state == 0) {
@@ -581,8 +590,8 @@ var app = new Vue({
             this.findPara = true;
             let gotoTime = $(event.target).data("seek");
             let nowplayingLyric = $(event.target).data("count");
-            console.log(nowplayingLyric);
-            console.log(this.subTitle[nowplayingLyric]);
+            // console.log(nowplayingLyric);
+            // console.log(this.subTitle[nowplayingLyric]);
             this.ch_content = this.subTitle[nowplayingLyric].ch_content;
             this.en_content = this.subTitle[nowplayingLyric].en_content;
             this.nowPlaying = nowplayingLyric; //把播放句子的index重新指定
@@ -659,7 +668,7 @@ var app = new Vue({
                     let tutorEndTime =
                         nowSub.attributes["data-tutorseek"].value;
                     //老師講解開始時間
-                    console.log(tutorEndTime);
+                    // console.log(tutorEndTime);
                     let seekTutorTime = tutorEndTime - app.lastTutorTime;
                     app.lastTutorTime = tutorEndTime;
                     // console.log(playerTime);
@@ -700,10 +709,10 @@ var app = new Vue({
         },
         //隨機播放清單
         fnPlayListRamdom() {
-            console.log("隨機");
+            // console.log("隨機");
             if (this.playMethods == 1 && e.data === YT.PlayerState.ENDED) {
                 location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.random_id}`;
-                console.log("隨機撥放");
+                // console.log("隨機撥放");
             }
         },
         //下一首
@@ -767,30 +776,44 @@ var app = new Vue({
             let hash = window.location.href;
             this.URL = hash;
             hash = hash.split("?")[1];
-            console.log(hash);
+            // console.log(hash);
 
             hash = hash.split("&"); //['categoryId=1','videoId=1050']
-            // console.log(hash.length);
+
             if (hash.length == 1) {
                 vm.videoId = hash[0].split("=")[1];
                 vm.categoryId = 1;
             } else {
+                //過濾fb分享參數
+                if (hash[1].split("=")[0] == "fbclid") {
+                    location.href = `https://music.funday.asia/video.html?videoId=${
+                        hash[0].split("=")[1]
+                    }`;
+                }
                 vm.categoryId = hash[0].split("=")[1];
                 vm.videoId = hash[1].split("=")[1];
             }
             // ===產生分享網址===
+            let link = encodeURIComponent(
+                `https://music.funday.asia/video.html?videoId=${vm.videoId}`
+            );
+            let title = encodeURIComponent(
+                `https://music.funday.asia/video.html?videoId=${vm.videoId}`
+            );
             // *FB
+            //www.facebook.com/sharer.php?u=http://blog.ja-anything.com/&quote=大家跟我一起用Facebook分享吧!
+            // this.fburl = `https://www.facebook.com/sharer.php?u=https://music.funday.asia/video.html?videoId=1060`;
             this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${vm.videoId}'))));`;
             //*Line
-            this.lineurl = `https://social-plugins.line.me/lineit/share?url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
+            this.lineurl = `https://social-plugins.line.me/lineit/share?url=${link}`;
             //*twitter
             this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*email
-            this.emailurl = `mailto:?to=&subject=FunMusic&body=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
+            this.emailurl = `mailto:?to=&subject=FunMusic&body=${link}`;
             //*Whatsapp
             this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
             //*Linkedin
-            this.linkedinurl = `https://www.linkedin.com/shareArticle?mini=true&title=FunMusic&url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
+            this.linkedinurl = `https://www.linkedin.com/shareArticle?mini=true&title=test&url=${link}`;
 
             //GET請求 相關連結
             axios
@@ -858,7 +881,7 @@ var app = new Vue({
             if (window.innerWidth > 600) {
                 const el = evt.target;
                 var rect = el.getBoundingClientRect();
-                console.log(rect.left);
+                // console.log(rect.left);
                 if (rect.left > 1400) {
                     $(".DrWord").css({
                         left: rect.left - 145,
@@ -936,13 +959,13 @@ var app = new Vue({
                     `https://funday.asia/NewMylessonmobile/api/vocabulary?customer_id=${this.customer_id}&member_id=${this.member_id}&Enkeyword=${this.DrWord}&Chkeyword=`
                 )
                 .then((res) => {
-                    console.log(res.data.En_word);
+                    // console.log(res.data.En_word);
                     if (res.data.En_word == "") {
-                        console.log("n");
+                        // console.log("n");
                         $(".collect .icon .fas.fa-heart").hide();
                         $(".collect .icon .far.fa-heart").show();
                     } else {
-                        console.log("y");
+                        // console.log("y");
                         $(".collect .icon .fas.fa-heart").show();
                         $(".collect .icon .far.fa-heart").hide();
                     }
@@ -976,7 +999,7 @@ var app = new Vue({
             //取得後再刪除
             //api/Article/DeleteWordsCollect  刪除
 
-            console.log($event);
+            // console.log($event);
             axios
                 .get(
                     `https://funday.asia/NewMylessonmobile/D/api/vocabulary/join?customer_id=${this.customer_id}&member_id=${this.member_id}&Enkeyword=${this.DrWord}&Chkeyword=`
@@ -1081,14 +1104,17 @@ var app = new Vue({
             if (this.member_id !== "") {
                 mid = this.member_id;
             }
-            console.log(mid);
+            // console.log(mid);
             axios
                 .get(
                     `https://funday.asia/api/MusicboxWeb/RecordingList.asp?member_id=${mid}&indx=${this.videoId}`
                 )
                 .then((res) => {
-                    console.log(res);
-                    if (res.data[Object.keys(res.data)][0].Id == "") return;
+                    // console.log(res);
+                    if (res.data[Object.keys(res.data)][0].Id == "") {
+                        app.hasSinger = false;
+                        return false;
+                    }
                     this.likeData = res.data[Object.keys(res.data)];
                 })
                 .catch((error) => console.log(error));
@@ -1125,7 +1151,7 @@ var app = new Vue({
                 return;
             }
             dialogCancel();
-            console.log("show");
+            // console.log("show");
             let div = document.createElement("div");
             document.body.appendChild(div);
             div.innerHTML =
@@ -1371,7 +1397,7 @@ var app = new Vue({
             formData.append("customer_id", `${cid}`);
             formData.append("musicbox_id", `${vid}`);
             for (var pair of formData.entries()) {
-                console.log(pair[0] + ", " + pair[1]);
+                // console.log(pair[0] + ", " + pair[1]);
             }
             //上傳api
             axios({
@@ -1486,6 +1512,8 @@ var app = new Vue({
         playAudio(index) {
             if (!this.audioStatus) {
                 player.seekTo(0);
+                this.ch_content = "";
+                this.en_content = "";
                 this.audioStatus = true;
             } else if (this.recMode) {
                 return;
@@ -1528,7 +1556,9 @@ var app = new Vue({
                     player.seekTo(0);
                 }
                 audioPlay.classList.add("click");
-                player.mute().playVideo();
+                // player.mute().playVideo();
+                player.setVolume(50);
+                player.playVideo();
                 audio.play();
                 // === 秒數倒數 ===
                 let timer = Math.round(time * 10) / 10;
@@ -1592,19 +1622,74 @@ var app = new Vue({
             } else if (m < 10 && s < 10) {
                 str = `0${m}:0${s}`;
             }
-            // if (m < 10 && m > 0) str += "0" + m + ":";
-            // if (m <= 0) str += "00:"; // f2 === 0 為「只在時間軸上補零，錄音倒數不補」意思
-            // if (s < 10) {
-            //     str += "00:0" + s;
-            // } else {
-            //     str += s;
-            // }
-            // if (decimal) str += ss;
-            // str += f2;
             this.audioTimer = str;
         },
     },
     created() {
+        let hash = window.location.href;
+        if (hash.indexOf("videoId") > -1 && hash.indexOf("fbAdd") == -1) {
+            const url = hash.split("?")[1];
+            sessionStorage.setItem("para", url);
+        }
+        let mid = sessionStorage.getItem("mindx");
+        if (hash.indexOf("fbAdd") > -1 && mid == undefined) {
+            $("#myModal06").modal("show");
+        }
+        if (hash.indexOf("fbLogin") > -1) {
+            let token = hash
+                .split("?")[2]
+                .split("&")[1]
+                .split("=")[1]
+                .replace("#", "")
+                .replace("_", "");
+            // console.log(token);
+            axios
+                .get(`https://funday.asia/api/FBtoken.asp?token=${token}`)
+                .then((res) => {
+                    sessionStorage.setItem("id", `FB${res.data.id}`);
+                    sessionStorage.setItem("email", `${res.data.email}`);
+                    if (res.data.State == 1) {
+                        const id = sessionStorage.getItem("id");
+                        if (id == null) {
+                            alert("此Facebook帳號尚未註冊");
+                        } else {
+                            const json = JSON.stringify({
+                                ID: "",
+                                password: "",
+                                FBID: id,
+                            });
+                            axios
+                                .post(
+                                    "https://funday.asia/api/Member.asp",
+                                    json
+                                )
+                                .then((res) => {
+                                    // console.log(res);
+                                    if (res.data.StateId == 0) {
+                                        alert("此Facebook帳號尚未註冊");
+                                    } else {
+                                        $("#myModal07").modal("hide");
+                                        sessionStorage.removeItem("mfree");
+                                        sessionStorage.setItem(
+                                            "mindx",
+                                            res.data.mindx
+                                        );
+                                        sessionStorage.setItem(
+                                            "cindx",
+                                            res.data.cindx
+                                        );
+                                        const url =
+                                            sessionStorage.getItem("para");
+                                        location.href = `https://music.funday.asia/video.html?${url}`;
+                                    }
+                                });
+                        }
+                    } else {
+                        const url = sessionStorage.getItem("para");
+                        location.href = `https://music.funday.asia/video.html?${url}&fbAdd`;
+                    }
+                });
+        }
         let member_id = sessionStorage.getItem("mindx");
         let customer_id = sessionStorage.getItem("cindx");
         this.member_id = member_id;

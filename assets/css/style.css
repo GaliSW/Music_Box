@@ -1287,7 +1287,8 @@ body.video_page .switch_tab ul.subtitle_items::-webkit-scrollbar-thumb {
 body.video_page .switch_tab ul.subtitle_items.off {
     height: 740px;
 }
-body.video_page .switch_tab .noWord {
+body.video_page .switch_tab .noWord,
+body.video_page .switch_tab .noSinger {
     /* border: 1px solid red; */
     position: absolute;
     display: flex;
@@ -1298,6 +1299,7 @@ body.video_page .switch_tab .noWord {
     font-size: 18px;
     font-weight: bold;
     background-color: #000;
+    left: 0;
     z-index: 2;
 }
 body.video_page .switch_tab ul.subtitle_items > li {
@@ -3575,10 +3577,10 @@ textarea {
 }
 @media (max-width: 414px) {
     .login_landing {
-        height: 60px;
+        height: 100px;
         width: 200px;
         position: absolute;
-        top: 455px;
+        top: 415px;
     }
 }
 @media (max-width: 376px) {

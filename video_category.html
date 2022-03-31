@@ -41,6 +41,9 @@
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            Vue.config.productionTip = false;
+        </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
 
         <!-- ===================== AD block =======================-->
@@ -673,6 +676,7 @@
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
+                                            autocomplete="off"
                                         />
                                         <br />
                                         請填寫正確手機號碼以取得簡訊驗證碼，完成加入
@@ -1081,6 +1085,7 @@
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
+                                            autocomplete="off"
                                         />
                                         <br />
                                         請填寫正確手機號碼以取得簡訊驗證碼，完成加入
@@ -1566,7 +1571,7 @@
                                             .reverse()
                                             .slice(0, 9);
                                     }
-                                    console.log(length);
+                                    // console.log(length);
                                     if (app.notiIndex < length - 1) {
                                         app.notiIndex++;
 
@@ -1634,10 +1639,85 @@
                 },
             },
             created() {
+                let hash = window.location.href;
+                const url = hash.split("?")[1];
+                sessionStorage.setItem("para", url);
+                let mid = sessionStorage.getItem("mindx");
+                if (hash.indexOf("fbAdd") > -1 && mid == undefined) {
+                    $("#myModal06").modal("show");
+                }
+                if (hash.indexOf("fbLogin") > -1) {
+                    let token = hash
+                        .split("?")[2]
+                        .split("&")[1]
+                        .split("=")[1]
+                        .replace("#", "")
+                        .replace("_", "");
+                    axios
+                        .get(
+                            `https://funday.asia/api/FBtoken.asp?token=${token}`
+                        )
+                        .then((res) => {
+                            // console.log(res);
+                            sessionStorage.setItem("id", `FB${res.data.id}`);
+                            sessionStorage.setItem(
+                                "email",
+                                `${res.data.email}`
+                            );
+                            if (res.data.State == 1) {
+                                const id = sessionStorage.getItem("id");
+                                if (id == null) {
+                                    alert("此Facebook帳號尚未註冊");
+                                } else {
+                                    const json = JSON.stringify({
+                                        ID: "",
+                                        password: "",
+                                        FBID: id,
+                                    });
+                                    axios
+                                        .post(
+                                            "https://funday.asia/api/Member.asp",
+                                            json
+                                        )
+                                        .then((res) => {
+                                            // console.log(res);
+                                            if (res.data.StateId == 0) {
+                                                alert("此Facebook帳號尚未註冊");
+                                            } else {
+                                                $("#myModal07").modal("hide");
+                                                document
+                                                    .getElementById("login_blk")
+                                                    .classList.add("none");
+                                                document
+                                                    .getElementById("menu")
+                                                    .classList.remove("none");
+                                                sessionStorage.removeItem(
+                                                    "mfree"
+                                                );
+                                                sessionStorage.setItem(
+                                                    "mindx",
+                                                    res.data.mindx
+                                                );
+                                                sessionStorage.setItem(
+                                                    "cindx",
+                                                    res.data.cindx
+                                                );
+                                                const url =
+                                                    sessionStorage.getItem(
+                                                        "para"
+                                                    );
+                                                location.href = `https://music.funday.asia/video_category.html?${url}`;
+                                            }
+                                        });
+                                }
+                            } else {
+                                location.href = `https://music.funday.asia/video_category.html?fbAdd`;
+                            }
+                        });
+                }
                 this.notification();
                 //取得分類id
                 let vm = this;
-                let hash = window.location.href;
                 let member_id = sessionStorage.getItem("mindx");
                 let customer_id = sessionStorage.getItem("cindx");
                 this.member_id = member_id;

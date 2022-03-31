@@ -7,9 +7,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FunMusic - 音樂內容</title>
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-  <meta name="description" content="" />
-  <meta name="keywords" content="" />
-
+  <meta property="og:title" content="FunMusic"/>
+  <!-- <meta property="og:type" content="product"/> -->
+  <meta property="og:image" content="https://img.onl/6kza2x" width="300" height="300"/>
+  <!-- <meta property="og:url" content="http://leap-tech.en.made-in-china.com/product/gBvQXLzMCKcJ/China-Ce-Approved-Superfine-Synthetic-Graphite-Spheroidization-Grinding-Mill.html"/> -->
+  <!-- <meta property="og:site_name" content="Made-in-China.com"/> -->
+  <meta property="og:description" content="FunMusic"/>
   <!-- Favicon -->
   <link rel="shortcut icon" href="images/web_icon/favicon.ico" type="image/x-icon">
 
@@ -36,6 +39,9 @@
   <script src="assets/js/jquery.min.js"></script>
   <script src="assets/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script>
+            Vue.config.productionTip = false;
+        </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
 
 
@@ -239,7 +245,7 @@
       ></noscript>
       <!-- End Google Tag Manager (noscript) -->
 
-      
+
       <div class="all_wrap" id="app" v-cloak>
         <!-- full screen  -->
         <div
@@ -525,8 +531,8 @@
               <div class="share_center">
                   <div class="share_wrapper">
                       <div class="copy_icon"><img  @click="copyURL" src="./images/web_icon/copy.svg" alt=""><p>複製連結</p></div>
-                      <div><a :href="lineurl" target="_blank"><img src="./images/web_icon/Line.svg" alt=""></a><p>Line</p></div>
-                      <div><a :href="fburl" target="_blank"><img src="./images/web_icon/FB.svg" alt=""></a><p>FB</p></div>
+                      <div><a :href="lineurl" title="FunMusic" target="_blank"><img src="./images/web_icon/Line.svg" alt=""></a><p>Line</p></div>
+                      <div><a :href="fburl"><img src="./images/web_icon/FB.svg" alt=""></a><p>FB</p></div>
                       <div><a :href="emailurl" target="_blank"><img src="./images/web_icon/Gmail.svg" alt=""></a><p>Gmail</p></div>
                       <div><a :href="linkedinurl" target="_blank"><img src="./images/web_icon/Linkedin.svg" alt=""></a><p>Linkedin</p></div>
                   </div>
@@ -654,6 +660,7 @@
                 <div id="tab2" class="tab_content" v-show="nowTab == 1">
                   <!--頁籤2的內容-->
                   <ul class="voice_items">
+                    <div class="noSinger" v-show="!hasSinger">尚無歌手歡唱</div>
                     <li v-for="(item,index) in likeData">
                       <span class="sex" :class="{'woman':item.Sex==0, 'man':item.Sex==1}"  v-cloak>{{item.Pmember_nickname}}</span>
                       <div class="digi">
@@ -768,7 +775,7 @@
                 <input name="account_mail" type="text"  placeholder="帳號(信箱)" >
               </div>
               <div class="input">
-                <input name="account_mobile" type="password"  placeholder="手機(密碼)" >
+                <input name="account_mobile" type="password"  placeholder="手機(密碼)" autocomplete="off">
                 <br/>
                 請填寫正確手機號碼以取得簡訊驗證碼，完成加入</div>
               <div class="row">
@@ -944,7 +951,7 @@
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
-                <input  id="fb_account_mobile" name="account_mobile" type="password"  placeholder="手機(密碼)" >
+                <input  id="fb_account_mobile" name="account_mobile" type="password"  placeholder="手機(密碼)"  autocomplete="off">
                 <br/>
                 請填寫正確手機號碼以取得簡訊驗證碼，完成加入</div>
               <div class="row">

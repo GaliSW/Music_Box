@@ -94,12 +94,12 @@ var app = new Vue({
             });
         },
         onPlayerReady(evt) {
-            console.log("Player ready");
+            // console.log("Player ready");
             // evt.target.mute();
             evt.target.playVideo();
         },
         onPlayerStateChange(evt) {
-            console.log(evt.data);
+            // console.log(evt.data);
             if (evt.data == 0) {
                 evt.target.seekTo(0);
                 evt.target.playVideo();
@@ -138,7 +138,7 @@ var app = new Vue({
 
                     if (res.data.State == 2) {
                         //刪除成功
-                        console.log(res);
+                        // console.log(res);
                         $($event.target).removeClass("favorites");
                     }
                 })
@@ -349,7 +349,7 @@ var app = new Vue({
             } else {
                 sex = "female";
             }
-
+            // debugger;
             //輸入留言api
             axios
                 .post(
@@ -372,6 +372,85 @@ var app = new Vue({
     created() {
         this.getMessage();
         this.notification();
+        let hash = window.location.href;
+        sessionStorage.setItem("para", "");
+        let mid = sessionStorage.getItem("mindx");
+        if (hash.indexOf("fbAdd") > -1 && mid == undefined) {
+            $("#myModal06").modal("show");
+        }
+        if (hash.indexOf("fbLogin") > -1) {
+            // debugger;
+            let token;
+            if (hash.indexOf("fbAdd") > -1) {
+                token = hash
+                    .split("?")[2]
+                    .split("&")[1]
+                    .split("=")[1]
+                    .replace("#", "")
+                    .replace("_", "");
+            } else {
+                token = hash
+                    .split("?")[1]
+                    .split("&")[1]
+                    .split("=")[1]
+                    .replace("#", "")
+                    .replace("_", "");
+            }
+            // alert(token);
+            axios
+                .get(`https://funday.asia/api/FBtoken.asp?token=${token}`)
+                .then((res) => {
+                    // console.log(res);
+                    sessionStorage.setItem("id", `FB${res.data.id}`);
+                    sessionStorage.setItem("email", `${res.data.email}`);
+                    if (res.data.State == 1) {
+                        const id = sessionStorage.getItem("id");
+                        if (id == null) {
+                            alert("此Facebook帳號尚未註冊");
+                        } else {
+                            const json = JSON.stringify({
+                                ID: "",
+                                password: "",
+                                FBID: id,
+                            });
+                            axios
+                                .post(
+                                    "https://funday.asia/api/Member.asp",
+                                    json
+                                )
+                                .then((res) => {
+                                    // console.log(res);
+                                    if (res.data.StateId == 0) {
+                                        alert("此Facebook帳號尚未註冊");
+                                    } else {
+                                        $("#myModal07").modal("hide");
+                                        document
+                                            .getElementById("login_blk")
+                                            .classList.add("none");
+                                        document
+                                            .getElementById("menu")
+                                            .classList.remove("none");
+                                        sessionStorage.removeItem("mfree");
+                                        sessionStorage.setItem(
+                                            "mindx",
+                                            res.data.mindx
+                                        );
+                                        sessionStorage.setItem(
+                                            "cindx",
+                                            res.data.cindx
+                                        );
+                                        const url =
+                                            sessionStorage.getItem("para");
+                                        location.href = `https://music.funday.asia/`;
+                                    }
+                                });
+                        }
+                    } else {
+                        // const url = sessionStorage.getItem("para");
+                        location.href = `https://music.funday.asia?fbAdd`;
+                    }
+                });
+        }
         if (
             sessionStorage.getItem("mfree") == undefined &&
             sessionStorage.getItem("mindx") == undefined

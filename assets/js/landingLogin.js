@@ -63,7 +63,7 @@ $(function () {
 
     //fb登入
     $(".login-in #login_by_fb").on("click", function () {
-        fbLoginCheck();
+        fbLogin();
     });
 
     //fb註冊 取得對方手機
@@ -109,6 +109,16 @@ $(function () {
     //記住我
     $(".login_form #rememberCheck").on("click", function () {
         remember();
+    });
+
+    //pre
+    $(".M6toM1").on("click", function (e) {
+        $("#myModal06").modal("hide");
+        // $("#myModal01").modal("show");
+    });
+    //close
+    $(".closeM6").on("click", function (e) {
+        $("#myModal06").modal("hide");
     });
 
     //我要推薦打開modal
@@ -177,19 +187,22 @@ async function mailSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-
+    let adId = 59;
+    if (sessionStorage.getItem("ADid") !== undefined) {
+        adId = sessionStorage.getItem("ADid");
+    }
     const json = JSON.stringify({
         ID: mail,
         realname: name,
         sex: sex,
         tel: pass,
-        ADid: 60,
+        ADid: adId,
     });
-
+    // console.log(adId);
     await axios
         .post("https://funday.asia/api/Application.asp", json)
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             if (res.data.StateId == 0) {
                 alert("此帳號已註冊，請進行登入");
                 $("#myModal02").modal("hide");
@@ -204,32 +217,35 @@ async function mailSignUp() {
 
 //FB加入
 function fbLogin(fbLogin) {
-    FB.getLoginStatus(
-        function (response) {
-            console.log(response);
-            if (response.status == "connected") {
-                GetFbProfile(fbLogin);
-                //跑fb 註冊流程
-                $("#myModal06").modal("show");
-            } else if (
-                response.status === "not_authorized" ||
-                response.status === "unknown"
-            ) {
-                //未授權或用戶登出FB網站才讓用戶執行登入動作
+    const returnUrl = window.location.href;
+    // console.log(returnUrl.split("?")[0]);
+    location.href = `https://funday.asia/api/FBOauth.asp?returnurl=${returnUrl}`;
+    // FB.getLoginStatus(
+    //     function (response) {
+    //         console.log(response);
+    //         if (response.status == "connected") {
+    //             GetFbProfile(fbLogin);
+    //             //跑fb 註冊流程
+    //             $("#myModal06").modal("show");
+    //         } else if (
+    //             response.status === "not_authorized" ||
+    //             response.status === "unknown"
+    //         ) {
+    //             //未授權或用戶登出FB網站才讓用戶執行登入動作
 
-                FB.login(function (response) {
-                    //console.log(response);
-                    if (response.status === "connected") {
-                        GetFbProfile();
-                        $("#myModal06").modal("show");
-                    } else {
-                        alert("Facebook帳號無法登入");
-                    }
-                });
-            }
-        },
-        { scope: "email" }
-    );
+    //             FB.login(function (response) {
+    //                 //console.log(response);
+    //                 if (response.status === "connected") {
+    //                     GetFbProfile();
+    //                     $("#myModal06").modal("show");
+    //                 } else {
+    //                     alert("Facebook帳號無法登入");
+    //                 }
+    //             });
+    //         }
+    //     },
+    //     { scope: "email" }
+    // );
 }
 
 // 拿fb個資
@@ -239,13 +255,15 @@ function GetFbProfile(fbLogin) {
     FB.api("/me", "GET", { fields: "id,email" }, function (user) {
         //user物件的欄位：https://developers.facebook.com/docs/graph-api/reference/user
         if (user.error) {
-            console.log(response);
+            // console.log(response);
         } else {
-            console.log(user);
+            // console.log(user);
             sessionStorage.setItem("id", `FB${user.id}`);
             sessionStorage.setItem("email", `${user.email}`);
             if (fbLogin !== "fbLogin") {
-                loginTo(myModal01, myModal06);
+                // loginTo(myModal01, myModal06);
+                $("#myModal01").modal("hide");
+                $("#myModal06").modal("show");
             }
         }
     });
@@ -261,8 +279,8 @@ function joinCheck(status) {
         axios
             .post("https://funday.asia/api/JoinCheck.asp", json)
             .then((res) => {
-                console.log(res);
-                console.log(number);
+                // console.log(res);
+                // console.log(number);
                 if (res.data.StateId == 0) {
                     alert("驗證碼錯誤");
                 } else {
@@ -281,14 +299,15 @@ function joinCheck(status) {
         axios
             .post("https://funday.asia/api/JoinCheck.asp", json)
             .then((res) => {
-                console.log(res);
-                console.log(number);
+                // console.log(res);
+                // console.log(number);
                 if (res.data.StateId == 0) {
                     alert("驗證碼錯誤");
                 } else {
                     alert("成功加入");
                     $("#myModal07").modal("show");
-                    //window.location.reload();
+                    // window.location.reload();
+                    location.href = "./index.html";
                 }
             });
     }
@@ -298,11 +317,11 @@ function joinCheck(status) {
 function changeMobile() {
     const newPhone = document.getElementById("new_mobile_number").value;
     const oldPhone = sessionStorage.getItem("phone");
-    console.log(newPhone);
+    // console.log(newPhone);
     if (newPhone == "") {
         alert("請輸入手機號碼");
     } else {
-        console.log(oldPhone);
+        // console.log(oldPhone);
         const json = JSON.stringify({
             EditTel: newPhone,
             Tel: oldPhone,
@@ -310,7 +329,7 @@ function changeMobile() {
         axios
             .post("https://funday.asia/api/TelResend.asp", json)
             .then((res) => {
-                console.log(res);
+                // console.log(res);
             });
     }
 }
@@ -337,28 +356,34 @@ async function fbSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-
+    let adId = 59;
+    if (sessionStorage.getItem("ADid") !== undefined) {
+        adId = sessionStorage.getItem("ADid");
+    }
     const json = JSON.stringify({
         ID: fbid,
         FBFemail: mail,
         realname: name,
         sex: sex,
         tel: pass,
-        ADid: 60,
+        ADid: adId,
     });
+    // console.log(adId);
     await axios
         .post("https://funday.asia/api/Application.asp", json)
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             if (res.data.StateId == 0) {
                 alert("此帳號已註冊，請進行登入");
                 //loginTo(myModal06, myModal09);
+                $("#myModal06").modal("hide");
                 $("#myModal07").modal("show");
             } else {
                 document.cookie = `phone = ${pass}`;
                 sessionStorage.setItem("phone", pass);
                 //loginTo(myModal06, myModal03);
                 //簡訊驗證
+                $("#myModal06").modal("hide");
                 $("#myModal03").modal("show");
             }
         });
@@ -418,7 +443,7 @@ async function mailLoginCheck() {
     });
 
     await axios.post("https://funday.asia/api/Member.asp", json).then((res) => {
-        console.log(res);
+        // console.log(res);
         if (res.data.StateId == 0) {
             alert("帳號或密碼錯誤");
         } else {
@@ -428,6 +453,7 @@ async function mailLoginCheck() {
             $("#myModal07").modal("hide");
             sessionStorage.setItem("mindx", res.data.mindx);
             sessionStorage.setItem("cindx", res.data.cindx);
+            sessionStorage.removeItem("mfree");
             sessionStorage.setItem("nickName", res.data.nickname);
             sessionStorage.setItem("sex", res.data.sex);
             sessionStorage.setItem("pic", res.data.pic);
@@ -454,11 +480,11 @@ function fbLoginCheck() {
             axios
                 .post("https://funday.asia/api/Member.asp", json)
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.data.StateId == 0) {
                         alert("此Facebook帳號尚未註冊");
                     } else {
-                        loginTo(myModal09, null);
+                        $("#myModal07").modal("hide");
                         document
                             .getElementById("login_blk")
                             .classList.add("none");

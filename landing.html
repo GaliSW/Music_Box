@@ -190,6 +190,11 @@
             );
         </script>
         <!-- ===================== AD block =======================-->
+
+          <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+      <script>
+        eruda.init();
+      </script> -->
     </head>
     <body id="page-top">
         <!-- Google Tag Manager (noscript) -->
@@ -245,7 +250,7 @@
                             <div class="center-box">
                             <h4 class="text-white fs-6 ps-3">➤ 活動時間</h4>
                             <p class="fs-7 text-white text-opacity-75 project-content">
-                            2022/03/09(三) ～ 04/12(二)</p>
+                            2022/03/31(四) ～ 04/12(二)</p>
                             <h4 class="text-white fs-6 ps-3">➤ 活動內容</h4>
                             <h5 class="text-white fs-7 ps-2rem">❮ 第一重 ❯<h5>
                             <p class="fs-7 text-white text-opacity-75 project-content">
@@ -466,6 +471,7 @@
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
+                                            autocomplete="off"
                                         />
                                         <br />
                                         請填寫正確手機號碼以取得簡訊驗證碼，完成加入
@@ -834,17 +840,13 @@
                 <div class="modal-content">
                     <div id="page-body">
                         <div id="top_bar">
-                            <div class="icon_pre">
+                            <div class="icon_pre M6toM1">
                                 <a
                                     href="#"
-                                    data-dismiss="modal"
-                                    aria-hidden="true"
-                                    data-toggle="modal"
-                                    data-target="#myModal01"
                                     ><img src="images/web_icon/top_bar_pre.svg"
                                 /></a>
                             </div>
-                            <div class="icon_close">
+                            <div class="icon_close closeM6">
                                 <a
                                     href="#"
                                     data-dismiss="modal"
@@ -875,6 +877,7 @@
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
+                                            autocomplete="off"
                                         />
                                         <br />
                                         請填寫正確手機號碼以取得簡訊驗證碼，完成加入
@@ -1147,5 +1150,65 @@
         crossorigin="anonymous"
         src="https://connect.facebook.net/en_US/sdk.js"
     ></script>
+    <script>
+        let hash = window.location.href;
+        if (hash.indexOf("fbLogin") > -1) {
+            let token = hash
+                .split("?")[1]
+                .split("&")[1]
+                .split("=")[1]
+                .replace("#", "")
+                .replace("_", "");
+            axios
+                .get(`https://funday.asia/api/FBtoken.asp?token=${token}`)
+                .then((res) => {
+                    // console.log(res);
+                    sessionStorage.setItem("id", `FB${res.data.id}`);
+                    sessionStorage.setItem("email", `${res.data.email}`);
+                    if (res.data.State == 1) {
+                        const id = sessionStorage.getItem("id");
+                        if (id == null) {
+                            alert("此Facebook帳號尚未註冊");
+                        } else {
+                            const json = JSON.stringify({
+                                ID: "",
+                                password: "",
+                                FBID: id,
+                            });
+                            axios
+                                .post(
+                                    "https://funday.asia/api/Member.asp",
+                                    json
+                                )
+                                .then((res) => {
+                                    // console.log(res);
+                                    if (res.data.StateId == 0) {
+                                        alert("此Facebook帳號尚未註冊");
+                                    } else {
+                                        $("#myModal07").modal("hide");
+                                        // document
+                                        //     .getElementById("login_blk")
+                                        //     .classList.add("none");
+                                        // document
+                                        //     .getElementById("menu")
+                                        //     .classList.remove("none");
+                                        sessionStorage.setItem(
+                                            "mindx",
+                                            res.data.mindx
+                                        );
+                                        sessionStorage.setItem(
+                                            "cindx",
+                                            res.data.cindx
+                                        );
+                                        location.href = "https://music.funday.asia";
+                                    }
+                                });
+                        }
+                    } else {
+                        $("#myModal06").modal("show");
+                    }
+                });
+        }
+    </script>
     <script src="assets/js/landingLogin.js"></script>
 </html>
