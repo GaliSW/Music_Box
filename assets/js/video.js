@@ -70,6 +70,7 @@ var app = new Vue({
         clicks: false, //影片是否已點擊
         tutorExist: false, //是否有老師解說
         hasSinger: true, //是否有歌手歡唱
+        tutorMb_pre: false, //老師解說是否預載
     },
     computed: {},
     watch: {
@@ -105,6 +106,9 @@ var app = new Vue({
                         if (window.innerWidth < 991) {
                             player3.seekTo(app.lastTutorTime);
                             player3.unMute().playVideo();
+                            // setTimeout(() => {
+                            //     player3.unMute().playVideo();
+                            // }, 1000);
                             // player3.playVideo();
                         } else {
                             player2.seekTo(app.lastTutorTime);
@@ -263,6 +267,7 @@ var app = new Vue({
                             vm.songInfo.tutor_url.split("/")[3]
                         }?enablejsapi=1&controls=0&showinfo=0&autoplay=1&rel=0`;
                         vm.tutorExist = true;
+                        vm.tutorMb_pre = true;
                         vm.tutor = true;
                     } else {
                         vm.tutorExist = false;
@@ -447,7 +452,7 @@ var app = new Vue({
                     }
 
                     function onPlayerReady3(evt) {
-                        player3.mute();
+                        player3.mute().playVideo();
                     }
                     function onPlayerStateChange3(e) {
                         // console.log(e.data);
@@ -550,6 +555,11 @@ var app = new Vue({
             if (state == 1) {
                 player.setVolume(100);
                 player.unMute().playVideo();
+                //手機板老師講解預載
+                if (this.tutorMb_pre) {
+                    player3.mute().playVideo();
+                    this.tutorMb_pre = false;
+                }
             }
             if (state == 0) {
                 player.pauseVideo();
@@ -560,9 +570,11 @@ var app = new Vue({
             this.audioStatus = false;
             this.tutorstate = state;
             if (state == 1) {
+                player2.playVideo();
                 player3.playVideo();
             }
             if (state == 0) {
+                player2.pauseVideo();
                 player3.pauseVideo();
             }
         },
@@ -632,7 +644,11 @@ var app = new Vue({
         //按歌詞播放某一段
         fnSeekTo(event) {
             if (this.recMode) return;
-
+            //手機板老師講解預載
+            if (this.tutorMb_pre) {
+                player3.mute().playVideo();
+                this.tutorMb = false;
+            }
             this.findPara = true;
             let gotoTime = $(event.target).data("seek");
             let nowplayingLyric = $(event.target).data("count");

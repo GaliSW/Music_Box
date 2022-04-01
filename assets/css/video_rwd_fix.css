@@ -221,13 +221,13 @@
     #fullscreen {
         display: none;
     }
-    .teacher_video_mobile {
-        display: block;
-    }
 }
 @media (max-width: 991px) {
     .disabled {
         display: none !important;
+    }
+    .teacher_video_mobile {
+        display: block;
     }
 }
 .en {

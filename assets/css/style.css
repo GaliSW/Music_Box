@@ -1354,7 +1354,11 @@ body.video_page .switch_tab ul.subtitle_items > li .play-single-line {
 .switch_tab ul.subtitle_items > li.active_tutor:hover {
     background: #cf2242;
 }
-
+@media (max-width: 991px) {
+    .switch_tab ul.subtitle_items > li.active_tutor:hover {
+        background: #f74768;
+    }
+}
 body.video_page ul.tabs {
     margin-bottom: 4px;
 }
