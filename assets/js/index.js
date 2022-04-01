@@ -222,6 +222,8 @@ var app = new Vue({
             setInterval(getNotification, 10000);
         },
         //留言板
+
+        //取得留言訊息
         getMessage() {
             //GET留言板資料
             function get() {
@@ -231,24 +233,27 @@ var app = new Vue({
                 `
                     )
                     .then((res) => {
-                        // console.log(res);
                         app.boardContent = res.data.content.reverse();
                         app.boardMessage = res.data.content;
                         app.fnBoardMessage();
                     })
                     .catch((error) => console.log(error));
             }
-            get();
+
+            get(); //優先執行一次
+
             setInterval(() => {
                 get();
             }, 5000);
-            const scroll = document.querySelector(".board_open .content");
-            // scroll.scrollTo(0, scroll.scrollHeight);
         },
+
+        //留言板開關
         fnBoardToggle() {
             this.board = !this.board;
             this.emoji = false;
         },
+
+        //當前留言板顯示訊息
         fnBoardMessage() {
             if (this.boardNow < this.boardContent.length - 1) {
                 this.boardNow++;
@@ -256,21 +261,25 @@ var app = new Vue({
                 this.boardNow = 0;
             }
         },
+
+        //留言板開啟時滾動至最底
         fnBoardOpen() {
             this.board = true;
             const scroll = document.querySelector(".board_open .content");
             scroll.scrollTo(0, scroll.scrollHeight);
         },
+
+        //訊息加入貼圖
         addEmoji(evt) {
             const input = document.getElementById("message");
             const emoji = evt.target.innerHTML;
             input.focus();
             var prefix = input.value.substring(0, input.selectionStart);
             var suffix = input.value.substring(input.selectionEnd);
-            // console.log(prefix);
-            // console.log(suffix);
             input.value = prefix + emoji + suffix;
         },
+
+        //送出訊息與過濾
         send() {
             //判斷是否登入
             if (!this.member_id) {
@@ -361,6 +370,8 @@ var app = new Vue({
             input.value = "";
             scroll.scrollTo(0, scroll.scrollHeight);
         },
+
+        //init input的狀態
         inputKeydown() {
             const input = document.getElementById("message");
             input.style.outline = "unset";

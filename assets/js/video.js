@@ -62,7 +62,9 @@ var app = new Vue({
         nowPlayAudioIndex: -1, //正在播放的音檔編號
         hint: "", //模式提示
         tutorEndTime: [], //老師講解每段結束時間
+        tutorHover: [], //老師講解Hover陣列
         lastTutorTime: 0, //前一句老師講解結束時間
+        lastTutorHover: 0, //前一句老師講解結束時間
         tutorMb: false, //手機版解說畫面控制
         tutorstate: 1, //手機版解說播放狀態
         clicks: false, //影片是否已點擊
@@ -102,14 +104,46 @@ var app = new Vue({
 
                         if (window.innerWidth < 991) {
                             player3.seekTo(app.lastTutorTime);
-                            player3.playVideo();
+                            player3.unMute().playVideo();
                             // player3.playVideo();
                         } else {
                             player2.seekTo(app.lastTutorTime);
                             player2.unMute().playVideo();
                         }
                         player.pauseVideo();
-                        app.lastTutorTime = tutorEndTime;
+                        app.lastTutorTime = tutorEndTime; //紀錄目前老師講解時間
+                        setTimeout(() => {
+                            for (
+                                let i = app.lastTutorHover;
+                                i < subtitleIndex;
+                                i++
+                            ) {
+                                let li = document.getElementById(`sIndex${i}`);
+
+                                if (
+                                    li.attributes["data-tutorseek"].value !==
+                                    "null"
+                                ) {
+                                    li.classList.add("active_tutor");
+                                }
+                            }
+
+                            const topLi = document.getElementById(
+                                `sIndex${app.lastTutorHover}`
+                            ).offsetTop;
+
+                            const container =
+                                document.querySelector(".subtitle_items");
+
+                            document
+                                .querySelector(".subtitle_items li.active")
+                                .classList.remove("active");
+                            container.scrollTo({
+                                top: topLi, //包含上下行距
+                                behavior: "smooth",
+                            });
+                            app.lastTutorHover = subtitleIndex + 1; //紀錄目前Hover的區間
+                        }, 100);
                     }
                 }
             } else {
@@ -198,19 +232,27 @@ var app = new Vue({
 
                     //取得老師講解開始陣列
                     let tutorEndTime = [];
+                    let tutorHover = [];
                     for (let i = 0; i < res.data.data.length; i++) {
                         const endTime =
                             Number(
                                 res.data.data[i].Tutortime.split(":")[0] * 60
                             ) +
                             Number(res.data.data[i].Tutortime.split(":")[1]);
-                        if (res.data.data[i].Tutortime == "") {
+
+                        if (res.data.data[i].Tutortime == "-") {
+                            tutorHover.push("0");
                             tutorEndTime.push("0");
+                        } else if (res.data.data[i].Tutortime == "null") {
+                            tutorHover.push("null");
+                            tutorEndTime.push("null");
                         } else {
+                            tutorHover.push("1");
                             tutorEndTime.push(endTime.toFixed(2));
                         }
                     }
                     vm.tutorEndTime = tutorEndTime;
+                    vm.tutorHover = tutorHover;
 
                     // 取得 youtube 網址轉換
                     const youtubeId =
@@ -474,6 +516,10 @@ var app = new Vue({
                     player3.pauseVideo();
                     player.playVideo();
                     this.tutorMb = false;
+                    let allLi = document.querySelectorAll(".active_tutor");
+                    for (let i = 0; i < allLi.length; i++) {
+                        allLi[i].classList.remove("active_tutor");
+                    }
                 }
             }
         },
@@ -598,20 +644,36 @@ var app = new Vue({
             //找到最近一句老師解說時間
             this.tutorMb = false;
             let tutorArr = [];
+            let tutorHoverArr = [];
+            //清除之前的Hover
+            let allLi = document.querySelectorAll(".active_tutor");
+            for (let i = 0; i < allLi.length; i++) {
+                allLi[i].classList.remove("active_tutor");
+            }
             for (let i = 0; i < this.nowPlaying; i++) {
                 if (
                     document.getElementById(`sIndex${i}`).attributes[
                         "data-tutorseek"
-                    ].value !== "0"
+                    ].value !== "0" &&
+                    document.getElementById(`sIndex${i}`).attributes[
+                        "data-tutorseek"
+                    ].value !== "null"
                 ) {
                     tutorArr.push(
                         document.getElementById(`sIndex${i}`).attributes[
                             "data-tutorseek"
                         ].value
                     );
+                    tutorHoverArr.push(i + 1);
                 }
             }
+            console.log(tutorHoverArr);
             app.lastTutorTime = tutorArr.slice(-1)[0];
+            if (tutorHoverArr.length == 0) {
+                app.lastTutorHover = 0;
+            } else {
+                app.lastTutorHover = tutorHoverArr.slice(-1)[0];
+            }
 
             if (this.playstate == 0) {
                 player.seekTo(gotoTime);
@@ -679,10 +741,13 @@ var app = new Vue({
                         player.pauseVideo();
                         player2.seekTo(seekTutorTime);
                         player2.playVideo();
+                        player3.seekTo(seekTutorTime);
+                        player3.playVideo();
                     }
                     if (player2Time == tutorEndTime) {
                         player.playVideo();
                         player2.pauseVideo();
+                        player3.pauseVideo();
                     }
                 }
             }
