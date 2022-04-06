@@ -85,6 +85,7 @@ var app = new Vue({
                 //增加播放行數
 
                 let subtitleIndex = this.startTimeArr.indexOf(val);
+                // console.log(subtitleIndex);
                 this.nowPlaying = subtitleIndex;
                 this.ch_content = this.subTitle[subtitleIndex].ch_content;
                 this.en_content = this.subTitle[subtitleIndex].en_content;
@@ -146,8 +147,10 @@ var app = new Vue({
                                 top: topLi, //包含上下行距
                                 behavior: "smooth",
                             });
-                            app.lastTutorHover = subtitleIndex + 1; //紀錄目前Hover的區間
-                        }, 100);
+                            app.lastTutorHover = subtitleIndex; //紀錄目前Hover的區間
+                            app.tutorstate = 1;
+                            console.log("tutor");
+                        }, 500);
                     }
                 }
             } else {
@@ -385,15 +388,14 @@ var app = new Vue({
                         if (e.data == 1) {
                             if (Number(sessionStorage.getItem("mfree")) > 1) {
                                 player.stopVideo();
-                                // alert("您的試用已結束");
                                 $("#myModal01").modal("show");
                                 app.playstate = 0;
                                 return false;
                             }
                             app.playstate = 1;
                             if (app.tutorExist) {
-                                player2.pauseVideo();
-                                player3.pauseVideo();
+                                // player2.pauseVideo();
+                                // player3.pauseVideo();
                             }
                             app.timer = setInterval(app.fnTimeChecking, 10);
                             //點擊計算
@@ -438,7 +440,10 @@ var app = new Vue({
                         // console.log(evt);
                     }
 
-                    function onPlayerReady2(evt) {}
+                    function onPlayerReady2(evt) {
+                        evt.target.pauseVideo();
+                        // console.log("123");
+                    }
                     function onPlayerStateChange2(e) {
                         if (e.data == 1) {
                             app.timer = setInterval(app.fnTimeChecking, 10);
@@ -525,6 +530,26 @@ var app = new Vue({
                     for (let i = 0; i < allLi.length; i++) {
                         allLi[i].classList.remove("active_tutor");
                     }
+                    document
+                        .getElementById(`sIndex${app.nowPlaying}`)
+                        .classList.add("active");
+                    const listWindowContent =
+                        document.querySelector(".subtitle_items");
+                    //字幕區塊高(每句高度都不同)
+                    const sutitleBlkHeight = document.querySelector(
+                        ".subtitle_items li.active"
+                    ).offsetHeight;
+                    //正在播放的字幕與瀏覽器距離 (會隨歌曲撥放而跳句)
+                    const sutitleBlkTop = document.querySelector(
+                        ".subtitle_items li.active"
+                    ).offsetTop;
+
+                    if (this.singleMode) return; //單句模式不滾動
+                    //提前觸發
+                    listWindowContent.scrollTo({
+                        top: sutitleBlkTop, //包含上下行距
+                        behavior: "smooth",
+                    });
                 }
             }
         },
@@ -649,6 +674,10 @@ var app = new Vue({
                 player3.mute().playVideo();
                 this.tutorMb = false;
             }
+            if (this.tutorExist) {
+                player2.pauseVideo();
+                player3.pauseVideo();
+            }
             this.findPara = true;
             let gotoTime = $(event.target).data("seek");
             let nowplayingLyric = $(event.target).data("count");
@@ -659,6 +688,8 @@ var app = new Vue({
             this.nowPlaying = nowplayingLyric; //把播放句子的index重新指定
             //找到最近一句老師解說時間
             this.tutorMb = false;
+            // player2.pauseVideo();
+            // player3.pauseVideo();
             let tutorArr = [];
             let tutorHoverArr = [];
             //清除之前的Hover
@@ -812,6 +843,10 @@ var app = new Vue({
                 player2.pauseVideo();
                 player3.pauseVideo();
                 this.hint = "老師解說:關閉";
+                let allLi = document.querySelectorAll(".active_tutor");
+                for (let i = 0; i < allLi.length; i++) {
+                    allLi[i].classList.remove("active_tutor");
+                }
             } else {
                 this.tutor = true;
                 this.singleMode = false;
@@ -944,6 +979,12 @@ var app = new Vue({
         },
         //搜尋單字
         fnSearchWord(target, evt) {
+            if (Number(sessionStorage.getItem("mfree")) > 1) {
+                player.stopVideo();
+                $("#myModal01").modal("show");
+                app.playstate = 0;
+                return false;
+            }
             if (document.querySelector(".select") !== null) {
                 document.querySelector(".select").classList.remove("select");
             }
@@ -1213,7 +1254,11 @@ var app = new Vue({
         // ==========================================
         // === 分享 ===
         // ==========================================
-        share() {
+        share(status) {
+            if (status == 1) {
+                const originalUrl = window.location.href.replace("#", "");
+                this.URL = `${originalUrl}&cid=411&mid=570280`;
+            }
             document.querySelector(".share_blk").classList.toggle("none");
         },
         shareClose() {
@@ -1591,6 +1636,12 @@ var app = new Vue({
         },
         //播放配音列表
         playAudio(index) {
+            if (Number(sessionStorage.getItem("mfree")) > 1) {
+                player.stopVideo();
+                $("#myModal01").modal("show");
+                app.playstate = 0;
+                return false;
+            }
             if (!this.audioStatus) {
                 player.seekTo(0);
                 this.ch_content = "";

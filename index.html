@@ -916,6 +916,35 @@
                     </div>
                 </div>
             </div>
+            <!-- Ads Block -->
+            <div class="ad_blk">
+                <div>
+                    <a class="ads_pc" href="https://funday.asia/" v-cloak>
+                        <img
+                            v-if="ads"
+                            class="ad_open"
+                            src="./images/web_icon/index_ads.png"
+                            alt=""
+                        />
+                        <img
+                            class="ad_close animate__animated animate__pulse"
+                            src="./images/web_icon/index_ads_close.png"
+                            v-else
+                            alt=""
+                        />
+                    </a>
+                    <a class="ads_mb" href="https://funday.asia/" v-if="ads">
+                        <img src="./images/web_icon/ads_mobile.png" alt="" />
+                    </a>
+                    <img
+                        v-if="ads"
+                        @click="ads = !ads"
+                        class="ads_close_btn"
+                        src="./images/web_icon/ads_close_btn.png"
+                        alt=""
+                    />
+                </div>
+            </div>
             <!--footer-->
             <div id="footer">
                 <div class="copyright">

@@ -421,7 +421,7 @@
                     @click="uploadFile"
                   >
                     <a v-show="!isUpload" href="#">上傳音檔</a>
-                    <a v-show="isUpload" class="done" href="#" style="color: rgba(255,255,255,.6);">上傳完成</a>
+                    <a v-show="isUpload" class="done" href="#" @click="share(1)">分享我的音檔</a>
                   </div>
                 </div>
               </div>

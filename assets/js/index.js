@@ -45,6 +45,7 @@ var app = new Vue({
         notiPic: "", //手機版推播頭像
         notiIndex: -1, //手機版推播則數
         notiChange: false, //手機版推播動畫開關
+        ads: true, //廣告預設開啟
     },
     watch: {
         alert: function (val, oldVal) {
@@ -379,10 +380,18 @@ var app = new Vue({
             input.classList.remove("input_change");
             input.style.boxShadow = " 0px 0px 0px 4px rgb(0 ,0, 0,0.1)";
         },
+        closeAds() {
+            if (window.innerWidth > 1200) {
+                setTimeout(() => {
+                    this.ads = false;
+                }, 5000);
+            }
+        },
     },
     created() {
         this.getMessage();
         this.notification();
+        this.closeAds();
         let hash = window.location.href;
         sessionStorage.setItem("para", "");
         let mid = sessionStorage.getItem("mindx");

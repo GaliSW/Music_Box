@@ -5,20 +5,25 @@
     right: 0px;
     bottom: 0px;
     background: rgba(255, 255, 255, 0.8);
+    /* opacity: 0.8; */
     border-radius: 16px 16px 0px 0px;
     transition: all 0.5s ease;
-    z-index: 998;
+    z-index: 999;
+    /* -webkit-perspective: 700;
+    -moz-perspective: 700;
+    perspective: 700; */
 }
 .message_board_blk .message_blur {
+    /* border: 1px solid red; */
     background-color: #fff;
     height: 100%;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    filter: blur(1px);
+    filter: blur(3px);
     z-index: -1;
-    opacity: 0.6;
+    opacity: 0.4;
     border-radius: 16px 16px 0px 0px;
 }
 
@@ -27,7 +32,9 @@
     position: absolute;
     height: 56px;
     display: flex;
+    /* justify-content: space-between; */
     align-items: center;
+    /* border: 1px solid red; */
     left: 50%;
     transform: translate(-50%);
     width: 95%;
@@ -60,26 +67,16 @@
 }
 .message_board_blk .board_close > div .head > .userHead img {
     width: 100%;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
     background-color: #e6e6e6;
 }
 .message_board_blk .board_close > div .head .board_gif {
     position: absolute;
+    /* border: 1px solid red; */
     width: 80px;
     opacity: 0.5;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-}
-.message_board_blk .board_close > div .name {
-    display: flex;
-    width: 60px;
-    margin-right: 4px;
-    margin-left: 15px;
-    text-align: center;
-    padding: 0;
 }
 .message_board_blk .board_close > div .female {
     font-family: "Roboto";
@@ -87,10 +84,13 @@
     font-weight: 700;
     font-size: 17px;
     color: #f74768;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    margin-left: 15px;
+    margin-right: 4px;
     animation-duration: 1s;
+    /* animation: blk_rotate 5s; */
+    /* animation-delay: 0.5s; */
+    /* animation-timing-function: linear; */
+    /* animation-iteration-count: infinite; */
 }
 .message_board_blk .board_close > div .male {
     font-family: "Roboto";
@@ -98,18 +98,20 @@
     font-weight: 700;
     font-size: 17px;
     color: #2f6fba;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    margin-left: 15px;
+    margin-right: 4px;
     animation-duration: 1s;
-    width: 100%;
+    /* animation: blk_rotate 5s; */
+    /* animation-delay: 0.5s; */
+    /* animation-timing-function: linear; */
+    /* animation-iteration-count: infinite; */
 }
 .message_board_blk .board_close > div .text {
-    height: 20px;
     /* border: 1px solid red; */
+    height: 20px;
     position: relative;
     margin: 0;
-    width: 100%;
+    /* width: 420px; */
     white-space: nowrap;
     overflow: hidden;
     font-family: "Roboto";
@@ -119,10 +121,14 @@
     color: #19181b;
     opacity: 0.8;
     display: flex;
+    /* animation: blk_rotate 5s; */
+    /* animation-delay: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite; */
 }
 .message_board_blk .board_close > div .text_wrapper {
-    /* border: 1px solid red; */
     position: relative;
+    /* border: 1px solid red; */
     white-space: nowrap;
     width: 95%;
     top: 0;
@@ -136,24 +142,15 @@
 }
 .message_board_blk .board_close > div .text_wrapper .width {
     opacity: 0;
-    width: 100%;
-    /* border: 1px solid blue; */
 }
 .message_board_blk .board_close > div .text_wrapper .first {
-    animation: scroll3 40s linear infinite;
-    animation-delay: 2s;
-    width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    animation: scroll 40s linear infinite;
+    display: flex;
 }
 .message_board_blk .board_close > div .text_wrapper .second {
-    animation: scroll4 40s linear infinite;
-    animation-delay: 2s;
-    width: 100%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    display: flex;
+    animation: scroll2 40s linear infinite;
+    animation-delay: -20s;
 }
 .message_board_blk .board_close .toggle {
     position: absolute;
@@ -170,17 +167,28 @@
     opacity: 0;
     visibility: hidden;
 }
-
-@keyframes scroll3 {
+/* 
+@keyframes textScroll {
+    0% {
+        left: 0;
+    }
+    50% {
+        left: -50%;
+    }
+    100% {
+        left: -100%;
+    }
+} */
+@keyframes scroll {
     from {
-        transform: translateX(0%);
+        transform: translateX(100%);
     }
     to {
-        transform: translateX(-200%);
+        transform: translateX(-100%);
     }
 }
 
-@keyframes scroll4 {
+@keyframes scroll2 {
     from {
         transform: translateX(100%);
     }
@@ -203,6 +211,7 @@
     opacity: 0;
     visibility: hidden;
     padding: 36px 20px 0px 20px;
+    /* border: 1px solid red; */
     transition: all 0.8s ease-in-out;
     overflow-y: scroll;
     scroll-behavior: smooth;
@@ -215,6 +224,8 @@
 /* 捲軸寬度 */
 .message_board_blk .board_open .content::-webkit-scrollbar {
     width: 3px;
+    /* background-color: black; */
+    /* margin-top: 5px; */
 }
 /* 捲軸本體顏色 */
 .message_board_blk .board_open .content::-webkit-scrollbar-thumb {
@@ -232,6 +243,7 @@
     align-items: center;
     margin: 0 auto;
     height: 56px;
+    /* border: 1px solid red; */
 }
 .message_board_blk .board_open .send_bar .userPic {
     width: 36px;
@@ -255,22 +267,16 @@
     font-weight: 400;
     font-size: 16px;
     color: rgba(0, 0, 0, 0.7);
-    padding: 0px 30px 0px 25px;
+    padding: 0px 16px;
     margin: 0 10px;
 }
 .message_board_blk .board_open .send_bar input:focus {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #fff;
     opacity: 1;
     border: 1px solid rgba(0, 0, 0, 0.6);
     box-shadow: 0px 0px 0px 4px rgba(0, 0, 0, 0.1);
-    -webkit-box-shadow: 0px 0px 0px 4px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0px 0px 0px 4px rgba(0, 0, 0, 0.1);
     outline: none;
 }
-
 .message_board_blk .board_open .send_bar .emoji {
     position: absolute;
     right: 20px;
@@ -283,7 +289,7 @@
 }
 .message_board_blk .board_open .toggle {
     position: absolute;
-    right: 0px;
+    right: 0;
     cursor: pointer;
 }
 .message_board_blk .board_open .content ul {
@@ -318,16 +324,20 @@
     opacity: 0;
     z-index: 2;
     visibility: hidden;
-    background: rgba(230, 230, 230, 0.9);
+    background: rgba(214, 214, 214, 0.9);
+    /* opacity: 0.9; */
     transition: all 0.3s linear;
     bottom: 0px;
 }
 .emoji_open {
+    /* height: 160px; */
     opacity: 1;
     visibility: visible;
-    bottom: 55px;
+    bottom: 45px;
+    /* transition: all 1s linear; */
 }
 .emoji_blk .emoji_wrapper {
+    /* border: 1px solid red; */
     overflow: hidden;
     height: 100%;
 }
@@ -342,6 +352,7 @@
     padding: 40px 64px;
 }
 .emoji_blk .emoji_wrapper ul li {
+    /* border: 1px solid red; */
     cursor: pointer;
     width: 10%;
     font-size: 28px;
@@ -349,13 +360,9 @@
     justify-content: center;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 590px) {
     .message_board_blk {
         width: 100%;
-        border-radius: 0px;
-    }
-    .message_board_blk .message_blur {
-        border-radius: 0px;
     }
     .message_board_blk .board_close .text {
         width: calc(100% - 144px);
@@ -367,17 +374,6 @@
         width: 100%;
     }
     .message_board_blk .board_open .send_bar .emoji {
-        /* right: 50px; */
-    }
-    .message_board_blk .board_close > div .text_wrapper {
-        width: 95%;
-    }
-}
-@media (max-width: 590px) {
-    .message_board_blk .board_open .send_bar .emoji {
-        display: none;
-    }
-    .message_board_blk .board_open .send_bar .send_desktop {
         display: none;
     }
     .message_board_blk .board_open .send_bar .send_mobile {
@@ -388,37 +384,62 @@
         transform: translateY(-50%);
         cursor: pointer;
     }
-    .message_board_blk .board_close > div .text_wrapper {
-        width: 90%;
-    }
-}
-@media (max-width: 480px) {
-    .message_board_blk .board_open .send_bar input {
-        width: 90%;
-    }
-    .message_board_blk .board_open .toggle {
-        right: 5px;
-    }
-    .message_board_blk .board_open .send_bar .send_mobile {
-        right: 35px;
+    .message_board_blk .board_open .send_bar .send_desktop {
+        display: none;
     }
 }
 .animate__animated.animate__flipInX {
     --animate-duration: 1s;
 }
 
-/* 警示 */
+/* ----------------------------------------------
+ * Generated by Animista on 2022-3-17 16:48:49
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation flip-horizontal-top
+ * ----------------------------------------
+ */
+
+.flip-horizontal-top {
+    -webkit-animation: flip-horizontal-top 1s
+        cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+    animation: flip-horizontal-top 1s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+        both;
+}
+@-webkit-keyframes flip-horizontal-top {
+    0% {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(360deg);
+        transform: rotateX(360deg);
+    }
+}
+@keyframes flip-horizontal-top {
+    0% {
+        -webkit-transform: rotateX(0);
+        transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(360deg);
+        transform: rotateX(360deg);
+    }
+}
+
 .message_board_blk .board_open .send_bar .alertHint {
     position: absolute;
     left: 50%;
     transform: translate(-50%);
     top: -30px;
-    color: #e84149;
+    color: red;
     font-size: 18px;
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
     width: 150px;
     height: 30px;
     justify-content: center;
@@ -426,7 +447,4 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-}
-.message_board_blk .board_open .send_bar .input_change::placeholder {
-    color: #e84149;
 }

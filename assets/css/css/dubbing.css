@@ -89,22 +89,7 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     padding-right: 8px;
     vertical-align: middle;
 }
-.tool_bar_audio .buootn.todo_Go .done:before {
-    content: url(../../images/web_icon/singer_share.svg);
-    display: inline-block;
-    padding-right: 8px;
-    vertical-align: middle;
-}
-.tool_bar_audio .buootn .done {
-    color: #fe7523;
-    padding: 4px 10px;
-    background: #fff;
-    border-radius: 6px;
-    display: inline-block;
-    text-decoration: none;
-    vertical-align: middle;
-    line-height: 24px;
-}
+
 .tool_bar_audio .repeat,
 .tool_bar_audio .audio_control {
     font-family: Noto Sans TC;
@@ -136,7 +121,7 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     position: absolute;
     width: 100%;
     top: 0;
-    z-index: 3;
+    z-index: 2;
     height: 100%;
     background-color: #000;
     display: flex;
