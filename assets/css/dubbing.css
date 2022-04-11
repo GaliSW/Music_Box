@@ -96,6 +96,7 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     vertical-align: middle;
 }
 .tool_bar_audio .buootn .done {
+    width: 100%;
     color: #fe7523;
     padding: 4px 10px;
     background: #fff;
@@ -168,7 +169,7 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
 @media (max-width: 1366px) {
     .tool_bar_audio .function02 .center .play_bar span {
         padding: 0px;
-        margin: 0 20px;
+        margin: 0 10px;
     }
 }
 @media (max-width: 991px) {
@@ -258,6 +259,9 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     .tool_bar_audio .audio_control a,
     .tool_bar_audio .repeat a {
         padding-left: 0;
+    }
+    .tool_bar_audio .buootn .done {
+        border-radius: 0px;
     }
 }
 @media (max-width: 600px) {

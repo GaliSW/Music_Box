@@ -22,7 +22,8 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
         />
         <link href="./assets/css/landing.css" rel="stylesheet" />
-        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/video_rwd_fix.css">
         <!-- <link rel="stylesheet" href="./assets/css/update.css"> -->
         <link rel="shortcut icon" href="./images/web_icon/favicon.ico" type="image/x-icon"/>
     <script src="./assets/js/jquery.min.js"></script>
@@ -224,12 +225,43 @@
         />
     </div> -->
         <div id="header">
+            <!-- full screen  -->
+            <div
+                id="fullscreen"
+                onclick="toggleFullScreen(document.documentElement)"
+                style="bottom: 0px; right: 0px"
+            >
+                <img
+                    class="full_open"
+                    src="./images/web_icon/full_open.svg"
+                    alt=""
+                />
+                <img
+                    class="full_close none"
+                    src="./images/web_icon/full_close.svg"
+                    alt=""
+                />
+            </div>
+            <!-- ads -->
+            <div class="ad_blk ad_bottom " style="bottom: 105px">
+                <div>
+                    <a class="ads_mb" href="https://funday.asia/" >
+                        <img src="./images/web_icon/ads_mobile.png" alt="" />
+                    </a>
+                    <img
+                        class="ads_close_btn"
+                        src="./images/web_icon/ads_close_btn.svg"
+                        alt=""
+                    />
+                </div>
+            </div>
             <div id="logo" onclick="location.href='./index.html'" style="cursor: pointer"> 
-                <span class="img"
-                    ><img
-                        src="./images/web_icon/funMusic.svg"
-                        alt="FUNDAY" /></span
-                ><span class="txt"></span>
+                <span class="img rotateX " id="logoImg"
+                        ><img src="images/web_icon/funMusic.svg" alt="FUNDAY"
+                    /></span>
+                    <span class="logo_text rotateX none" id="logoText">
+                        <div>聽音樂學英文</div>
+                    </span>
             </div>
         </div>
         <!-- Masthead-->
@@ -376,6 +408,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">加入會員享有完整功能</div>
                             <div class="form_body">
@@ -450,6 +483,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">加入會員享有完整功能</div>
                             <div class="form_body">
@@ -567,6 +601,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">簡訊驗證</div>
                             <div class="form_body">
@@ -651,6 +686,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">修改手機號碼</div>
                             <div class="form_body">
@@ -862,6 +898,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="110px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">使用Facebook登入</div>
                             <div class="form_body">
@@ -976,6 +1013,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="120px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="form_body">
                                 <form
@@ -1085,6 +1123,7 @@
                                     src="images/web_icon/funMusic.svg"
                                     width="120px"
                                 />
+                                <span>聽音樂學英文</span>
                             </div>
                             <div class="slogin">忘記密碼</div>
                             <div class="form_body">
@@ -1210,5 +1249,11 @@
                 });
         }
     </script>
+    <script>
+        $(".ads_close_btn").click(()=>{
+            $(".ad_blk").addClass("none");
+        })
+    </script>
     <script src="assets/js/landingLogin.js"></script>
+    <script src="assets/js/myjs.js"></script>
 </html>

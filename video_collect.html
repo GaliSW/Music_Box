@@ -18,6 +18,7 @@
 <link href="assets/css/bootstrap.css" rel="stylesheet">
 <!-- Main style sheet -->
 <link href="assets/css/style.css?1230" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/video_rwd_fix.css">
 <!-- Podcast -->
 <link rel="stylesheet" href="assets/css/podcast.css">
 <!-- Notification -->
@@ -224,14 +225,49 @@
       <!-- End Google Tag Manager (noscript) -->
 
 <div class="all_wrap" id="app" v-cloak  > 
+  <!-- full screen  -->
+  <div
+  id="fullscreen"
+  onclick="toggleFullScreen(document.documentElement)"
+  style="bottom:0px;right:0px;"
+>
+  <img
+      class="full_open"
+      src="./images/web_icon/full_open.svg"
+      alt=""
+  />
+  <img
+      class="full_close none"
+      src="./images/web_icon/full_close.svg"
+      alt=""
+  />
+</div>
+<!-- ads -->
+<div class="ad_blk ad_bottom " style="bottom:105px;">
+<div>
+    <a class="ads_mb" href="https://funday.asia/" v-if="ads">
+        <img src="./images/web_icon/ads_mobile.png" alt="" />
+    </a>
+    <img
+        v-if="ads"
+        @click="ads = !ads"
+        class="ads_close_btn"
+        src="./images/web_icon/ads_close_btn.svg"
+        alt=""
+    />
+</div>
+</div>
   <!--header-->
   <div id="header">
     <a id="logo" href="./" class="collect_header"
-        ><span class="img"
-            ><img
-                src="images/web_icon/funMusic.svg"
-                alt="FUNDAY" /></span
-    ></a>
+        >
+        <span class="img rotateX" id="logoImg"
+        ><img src="images/web_icon/funMusic.svg" alt="FUNDAY"
+    /></span>
+    <span class="logo_text rotateX none" id="logoText">
+        <div>聽音樂學英文</div>
+    </span>
+      </a>
     <div id="login_blk" class="collect_header">
         <div class="gift_index">
             <a href="./landing.html" style="margin-right: 28px;"
@@ -588,7 +624,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <div class="login_way mail"><a href="#"  data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal02" class="use_mail"  >使用電子信箱加入</a></div>
@@ -611,7 +647,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -656,7 +692,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">簡訊驗證</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -689,7 +725,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">修改手機號碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -790,7 +826,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">使用Facebook登入</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -833,7 +869,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"><span>聽音樂學英文</span></div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
@@ -871,7 +907,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"><span>聽音樂學英文</span></div>
           <div class="slogin">忘記密碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -959,6 +995,7 @@ var app = new Vue({
         songLessMb:false,
         favLess:false,
         favLessMb:false,
+        ads: true, //廣告預設開啟
     },
     computed:{
     

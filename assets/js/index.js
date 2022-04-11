@@ -46,6 +46,7 @@ var app = new Vue({
         notiIndex: -1, //手機版推播則數
         notiChange: false, //手機版推播動畫開關
         ads: true, //廣告預設開啟
+        logoIndex: 0, //Logo切換
     },
     watch: {
         alert: function (val, oldVal) {
@@ -250,6 +251,12 @@ var app = new Vue({
 
         //留言板開關
         fnBoardToggle() {
+            if (this.board) {
+                document.body.style.overflowY = "scroll";
+            } else {
+                document.body.style.overflowY = "hidden";
+                this.fnBoardOpen();
+            }
             this.board = !this.board;
             this.emoji = false;
         },
@@ -265,7 +272,6 @@ var app = new Vue({
 
         //留言板開啟時滾動至最底
         fnBoardOpen() {
-            this.board = true;
             const scroll = document.querySelector(".board_open .content");
             scroll.scrollTo(0, scroll.scrollHeight);
         },
@@ -380,18 +386,11 @@ var app = new Vue({
             input.classList.remove("input_change");
             input.style.boxShadow = " 0px 0px 0px 4px rgb(0 ,0, 0,0.1)";
         },
-        closeAds() {
-            if (window.innerWidth > 1200) {
-                setTimeout(() => {
-                    this.ads = false;
-                }, 5000);
-            }
-        },
     },
     created() {
         this.getMessage();
         this.notification();
-        this.closeAds();
+        // this.logoChange();
         let hash = window.location.href;
         sessionStorage.setItem("para", "");
         let mid = sessionStorage.getItem("mindx");

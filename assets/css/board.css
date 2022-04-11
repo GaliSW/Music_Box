@@ -6,7 +6,7 @@
     bottom: 0px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 16px 16px 0px 0px;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     z-index: 998;
 }
 .message_board_blk .message_blur {
@@ -189,6 +189,7 @@
     }
 }
 .message_board_blk .board_open {
+    padding-top: 10px;
     height: 100%;
     position: relative;
     opacity: 0;
@@ -218,7 +219,7 @@
 }
 /* 捲軸本體顏色 */
 .message_board_blk .board_open .content::-webkit-scrollbar-thumb {
-    background-color: #bb6573;
+    background-color: #b6b6b6;
 }
 
 .message_board_blk .board_open .add {
@@ -299,7 +300,12 @@
     align-items: flex-start;
     margin-bottom: 16px;
 }
+#content_blk > li > div {
+    white-space: wrap;
+    word-break: break-all;
+}
 .message_board_blk .board_open .content li img {
+    margin-top: 0;
     width: 24px;
     height: 24px;
     border-radius: 50%;

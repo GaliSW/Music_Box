@@ -63,6 +63,7 @@ var app = new Vue({
         hint: "", //模式提示
         tutorEndTime: [], //老師講解每段結束時間
         tutorHover: [], //老師講解Hover陣列
+        tutorStart: [], //老師講解開始段落的編號
         lastTutorTime: 0, //前一句老師講解結束時間
         lastTutorHover: 0, //前一句老師講解結束時間
         tutorMb: false, //手機版解說畫面控制
@@ -71,6 +72,16 @@ var app = new Vue({
         tutorExist: false, //是否有老師解說
         hasSinger: true, //是否有歌手歡唱
         tutorMb_pre: false, //老師解說是否預載
+        singerId: "", //配音歌手ID參數字串
+        singerMid: "", //配音歌手Mid
+        singerCid: "", //配音歌手Cid
+        singerMode: false, //配音歌手頁面
+        singerImg: "", //
+        singerName: "", //
+        singerSex: "", //
+        singerFile: "",
+        singerTime: "",
+        ads: true, //廣告預設開啟
     },
     computed: {},
     watch: {
@@ -107,10 +118,6 @@ var app = new Vue({
                         if (window.innerWidth < 991) {
                             player3.seekTo(app.lastTutorTime);
                             player3.unMute().playVideo();
-                            // setTimeout(() => {
-                            //     player3.unMute().playVideo();
-                            // }, 1000);
-                            // player3.playVideo();
                         } else {
                             player2.seekTo(app.lastTutorTime);
                             player2.unMute().playVideo();
@@ -132,7 +139,9 @@ var app = new Vue({
                                     li.classList.add("active_tutor");
                                 }
                             }
-
+                            document.querySelector(
+                                `.tutorPara${subtitleIndex - 1}`
+                            ).style.display = "none";
                             const topLi = document.getElementById(
                                 `sIndex${app.lastTutorHover}`
                             ).offsetTop;
@@ -209,6 +218,27 @@ var app = new Vue({
         },
     },
     methods: {
+        tutorMark() {
+            if (this.tutor) {
+                for (let i = 0; i < this.tutorStart.length; i++) {
+                    document.querySelector(
+                        `.tutorPara${this.tutorStart[i]}`
+                    ).style.display = "block";
+                    document.getElementById(
+                        `sIndex${this.tutorStart[i]}`
+                    ).style.borderLeft = "3px solid #F74768";
+                }
+            } else {
+                for (let i = 0; i < this.tutorStart.length; i++) {
+                    document.querySelector(
+                        `.tutorPara${this.tutorStart[i]}`
+                    ).style.display = "none";
+                    document.getElementById(
+                        `sIndex${this.tutorStart[i]}`
+                    ).style.borderLeft = "none";
+                }
+            }
+        },
         //youtube iframe API
         getVideo() {
             let vm = this;
@@ -240,6 +270,7 @@ var app = new Vue({
                     //取得老師講解開始陣列
                     let tutorEndTime = [];
                     let tutorHover = [];
+                    let tutorStart = [];
                     for (let i = 0; i < res.data.data.length; i++) {
                         const endTime =
                             Number(
@@ -256,10 +287,12 @@ var app = new Vue({
                         } else {
                             tutorHover.push("1");
                             tutorEndTime.push(endTime.toFixed(2));
+                            tutorStart.push(i);
                         }
                     }
                     vm.tutorEndTime = tutorEndTime;
                     vm.tutorHover = tutorHover;
+                    vm.tutorStart = tutorStart;
 
                     // 取得 youtube 網址轉換
                     const youtubeId =
@@ -272,6 +305,9 @@ var app = new Vue({
                         vm.tutorExist = true;
                         vm.tutorMb_pre = true;
                         vm.tutor = true;
+                        setTimeout(() => {
+                            this.tutorMark();
+                        }, 1000);
                     } else {
                         vm.tutorExist = false;
                     }
@@ -430,7 +466,7 @@ var app = new Vue({
                             }
 
                             //隨機撥放模式
-                            if (app.playRadom == true && app.playMethods == 1) {
+                            if (app.playRadom == true && app.playMethods == 3) {
                                 app.fnPlayListRamdom(e);
                             }
                         }
@@ -484,7 +520,7 @@ var app = new Vue({
             //取得影片長度 秒
             const allTime = player.getDuration();
             this.currentTime = time;
-            // console.log(time);
+            console.log(time);
 
             if (time < allTime) {
                 let currentTime = (time / allTime) * 100;
@@ -530,9 +566,11 @@ var app = new Vue({
                     for (let i = 0; i < allLi.length; i++) {
                         allLi[i].classList.remove("active_tutor");
                     }
+                    this.tutorMark();
                     document
                         .getElementById(`sIndex${app.nowPlaying}`)
                         .classList.add("active");
+
                     const listWindowContent =
                         document.querySelector(".subtitle_items");
                     //字幕區塊高(每句高度都不同)
@@ -669,6 +707,7 @@ var app = new Vue({
         //按歌詞播放某一段
         fnSeekTo(event) {
             if (this.recMode) return;
+
             //手機板老師講解預載
             if (this.tutorMb_pre) {
                 player3.mute().playVideo();
@@ -677,6 +716,7 @@ var app = new Vue({
             if (this.tutorExist) {
                 player2.pauseVideo();
                 player3.pauseVideo();
+                this.tutorMark();
             }
             this.findPara = true;
             let gotoTime = $(event.target).data("seek");
@@ -821,10 +861,9 @@ var app = new Vue({
         },
         //隨機播放清單
         fnPlayListRamdom() {
-            // console.log("隨機");
-            if (this.playMethods == 1 && e.data === YT.PlayerState.ENDED) {
+            if (this.playMethods == 3 && e.data === YT.PlayerState.ENDED) {
                 location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.random_id}`;
-                // console.log("隨機撥放");
+                console.log("隨機撥放");
             }
         },
         //下一首
@@ -837,6 +876,7 @@ var app = new Vue({
         },
         //老師講解
         fnTutor() {
+            if (this.nowTab == 1 || this.recMode) return;
             if (this.tutor) {
                 this.tutor = false;
                 this.tutorMb = false;
@@ -853,13 +893,59 @@ var app = new Vue({
                 this.hint = "老師解說:開啟";
                 player3.unMute();
             }
+            this.tutorMark();
         },
         //切換配音tab
-        tabChange() {
+        tabChange(evt) {
+            if (evt == 0) {
+                let timeArr = [];
+                this.tutor = false;
+                this.tutorMb = false;
+                if (this.tutorExist) {
+                    player2.pauseVideo();
+                    player3.pauseVideo();
+                }
+                let allLi = document.querySelectorAll(".active_tutor");
+                for (let i = 0; i < allLi.length; i++) {
+                    allLi[i].classList.remove("active_tutor");
+                }
+                for (let i = 0; i < this.likeData.length; i++) {
+                    let duration;
+                    let time = document.getElementById(`audio${i}`).duration;
+
+                    let min = Math.floor(time / 60);
+                    let sec = (time % 60).toFixed(0);
+                    if (min < 10 && sec < 10) {
+                        duration = `0${min}:0${sec}`;
+                    } else if (min < 10 && sec == 10) {
+                        duration = `0${min}:${sec}`;
+                    } else if (min < 10 && sec > 10) {
+                        duration = `0${min}:${sec}`;
+                    } else if (min > 10 && sec < 10) {
+                        duration = `${min}:0${sec}`;
+                    } else {
+                        duration = `${min}:${sec}`;
+                    }
+                    timeArr.push(duration);
+                }
+                this.audioTime = timeArr;
+                return false;
+            }
             if (this.nowTab == 0) {
                 this.nowTab = 1;
                 this.hint = "歌手列表:開啟";
                 let timeArr = [];
+                this.tutor = false;
+                this.tutorMb = false;
+                this.tutorMark();
+                if (this.tutorExist) {
+                    player2.pauseVideo();
+                    player3.pauseVideo();
+                }
+                let allLi = document.querySelectorAll(".active_tutor");
+                for (let i = 0; i < allLi.length; i++) {
+                    allLi[i].classList.remove("active_tutor");
+                }
                 for (let i = 0; i < this.likeData.length; i++) {
                     let duration;
                     let time = document.getElementById(`audio${i}`).duration;
@@ -892,44 +978,59 @@ var app = new Vue({
             let hash = window.location.href;
             this.URL = hash;
             hash = hash.split("?")[1];
-            // console.log(hash);
+
+            if (hash.indexOf("mid") > -1 && hash.indexOf("fbclid") > -1) {
+                this.singerId = location.hash;
+                hash = hash.split("&");
+                //過濾fb分享參數
+                location.href = `https://music.funday.asia/video.html?videoId=${
+                    hash[0].split("=")[1]
+                }${this.singerId}`;
+            } else if (hash.indexOf("mid") > -1) {
+                this.singerId = location.hash;
+            }
 
             hash = hash.split("&"); //['categoryId=1','videoId=1050']
 
             if (hash.length == 1) {
-                vm.videoId = hash[0].split("=")[1];
+                vm.videoId = hash[0].split("=")[1].replace("#mid", "");
                 vm.categoryId = 1;
             } else {
-                //過濾fb分享參數
+                // alert();
+                // //過濾fb分享參數
                 if (hash[1].split("=")[0] == "fbclid") {
                     location.href = `https://music.funday.asia/video.html?videoId=${
                         hash[0].split("=")[1]
                     }`;
                 }
                 vm.categoryId = hash[0].split("=")[1];
-                vm.videoId = hash[1].split("=")[1];
+                vm.videoId = hash[1].split("=")[1].replace("#mid", "");
             }
+
             // ===產生分享網址===
-            let link = encodeURIComponent(
-                `https://music.funday.asia/video.html?videoId=${vm.videoId}`
-            );
-            let title = encodeURIComponent(
-                `https://music.funday.asia/video.html?videoId=${vm.videoId}`
-            );
-            // *FB
-            //www.facebook.com/sharer.php?u=http://blog.ja-anything.com/&quote=大家跟我一起用Facebook分享吧!
-            // this.fburl = `https://www.facebook.com/sharer.php?u=https://music.funday.asia/video.html?videoId=1060`;
-            this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${vm.videoId}'))));`;
-            //*Line
-            this.lineurl = `https://social-plugins.line.me/lineit/share?url=${link}`;
-            //*twitter
-            this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
-            //*email
-            this.emailurl = `mailto:?to=&subject=FunMusic&body=${link}`;
-            //*Whatsapp
-            this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${vm.videoId}`;
-            //*Linkedin
-            this.linkedinurl = `https://www.linkedin.com/shareArticle?mini=true&title=test&url=${link}`;
+
+            // //分享配音時的cid - mid (411-213132)
+            // let singer;
+            // if (vm.singerId !== "") {
+            //     singer = `mid=${vm.singerId}`;
+            // }
+            // let link = encodeURIComponent(
+            //     `https://music.funday.asia/video.html?videoId=${vm.videoId}`
+            // );
+            // // *FB
+            // //www.facebook.com/sharer.php?u=http://blog.ja-anything.com/&quote=大家跟我一起用Facebook分享吧!
+            // // this.fburl = `https://www.facebook.com/sharer.php?u=https://music.funday.asia/video.html?videoId=1060`;
+            // this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${vm.videoId}#${singer}'))));`;
+            // //*Line
+            // this.lineurl = `https://social-plugins.line.me/lineit/share?url=${link}#${singer}`;
+            // //*twitter
+            // this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${vm.videoId}#${singer}`;
+            // //*email
+            // this.emailurl = `mailto:?to=&subject=FunMusic&body=${link}#${singer}`;
+            // //*Whatsapp
+            // this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${vm.videoId}#${singer}`;
+            // //*Linkedin
+            // this.linkedinurl = `https://www.linkedin.com/shareArticle?mini=true&title=test&url=${link}#${singer}`;
 
             //GET請求 相關連結
             axios
@@ -944,20 +1045,41 @@ var app = new Vue({
         //手機版進入歡唱選項
         choose(status) {
             player.pauseVideo();
+            const chooseBlk = document.querySelector(".chooseBlk");
+            // const back = document.querySelector(".backBtn");
             switch (status) {
                 case 0:
-                    document
-                        .querySelector(".chooseBlk")
-                        .classList.remove("none");
+                    if (sessionStorage.getItem("mindx") == undefined) {
+                        // alert("請先登入會員");
+                        $("#myModal09").modal("hide");
+                        $("#myModal07").modal("show");
+                    } else {
+                        document
+                            .querySelector(".mobile_choose_blur")
+                            .classList.remove("none");
+                        chooseBlk.classList.remove("none");
+                        if (this.tutorExist) {
+                            this.tutor = false;
+                            this.tutorMb = false;
+                            this.tutorMark();
+                            const teacherBtn =
+                                document.querySelector(".teacherBtn");
+                            setTimeout(() => {
+                                teacherBtn.classList.add("none");
+                            }, 100);
+                        }
+                    }
                     break;
                 case 1:
-                    document.querySelector(".chooseBlk").classList.add("none");
-                    // player.seekTo(0);
-                    // this.currentTime = "00:00";
+                    chooseBlk.classList.add("none");
+                    // back.classList.remove("none");
                     this.startRecord();
+                    document
+                        .querySelector(".mobile_choose_blur")
+                        .classList.add("none");
                     break;
                 case 2:
-                    document.querySelector(".chooseBlk").classList.add("none");
+                    this.back();
                     break;
             }
         },
@@ -1006,7 +1128,7 @@ var app = new Vue({
                 // console.log(rect.left);
                 if (rect.left > 1400) {
                     $(".DrWord").css({
-                        left: rect.left - 145,
+                        left: rect.left - 155,
                         top: rect.top + 25,
                     });
                 } else {
@@ -1255,11 +1377,37 @@ var app = new Vue({
         // === 分享 ===
         // ==========================================
         share(status) {
+            let singer;
             if (status == 1) {
                 const originalUrl = window.location.href.replace("#", "");
-                this.URL = `${originalUrl}&cid=411&mid=570280`;
+                this.URL = `${originalUrl}#mid=${app.singerId}`;
+                singer = `mid=${this.singerId}`;
+                //分享配音時的cid - mid (411-213132)
+            } else if (status == 0) {
+                this.URL = window.location.href.replace("#", "");
+                singer = "";
+                console.log(this.URL);
             }
+
             document.querySelector(".share_blk").classList.toggle("none");
+            let link = encodeURIComponent(
+                `https://music.funday.asia/video.html?videoId=${this.videoId}#${singer}`
+            );
+            // *FB
+            //www.facebook.com/sharer.php?u=http://blog.ja-anything.com/&quote=大家跟我一起用Facebook分享吧!
+            // this.fburl = `https://www.facebook.com/sharer.php?u=https://music.funday.asia/video.html?videoId=1060`;
+            this.fburl = `javascript: void(window.open('http://www.facebook.com/share.php?u='.concat(encodeURIComponent('https://music.funday.asia/video.html?videoId=${this.videoId}#${singer}'))));`;
+            //*Line
+            this.lineurl = `https://social-plugins.line.me/lineit/share?url=${link}`;
+            //*twitter
+            this.twitterurl = `https://twitter.com/intent/tweet?url=https://music.funday.asia/video.html?videoId=${this.videoId}#${singer}`;
+            //*email
+            this.emailurl = `mailto:?to=&subject=FunMusic&body=${link}`;
+            //*Whatsapp
+            this.whatsurl = `https://api.whatsapp.com/send?text=https://music.funday.asia/video.html?videoId=${this.videoId}#${singer}`;
+            //*Linkedin
+            this.linkedinurl = `https://www.linkedin.com/sharing/share-offsite/?url=${link}`;
+            // this.linkedinurl = `https://www.linkedin.com/shareArticle?mini=true&title=test&url=${link}`;
         },
         shareClose() {
             document.querySelector(".share_blk").classList.toggle("none");
@@ -1397,6 +1545,12 @@ var app = new Vue({
             });
         },
         back() {
+            if (this.tutorExist) {
+                const teacherBtn = document.querySelector(".teacherBtn");
+                teacherBtn.classList.remove("none");
+            }
+            const chooseBlk = document.querySelector(".chooseBlk");
+            chooseBlk.classList.add("none");
             this.recMode = false;
             this.recEnd();
             this.isUpload = false;
@@ -1409,6 +1563,15 @@ var app = new Vue({
         // ==========================================
         goRec() {
             //介面改變
+            this.tutor = false;
+            this.tutorMb = false;
+            this.tutorMark();
+            if (this.tutorExist) {
+                const teacherBtn = document.querySelector(".teacherBtn");
+                teacherBtn.classList.add("none");
+                player2.pauseVideo();
+                player3.pauseVideo();
+            }
             app.recOpen();
             player.playVideo();
             player.unMute();
@@ -1558,6 +1721,7 @@ var app = new Vue({
                 .catch(function (error) {
                     console.log(error);
                 });
+            this.singerId = `${app.customer_id}-${app.member_id}`;
             this.isUpload = true;
         },
         // ==========================================
@@ -1647,6 +1811,9 @@ var app = new Vue({
                 this.ch_content = "";
                 this.en_content = "";
                 this.audioStatus = true;
+                this.tutor = false;
+                this.tutorMb = false;
+                this.tutorMark();
             } else if (this.recMode) {
                 return;
             }
@@ -1689,7 +1856,7 @@ var app = new Vue({
                 }
                 audioPlay.classList.add("click");
                 // player.mute().playVideo();
-                player.setVolume(50);
+                player.setVolume(10);
                 player.playVideo();
                 audio.play();
                 // === 秒數倒數 ===
@@ -1756,9 +1923,37 @@ var app = new Vue({
             }
             this.audioTimer = str;
         },
+        backToSinger() {
+            this.singerMode = false;
+        },
     },
     created() {
         let hash = window.location.href;
+
+        if (location.hash.indexOf("mid") > -1) {
+            console.log(location.hash);
+            this.singerMode = true;
+            let str = location.hash.replace("#", "").split("=")[1];
+            this.singerCid = str.split("-")[0];
+            this.singerMid = str.split("-")[1];
+            const vid = this.videoId.replace("#mid");
+            axios
+                .get(
+                    `https://musicapi.funday.asia/api/Share/GetMember?customer_id=${this.singerCid}&member_id=${this.singerMid}`
+                )
+                .then((res) => {
+                    console.log(res);
+                    this.singerImg = res.data.content.imgUrl;
+                    this.singerSex = res.data.content.sex;
+                    this.singerName = res.data.content.nickName;
+                    this.singerFile = `https://funday.asia/FundayKtv/files/${this.singerCid}-${this.singerMid}-${this.videoId}.mp3`;
+                });
+            this.nowTab = 1;
+            setTimeout(() => {
+                this.tabChange(0);
+            }, 2000);
+        }
+
         if (hash.indexOf("videoId") > -1 && hash.indexOf("fbAdd") == -1) {
             const url = hash.split("?")[1];
             sessionStorage.setItem("para", url);

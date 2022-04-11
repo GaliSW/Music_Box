@@ -22,8 +22,18 @@ body.modal-open #header {
 }
 
 #logo {
+    position: relative;
+    text-decoration: none;
 }
 #logo .img {
+}
+.logo_text {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    color: #ffffff;
+    text-decoration: none;
 }
 #login_blk {
     display: flex;
@@ -714,6 +724,9 @@ ul.tabs {
 }
 body.home_page .video_category .video_items .items_list .item {
     width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 /********** 以下是影片分類列表，有捲軸的設定 */
 .scroll_bar .video_items {
@@ -1143,7 +1156,7 @@ body.category_page .video_category .video_items .item .video_img {
         display: block;
     }
     .video_category .video_items .item .title {
-        margin-top: 35px;
+        margin-top: 20px;
     }
     .video_category .video_items .item .tool_bar .number {
         position: absolute;
@@ -1181,7 +1194,7 @@ body.video_page #sidebar {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
-    background: #174780;
+    background-color: #f74768;
     border-radius: 4px;
     padding: 0px 8px;
     height: 20px;
@@ -1302,6 +1315,21 @@ body.video_page .switch_tab .noSinger {
     left: 0;
     z-index: 2;
 }
+body.video_page .switch_tab .back_to_singer {
+    background: #ffffff;
+    border-radius: 4px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 45px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+}
 body.video_page .switch_tab ul.subtitle_items > li {
     /* background-image: url(../../images/web_icon/subtitle_list_icon.svg); */
     /* background-repeat: no-repeat; */
@@ -1324,6 +1352,7 @@ body.video_page .switch_tab ul.subtitle_items > li {
     font-size: 16px;
     color: #b6b6b6;
     cursor: pointer;
+    position: relative;
 }
 body.video_page .switch_tab ul.subtitle_items > li > div {
     /* display: block;
@@ -1354,6 +1383,25 @@ body.video_page .switch_tab ul.subtitle_items > li .play-single-line {
 .switch_tab ul.subtitle_items > li.active_tutor:hover {
     background: #cf2242;
 }
+.switch_tab ul.subtitle_items .tutor_border {
+    border-left: 3px solid #f74768;
+}
+.switch_tab ul.subtitle_items .tutor_start {
+    background-color: #f74768;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 12px;
+    text-align: center;
+    color: #ffffff;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 4px;
+    display: none;
+}
+
 @media (max-width: 991px) {
     .switch_tab ul.subtitle_items > li.active_tutor:hover {
         background: #f74768;
@@ -1898,7 +1946,7 @@ body.video_page .video_category .video_items .items_list .item {
         height: 100%;
     }
     #video_playing .video_bar {
-        position: unset;
+        position: relative;
         z-index: 2;
     }
     #video_playing .video_bar .tool_bar {
@@ -2485,13 +2533,22 @@ body.collect_page .tab_container .video_category {
 }
 #login_body .logo {
     text-align: center;
-    margin-bottom: 14px;
-    color: #fff;
-    font-family: Roboto;
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 23px;
-    letter-spacing: 0.03em;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    font-size: 0;
+    margin-bottom: 16px;
+}
+#login_body .logo span {
+    margin-left: 16px;
+    padding-left: 16px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 24px;
+    color: #ffffff;
+    border-left: 1px solid #fff;
 }
 #login_body .slogin {
     font-family: Noto Sans TC;
@@ -3120,7 +3177,7 @@ textarea {
     display: flex;
     justify-content: flex-end;
     right: 0;
-    bottom: 4px;
+    bottom: 0px;
     width: 46px;
     /* height: 18px; */
 }
@@ -3148,7 +3205,7 @@ textarea {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
-    background: #174780;
+    background-color: #f74768;
     border-radius: 4px;
     padding: 0px 8px;
     height: 20px;
@@ -3360,8 +3417,15 @@ textarea {
 .category_wrapper .video_img {
     position: relative;
     cursor: pointer;
+    height: 0;
+    padding-bottom: 56%;
+    overflow: hidden;
 }
 .category_wrapper .video_img img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     border-radius: 5px;
 }
@@ -3397,7 +3461,7 @@ textarea {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
-    background: #174780;
+    background-color: #f74768;
     border-radius: 4px;
     padding: 0px 8px;
     height: 20px;
@@ -3662,10 +3726,13 @@ textarea {
 .ad_blk {
     /* border: 1px solid red; */
     position: fixed;
-    bottom: 0px;
-    left: 200px;
-    width: 206px;
-    height: 250px;
+    transition: all 0.3s linear;
+    bottom: 186px;
+    /* left: unset; */
+    right: 0;
+    width: 90px;
+    height: 97px;
+    z-index: 990;
 }
 .ad_blk > div {
     position: relative;
@@ -3688,33 +3755,65 @@ textarea {
     top: 10px;
     right: 10px;
 }
-.ads_mb,
-.ads_close_btn {
+
+.ads_pc {
     display: none;
 }
+.ads_mb,
+.ads_close_btn {
+    display: block;
+}
+.ads_mb img {
+    width: 100%;
+}
+.ads_close_btn {
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    top: -7px;
+    right: 2px;
+}
 @media (max-width: 1200px) {
-    .ad_blk {
+    .ad_bottom {
+        bottom: 0px !important;
+    }
+    .ad_blk_index {
         bottom: 56px;
-        left: unset;
-        right: 0;
-        width: 90px;
-        height: 97px;
     }
-    .ads_pc {
-        display: none;
+}
+.rotateX img,
+.rotateX div {
+    position: relative;
+    /* transform: translate(-50%); */
+    animation: rotateX linear infinite;
+    animation-duration: 6s;
+    opacity: 0;
+    transition: all 0.5s linear;
+}
+@keyframes rotateX {
+    10% {
+        opacity: 1;
     }
-    .ads_mb,
-    .ads_close_btn {
-        display: block;
+
+    80% {
+        transform: rotateX(0deg);
+        opacity: 1;
     }
-    .ads_mb img {
-        width: 100%;
+    100% {
+        transform: rotateX(360deg);
+        opacity: 0;
     }
-    .ads_close_btn {
-        position: absolute;
-        width: 17px;
-        height: 17px;
-        top: -7px;
-        right: 2px;
-    }
+}
+.none {
+    display: none !important;
+}
+.mobile_choose_blur {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 2;
 }

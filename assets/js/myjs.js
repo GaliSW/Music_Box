@@ -42,6 +42,44 @@ $(function () {
             });
     });
 });
+//scroll to bottom
+
+$(window).scroll(function () {
+    var h = document.body.scrollHeight; //網頁文檔的高度
+    var c = $(document).scrollTop(); //滾動條距離網頁頂部的高度
+    var wh = $(window).height(); //頁面可視化區域高度
+    if (window.innerWidth > 549) {
+        if (Math.ceil(wh + c) >= h - 34) {
+            // $(".ad_blk").css({ bottom: "34px" });
+            $(".message_board_blk").css({ bottom: "34px" });
+        } else {
+            // $(".ad_blk").css({ bottom: "0px" });
+            $(".message_board_blk").css({ bottom: "0px" });
+        }
+    } else {
+        if (Math.ceil(wh + c) >= h - 34) {
+            $(".ad_blk_index").css({ bottom: "104px" });
+            $(".message_board_blk").css({ bottom: "48px " });
+        } else {
+            $(".ad_blk_index").css({ bottom: "56px" });
+            $(".message_board_blk").css({ bottom: "0px" });
+        }
+    }
+});
+
+//logoChange
+$(function () {
+    console.log("222");
+    setInterval(() => {
+        if ($("#logoImg").hasClass("none")) {
+            $("#logoImg").removeClass("none");
+            $("#logoText").addClass("none");
+        } else {
+            $("#logoText").removeClass("none");
+            $("#logoImg").addClass("none");
+        }
+    }, 6000);
+});
 
 //Podcast
 $(".pop_close").click(() => {

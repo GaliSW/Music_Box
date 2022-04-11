@@ -10,8 +10,8 @@
   <meta property="og:title" content="FunMusic"/>
   <!-- <meta property="og:type" content="product"/> -->
   <meta property="og:image" content="https://img.onl/6kza2x" width="300" height="300#f74768"/>
-  <!-- <meta property="og:url" content="http://leap-tech.en.made-in-china.com/product/gBvQXLzMCKcJ/China-Ce-Approved-Superfine-Synthetic-Graphite-Spheroidization-Grinding-Mill.html"/> -->
-  <!-- <meta property="og:site_name" content="Made-in-China.com"/> -->
+  <meta property="og:url" content="http://music.funday.asia"/>
+  <meta property="og:site_name" content="music.funday.asia"/>
   <meta property="og:description" content="FunMusic"/>
   <!-- Favicon -->
   <link rel="shortcut icon" href="images/web_icon/favicon.ico" type="image/x-icon">
@@ -251,6 +251,7 @@
         <div
         id="fullscreen"
         onclick="toggleFullScreen(document.documentElement)"
+        style="bottom:0px;right:0px;"
     >
         <img
             class="full_open"
@@ -263,9 +264,29 @@
             alt=""
         />
     </div>
+    <!-- ads -->
+    <div class="ad_blk ad_bottom " style="bottom:105px;">
+      <div>
+          <a class="ads_mb" href="https://funday.asia/" v-if="ads">
+              <img src="./images/web_icon/ads_mobile.png" alt="" />
+          </a>
+          <img
+              v-if="ads"
+              @click="ads = !ads"
+              class="ads_close_btn"
+              src="./images/web_icon/ads_close_btn.svg"
+              alt=""
+          />
+      </div>
+  </div>
     <!--header-->
     <div id="header">
-      <a id="logo" href="./"><span class="img"><img src="images/web_icon/funMusic.svg" alt="FUNDAY"></span><span class="txt"></span></a>
+      <a id="logo" href="./"><span class="img rotateX" id="logoImg"
+        ><img src="images/web_icon/funMusic.svg" alt="FUNDAY"
+    /></span>
+    <span class="logo_text rotateX none" id="logoText">
+        <div>聽音樂學英文</div>
+    </span></span></a>
       <!--這裏的連結請到myjs.js裏去調整-->
       <div id="login_blk">
         <div class="gift"><a href="./landing.html"><img src="./images/web_icon/gift.svg" alt="">送好禮</a></div>
@@ -281,7 +302,7 @@
             <span  @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
             </span>
         </div>
-        <div  v-show="recMode" class="header_share" @click="share">
+        <div  v-show="recMode" class="header_share" @click="share(0)">
           <img src="./images/web_icon/share.svg" alt="">
         </div>
         <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
@@ -300,6 +321,16 @@
         <div id="video_frame_top">
           <div id="video_playing">
             <div class="video_blur"></div>
+            <div class="singer_notification" v-if="singerMode">
+              <img
+                v-if="singerImg == ''"
+                src="./images/web_icon/head_default.svg"
+                alt=""
+              />
+              <img v-else :src="singerImg" alt="" />
+              <span :class="{'female':singerSex==0, 'male':singerSex==1}">{{singerName}}</span>
+              <span>配唱的~&#128518;喜歡請幫忙按讚分享&#128077;</span>
+            </div>
 			      <div class="countDown_wrapper none"></div>
             <div class="countDown none">
               <img class="countDownImg" src="" alt="" />
@@ -333,6 +364,7 @@
                       </div>
             </div>
             <div class="video_bar">
+              <div class="mobile_choose_blur none"></div>
               <div class="subtitle">
                 <div class="en" v-show="captions == 1 || captions == 2">{{en_content}}</div>
                 <div class="tw" v-show="captions== 1 || captions == 3">{{ch_content}}</div>
@@ -485,7 +517,7 @@
                     </span>
                     收藏
                   </div>
-                  <div class="share" @click="share"><img src="./images/web_icon/share.svg" alt="">分享</div>
+                  <div class="share" @click="share(0)"><img src="./images/web_icon/share.svg" alt="">分享</div>
                   <div class="audio_tab" @click="tabChange">
                     <img src="./images/web_icon/list_close.svg" alt="#" v-if="nowTab == 0">
                     <img src="./images/web_icon/list_open.svg" alt="#" v-if="nowTab == 1">
@@ -494,7 +526,7 @@
                     <span @click="fnAddToCollection($event)" :data-videoId="songInfo.indx" class="heart" :class="{favorites:songInfo.Bookmark==1 }">
                     </span>
                   </div>
-                  <div class="share_mobile" @click="share"><img src="./images/web_icon/share.svg" alt=""></div>
+                  <div class="share_mobile" @click="share(0)"><img src="./images/web_icon/share.svg" alt=""></div>
                   <!-- <div>
                     <input type="checkbox" id="teacher_btn">
                     <label for="teacher_btn" class="teacher_btn_close">
@@ -516,7 +548,7 @@
               <img src="./images/web_icon/back.svg" alt="">
               <p>返回</p>
             </div>
-            <div class="shareBtn_rec" v-if="recMode" @click="share">
+            <div class="shareBtn_rec" v-if="recMode" @click="share(0)">
               <img src="./images/web_icon/share_rec.svg" alt="">
               <p>分享</p>
             </div>
@@ -534,7 +566,7 @@
                       <div><a :href="lineurl" title="FunMusic" target="_blank"><img src="./images/web_icon/Line.svg" alt=""></a><p>Line</p></div>
                       <div><a :href="fburl"><img src="./images/web_icon/FB.svg" alt=""></a><p>FB</p></div>
                       <div><a :href="emailurl" target="_blank"><img src="./images/web_icon/Gmail.svg" alt=""></a><p>Gmail</p></div>
-                      <div><a :href="linkedinurl" target="_blank"><img src="./images/web_icon/Linkedin.svg" alt=""></a><p>Linkedin</p></div>
+                      <div><a :href="linkedinurl" target="_blank" title="Share on LinkedIn"><img src="./images/web_icon/Linkedin.svg" alt=""></a><p>Linkedin</p></div>
                   </div>
                   
               </div>
@@ -566,9 +598,9 @@
              <!--這一塊是頁籤式電影列表切換-->
             <div class="switch_tab">
               <ul class="tabs video_tab">
-                <li  @click="tabChange"><a href="#tab1">中英字幕</a></li>
+                <li  @click="tabChange" :class="{active:nowTab == 0}"><a href="#">中英字幕</a></li>
                 <!--頁籤1-->
-                <li  @click="tabChange"><a href="#tab2">歌手</a></li>
+                <li  @click="tabChange" :class="{active:nowTab == 1}"><a href="#">歌手</a></li>
                 <!--頁籤2-->
               </ul>
               <div class="tab_container">
@@ -579,17 +611,18 @@
                     <!-- PC 老師解說 -->
                     <div class="teacher_video" :class="{disabled:tutor}"> 
                       <div id="player_wrap_teacher"  v-show="tutor == true">
-                          <iframe
-                          type="text/html"
-                          :src="ytTutor_url"
-                          width="100%"
-                          allow="autoplay; encrypted-media" 
-                          frameborder="0"
-                          id="teacher_player"
-                          enablejsapi="1">
-                        </iframe>
-                      </div>
+                        <iframe
+                        type="text/html"
+                        :src="ytTutor_url"
+                        width="100%"
+                        allow="autoplay; encrypted-media" 
+                        frameborder="0"
+                        id="teacher_player"
+                        enablejsapi="1">
+                      </iframe>
                     </div>
+                    <div class="teacher_blur_wrapper"></div>
+                  </div>
                     <!-- PC 老師解說 -->
                     <!-- <div class="teacher_bar no_pad" v-if="songInfo.tutor_url">
                       
@@ -618,7 +651,7 @@
                       
                         <div class="en" v-show="captions == 1 || captions == 2"><span  v-for="(item,index) in subtitle_en[index]" @click.stop="fnSearchWord(item,$event)">{{item}}</span> </div>
                         <div class="tw" v-show="captions== 1 || captions == 3">{{item.ch_content}}</div>
-                      
+                        <div class="tutor_start" :class="'tutorPara'+ index" >進入解說</div>
                     </li>
                     <!-- 字典功能 -->
                     <div class="DrWord" v-show="DrWordModal" v-cloak>
@@ -659,9 +692,27 @@
                 </div>
                 <div id="tab2" class="tab_content" v-show="nowTab == 1">
                   <!--頁籤2的內容-->
-                  <ul class="voice_items">
+                   <!-- 單一歌手配音 -->
+                  <ul class="voice_items" v-show="singerMode">
+                    <div class="back_to_singer" @click="backToSinger">返回原唱</div>
+                    <li v-for="(item,index) in likeData" v-if="item.Pmember_id == singerMid">
+                      <span class="sex" :class="{'woman':item.Sex==0, 'man':item.Sex==1}"  v-cloak>{{item.Pmember_nickname}}</span>
+                      <div class="digi">
+                        <span class="play_time">
+                          <span :id="'audioPlay' + index" class="img" @click="playAudio(index)"></span>
+                          <span :class="'audioLength' + index"  v-cloak>{{audioTime[index]}}</span>
+                          <span :class="'audioTimer' + index"  class="none" v-cloak>{{audioTimer}}</span>
+                        </span> 
+                        
+                        <span class="like" @click="fnLike(item.Pmember_id, item.Id, $event)"><span class="img" :class="{'click':item.HasPromote > 0}"></span>{{item.Promote}}</span>
+                        <div><audio class="none" :id="'audio' + index"  controls :src="item.RecordingFiles"></audio></div>
+                      </div>
+                    </li>
+                  </ul>
+                   <!-- 所有歌手配音 -->
+                  <ul class="voice_items"  v-show="!singerMode">
                     <div class="noSinger" v-show="!hasSinger">尚無歌手歡唱</div>
-                    <li v-for="(item,index) in likeData">
+                    <li v-for="(item,index) in likeData" >
                       <span class="sex" :class="{'woman':item.Sex==0, 'man':item.Sex==1}"  v-cloak>{{item.Pmember_nickname}}</span>
                       <div class="digi">
                         <span class="play_time">
@@ -744,7 +795,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <div class="login_way mail"><a href="#"  data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal02" class="use_mail"  >使用電子信箱加入</a></div>
@@ -767,7 +818,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">加入會員享有完整功能</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -812,7 +863,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">簡訊驗證</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -845,7 +896,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">修改手機號碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -946,7 +997,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="110px"><span>聽音樂學英文</span></div>
           <div class="slogin">使用Facebook登入</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -989,7 +1040,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"><span>聽音樂學英文</span></div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
               <div class="input">
@@ -1027,7 +1078,7 @@
           <div class="icon_close" ><a href="#" data-dismiss="modal" aria-hidden="true"><img src="images/web_icon/top_bar_close.svg"></a></div>
         </div>
         <div id="login_body">
-          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"></div>
+          <div class="logo"><img src="images/web_icon/funMusic.svg" width="120px"><span>聽音樂學英文</span></div>
           <div class="slogin">忘記密碼</div>
           <div class="form_body">
             <form action="" method="get" name="login_form" class="login_form">
@@ -1091,12 +1142,61 @@
       $('#header #menu').hide();
     }
 </script>
+<script>
+
+    setInterval(() => {
+        if ($("#logoImg").hasClass("none")) {
+            $("#logoImg").removeClass("none");
+            $("#logoText").addClass("none");
+        } else {
+            $("#logoText").removeClass("none");
+            $("#logoImg").addClass("none");
+        }
+    }, 6000);
+
+  function toggleFullScreen(elem) {
+    // ## The below if statement seems to work better ## if ((document.fullScreenElement && document.fullScreenElement !== null) || (document.msfullscreenElement && document.msfullscreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
+    if (
+        (document.fullScreenElement !== undefined &&
+            document.fullScreenElement === null) ||
+        (document.msFullscreenElement !== undefined &&
+            document.msFullscreenElement === null) ||
+        (document.mozFullScreen !== undefined && !document.mozFullScreen) ||
+        (document.webkitIsFullScreen !== undefined &&
+            !document.webkitIsFullScreen)
+    ) {
+        document.querySelector(".full_open").classList.toggle("none");
+        document.querySelector(".full_close").classList.toggle("none");
+        if (elem.requestFullScreen) {
+            elem.requestFullScreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullScreen) {
+            elem.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    } else {
+        document.querySelector(".full_open").classList.toggle("none");
+        document.querySelector(".full_close").classList.toggle("none");
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+</script>
 
 <!-- myjs -->
+<!-- <script src="assets/js/myjs.js?1225"></script> -->
 <script src="assets/js/recorder.mp3.min.js"></script>
     <script src="assets/js/extensions/frequency.histogram.view.js"></script>
     <script src="assets/js/extensions/lib.fft.js"></script>
 <script src="assets/js/video.js"></script>
 <script src="assets/js/common.js"></script>
-<script src="assets/js/myjs.js?1225"></script>
 </html>
