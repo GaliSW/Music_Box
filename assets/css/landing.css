@@ -12028,7 +12028,7 @@ body {
     position: relative;
     width: 100vw;
     height: 40vh;
-    background: url("../../images/layout/FunMusic-2000.png");
+    background: url("../../images/web_icon/FunMusic-2000.png");
     max-width: 2000px;
     margin: 50px auto 0 auto;
     background-position: center;
@@ -12040,7 +12040,7 @@ body {
     position: absolute;
     width: 100%;
     height: 90%;
-    background: url("../../images/layout/funMusic.png");
+    background: url("../../images/web_icon/FunMusic-mobile.png");
     opacity: 0.9;
     padding: 2rem 0;
     background-position: center;
@@ -12178,7 +12178,7 @@ body {
 @media (max-width: 414px) {
     .masthead {
         height: 60vh;
-        background: url("../../images/layout/FunMusic-mobile.png");
+        background: url("../../images/web_icon/FunMusic-mobile.png");
         /* max-width: 2000px; */
         margin: 50px auto 0 auto;
         background-position: center;

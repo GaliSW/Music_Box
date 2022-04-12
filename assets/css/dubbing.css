@@ -33,6 +33,8 @@
     line-height: 21px;
 }
 .tool_bar_audio .buootn a {
+    text-align: center;
+    width: 140px;
     color: #fff;
     padding: 4px 10px;
     background: #fe7523;
@@ -41,9 +43,12 @@
     text-decoration: none;
     vertical-align: middle;
     line-height: 24px;
+    margin: 0 auto;
 }
 .tool_bar_audio .buootn.stop {
+    background: #fe7523;
     color: #fff;
+    border-radius: 4px;
 }
 .tool_bar_audio .buootn.stop a:before {
     content: url(../../images/web_icon/buootn_stop_icon.svg);
@@ -261,6 +266,9 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
         padding-left: 0;
     }
     .tool_bar_audio .buootn .done {
+        border-radius: 0px;
+    }
+    .tool_bar_audio .buootn.stop {
         border-radius: 0px;
     }
 }

@@ -16,6 +16,7 @@ var app = new Vue({
         playMethods: 1, //1:循環 2.單曲 3.單句
         playRadom: true, //隨機撥放
         currentTime: "00:00", //目前播放時間
+        currentTimeMin: "00:00.1",
         allTime: "00:00", //整首歌的時間
         startTimeArr: [], //播放時間陣列,
         tutortimeArr: [], //老師講解時間列表
@@ -85,7 +86,7 @@ var app = new Vue({
     },
     computed: {},
     watch: {
-        currentTime: function (val, oldVal) {
+        currentTimeMin: function (val, oldVal) {
             //比對到歌詞秒數陣列
             // console.log(val);
             if (
@@ -158,7 +159,9 @@ var app = new Vue({
                             });
                             app.lastTutorHover = subtitleIndex; //紀錄目前Hover的區間
                             app.tutorstate = 1;
-                            console.log("tutor");
+                            document
+                                .querySelector(".video_pre_img ")
+                                .classList.add("none");
                         }, 500);
                     }
                 }
@@ -254,11 +257,11 @@ var app = new Vue({
                     // console.log(res);
                     //字串時間
                     vm.startTimeArr = vm.subTitle.map((ele, idx, array) => {
-                        return (
-                            ele.time.split(":")[0] +
-                            ":" +
-                            ele.time.split(":")[1].split(".")[0]
-                        );
+                        // console.log(ele.time.slice(0, -1));
+                        return ele.time.slice(0, -1);
+                        // ele.time.split(":")[0] +
+                        // ":" +
+                        // ele.time.split(":")[1].split(".")[0]
                     });
 
                     //給字典用
@@ -520,7 +523,6 @@ var app = new Vue({
             //取得影片長度 秒
             const allTime = player.getDuration();
             this.currentTime = time;
-            console.log(time);
 
             if (time < allTime) {
                 let currentTime = (time / allTime) * 100;
@@ -530,18 +532,26 @@ var app = new Vue({
                 ).style.width = `${currentTime}%`;
                 let min = Math.floor(time / 60);
                 let sec = (time % 60).toFixed(0);
+                let minsec = (time % 60).toFixed(1);
                 if (min < 10 && sec < 10) {
                     this.currentTime = `0${min}:0${sec}`;
+                    this.currentTimeMin = `0${min}:0${minsec}`;
                 } else if (min < 10 && sec == 10) {
                     this.currentTime = `0${min}:${sec}`;
+                    this.currentTimeMin = `0${min}:${minsec}`;
                 } else if (min < 10 && sec > 10) {
                     this.currentTime = `0${min}:${sec}`;
+                    this.currentTimeMin = `0${min}:${minsec}`;
                 } else if (min > 10 && sec < 10) {
                     this.currentTime = `${min}:0${sec}`;
+                    this.currentTimeMin = `${min}:0${minsec}`;
                 } else {
                     this.currentTime = `${min}:${sec}`;
+                    this.currentTimeMin = `${min}:${minsec}`;
                 }
+                // console.log(this.currentTimeMin);
             }
+
             //單句模式
             if (this.singleMode) {
                 this.fnSentenceRepeat();
@@ -681,16 +691,19 @@ var app = new Vue({
             //播放方式 1:循環 2:單曲 3:單句,
             if (e == 1) {
                 this.playMethods = 2;
+                sessionStorage.setItem("playMethods", 2);
                 this.playRadom = false;
                 this.hint = "播放模式:單曲";
             }
             if (e == 2) {
                 this.playMethods = 3;
+                sessionStorage.setItem("playMethods", 3);
                 this.playRadom = true;
                 this.hint = "播放模式:隨機";
             }
             if (e == 3) {
                 this.playMethods = 1;
+                sessionStorage.setItem("playMethods", 1);
                 this.playRadom = false;
                 this.hint = "播放模式:循環";
             }
@@ -781,7 +794,7 @@ var app = new Vue({
             const sentence_end = this.startTimeArr[this.nowPlaying + 1];
             this.playRadom = false;
             //console.log('現在播放句數:'+this.nowPlaying ,'目前播放時間:'+ this.currentTime, '該句撥放結束時間:'+sentence_end, '前往句數'+sentence_start)
-            if (this.currentTime == sentence_end) {
+            if (this.currentTimeMin == sentence_end) {
                 if (document.getElementById("myAudio0") !== null) {
                     const idName = "myAudio0";
                     const audio = document.getElementById(idName);
@@ -820,9 +833,9 @@ var app = new Vue({
                     // console.log(tutorEndTime);
                     let seekTutorTime = tutorEndTime - app.lastTutorTime;
                     app.lastTutorTime = tutorEndTime;
-                    // console.log(playerTime);
-                    // console.log(playerEndTime);
-                    // console.log(tutorEndTime);
+                    document
+                        .querySelector(".video_pre_img ")
+                        .classList.add("none");
                     if (playerTime == playerEndTime) {
                         // console.log("match");
                         player.pauseVideo();
@@ -843,11 +856,7 @@ var app = new Vue({
         fnSingleSongRepeat(e) {
             this.playRadom = false;
             //單曲模式 + 撥放結束 + 老師講解關閉
-            if (
-                this.playMethods == 2 &&
-                e.data === YT.PlayerState.ENDED &&
-                this.tutor == false
-            ) {
+            if (this.playMethods == 2 && e.data === YT.PlayerState.ENDED) {
                 player.seekTo(0);
                 player.playVideo();
             }
@@ -856,23 +865,37 @@ var app = new Vue({
         fnPlayListRepeat(e) {
             this.playRadom = true;
             if (this.playMethods == 1 && e.data === YT.PlayerState.ENDED) {
+                app.currentTime = "00:00";
                 location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.next_id}`;
             }
         },
         //隨機播放清單
-        fnPlayListRamdom() {
+        fnPlayListRamdom(e) {
             if (this.playMethods == 3 && e.data === YT.PlayerState.ENDED) {
+                app.currentTime = "00:00";
                 location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.random_id}`;
-                console.log("隨機撥放");
+                // console.log("隨機撥放");
             }
         },
         //下一首
         fnGoNext() {
-            location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.next_id}`;
+            if (this.playMethods == 1) {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.next_id}`;
+            } else if (this.playMethods == 2) {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.next_id}`;
+            } else {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.random_id}`;
+            }
         },
         //下一首
         fnGoPrev() {
-            location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.previous_id}`;
+            if (this.playMethods == 1) {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.previous_id}`;
+            } else if (this.playMethods == 2) {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.previous_id}`;
+            } else {
+                location.href = `./video.html?categoryId=${this.categoryId}&videoId=${this.others.random_id}`;
+            }
         },
         //老師講解
         fnTutor() {
@@ -938,6 +961,8 @@ var app = new Vue({
                 this.tutor = false;
                 this.tutorMb = false;
                 this.tutorMark();
+                player.playVideo();
+                player.stopVideo();
                 if (this.tutorExist) {
                     player2.pauseVideo();
                     player3.pauseVideo();
@@ -966,6 +991,14 @@ var app = new Vue({
                     timeArr.push(duration);
                 }
                 this.audioTime = timeArr;
+
+                //預載所有音檔
+                setTimeout(() => {
+                    for (let i = 0; i < this.likeData.length; i++) {
+                        document.getElementById(`audio${i}`).preload;
+                        document.getElementById(`audio${i}`).currentTime = 0.5;
+                    }
+                }, 100);
             } else {
                 this.nowTab = 0;
                 this.hint = "歌手列表:關閉";
@@ -1054,9 +1087,12 @@ var app = new Vue({
                         $("#myModal09").modal("hide");
                         $("#myModal07").modal("show");
                     } else {
+                        this.recMode = true;
                         document
-                            .querySelector(".mobile_choose_blur")
-                            .classList.remove("none");
+                            .querySelector(".video_bar")
+                            .classList.add("none");
+                        document.querySelector(".switch_tab").style.height =
+                            "calc(100vh - 400px)";
                         chooseBlk.classList.remove("none");
                         if (this.tutorExist) {
                             this.tutor = false;
@@ -1072,11 +1108,12 @@ var app = new Vue({
                     break;
                 case 1:
                     chooseBlk.classList.add("none");
-                    // back.classList.remove("none");
+                    document.querySelector(".switch_tab").style.height =
+                        "unset";
                     this.startRecord();
                     document
-                        .querySelector(".mobile_choose_blur")
-                        .classList.add("none");
+                        .querySelector(".video_bar")
+                        .classList.remove("none");
                     break;
                 case 2:
                     this.back();
@@ -1549,6 +1586,8 @@ var app = new Vue({
                 const teacherBtn = document.querySelector(".teacherBtn");
                 teacherBtn.classList.remove("none");
             }
+            document.querySelector(".video_bar").classList.remove("none");
+            document.querySelector(".switch_tab").style.height = "unset";
             const chooseBlk = document.querySelector(".chooseBlk");
             chooseBlk.classList.add("none");
             this.recMode = false;
@@ -1806,6 +1845,10 @@ var app = new Vue({
                 app.playstate = 0;
                 return false;
             }
+            if (this.recMode) {
+                app.hint = "歡唱錄音中";
+                return;
+            }
             if (!this.audioStatus) {
                 player.seekTo(0);
                 this.ch_content = "";
@@ -1817,6 +1860,9 @@ var app = new Vue({
             } else if (this.recMode) {
                 return;
             }
+            const audio = document.getElementById(`audio${index}`);
+            const audioPlay = document.getElementById(`audioPlay${index}`);
+            const time = audio.duration - audio.currentTime;
             //點選別的音檔 init原先音檔
             if (
                 this.nowPlayAudioIndex !== index &&
@@ -1839,15 +1885,15 @@ var app = new Vue({
                     .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
                     .classList.remove("click");
                 player.seekTo(0);
+                audio.currentTime = 0.5;
                 this.goTimer(false);
             }
-            const audio = document.getElementById(`audio${index}`);
-            const audioPlay = document.getElementById(`audioPlay${index}`);
-            const time = audio.duration - audio.currentTime;
+
             this.nowPlayAudioIndex = index;
             if (audioPlay.classList.contains("click")) {
                 audioPlay.classList.remove("click");
                 player.pauseVideo();
+                // audio.currentTime = 0;
                 audio.pause();
                 this.goTimer(false);
             } else {
@@ -1857,8 +1903,13 @@ var app = new Vue({
                 audioPlay.classList.add("click");
                 // player.mute().playVideo();
                 player.setVolume(10);
+
+                setTimeout(() => {
+                    audio.play();
+                }, 500);
+
                 player.playVideo();
-                audio.play();
+
                 // === 秒數倒數 ===
                 let timer = Math.round(time * 10) / 10;
                 this.goTimer(true, timer, index);
@@ -2027,5 +2078,10 @@ var app = new Vue({
         this.getPageData();
         this.getVideo();
         this.getLikeData();
+        if (sessionStorage.getItem("playMethods") !== null) {
+            this.playMethods = sessionStorage.getItem("playMethods");
+        } else {
+            this.playMethods = 1;
+        }
     },
 });

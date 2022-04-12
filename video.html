@@ -5,14 +5,35 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FunMusic - 音樂內容</title>
+  <!-- <title>FunMusic - 音樂內容</title> -->
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
-  <meta property="og:title" content="FunMusic"/>
-  <!-- <meta property="og:type" content="product"/> -->
-  <meta property="og:image" content="https://img.onl/6kza2x" width="300" height="300#f74768"/>
-  <meta property="og:url" content="http://music.funday.asia"/>
-  <meta property="og:site_name" content="music.funday.asia"/>
-  <meta property="og:description" content="FunMusic"/>
+  <meta
+  name="description"
+  content="FunMusic讓你聽音樂同時學好英文，超過千首經典MV，重複練唱，學習道地發音，讓語感單字深入腦海，全面提升英語力。"
+/>
+<meta
+  name="keywords"
+  content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,看電影學英文,英詞字義,雙語字幕,AI導唱,英聽,聽力練習,線上英語,字彙解析,歡唱學英文"
+/>
+<meta name="author" content="" />
+<meta
+  property="og:title"
+  content="FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合"
+/>
+<meta property="og:url" content="https://funday.asia" />
+<meta property="og:image" content="https://img.onl/3N4mPn" />
+<meta
+  property="og:description"
+  content="FunMusic讓你聽音樂同時學好英文，超過千首經典MV，重複練唱，學習道地發音，讓語感單字深入腦海，全面提升英語力。"
+/>
+<meta
+  property="og:keywords"
+  content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,看電影學英文,英詞字義,雙語字幕,AI導唱,英聽,聽力練習,線上英語"
+/>
+
+<title>
+  FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
+</title>
   <!-- Favicon -->
   <link rel="shortcut icon" href="images/web_icon/favicon.ico" type="image/x-icon">
 
@@ -67,7 +88,7 @@
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=UA-128191330-1"
+          src="https://www.googletagmanager.com/gtag/js?id=UA-128191330-5"
       ></script>
       <script>
           window.dataLayer = window.dataLayer || [];
@@ -76,7 +97,7 @@
           }
           gtag("js", new Date());
 
-          gtag("config", "UA-128191330-1");
+          gtag("config", "UA-128191330-5");
       </script>
       <!-- Facebook Pixel Code -->
       <script>
@@ -267,7 +288,7 @@
     <!-- ads -->
     <div class="ad_blk ad_bottom " style="bottom:105px;">
       <div>
-          <a class="ads_mb" href="https://funday.asia/" v-if="ads">
+          <a class="ads_mb" href="https://funday.asia/" target="_blank" v-if="ads">
               <img src="./images/web_icon/ads_mobile.png" alt="" />
           </a>
           <img
@@ -375,6 +396,9 @@
               <div class="function01 ">
                 <div class="time_now ">
                   <span>．</span>{{currentTime}}
+                </div>
+                <div class="none">
+                  <span>．</span>{{currentTimeMin}}
                 </div>
                 <div
                   class="buootn stop stopBtn"
@@ -622,6 +646,7 @@
                       </iframe>
                     </div>
                     <div class="teacher_blur_wrapper"></div>
+                    <div class="video_pre_img"></div>
                   </div>
                     <!-- PC 老師解說 -->
                     <!-- <div class="teacher_bar no_pad" v-if="songInfo.tutor_url">
@@ -722,7 +747,7 @@
                         </span> 
                         
                         <span class="like" @click="fnLike(item.Pmember_id, item.Id, $event)"><span class="img" :class="{'click':item.HasPromote > 0}"></span>{{item.Promote}}</span>
-                        <div><audio class="none" :id="'audio' + index"  controls :src="item.RecordingFiles"></audio></div>
+                        <div><audio class="none" preload="auto|metadata|none" :id="'audio' + index"  controls :src="item.RecordingFiles"></audio></div>
                       </div>
                     </li>
                   </ul>
@@ -1143,7 +1168,9 @@
     }
 </script>
 <script>
-
+  let vh = window.innerHeight * 0.01;
+    // Then we set the value in the --vh custom property to the root of the document
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
     setInterval(() => {
         if ($("#logoImg").hasClass("none")) {
             $("#logoImg").removeClass("none");
