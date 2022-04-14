@@ -31,7 +31,7 @@ content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,
 />
 
 <title>
-FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
+FunMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
 </title>
 
 <!-- Favicon -->
@@ -634,7 +634,12 @@ FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活
 
 <!--footer-->
 <div id="footer">
-  <div class="copyright">© 2021 Brainstorm Digital Communications Corp. All rights reserved.Privacy Policy</div>
+  <div class="copyright">© 2021 Brainstorm Digital Communications Corp. All rights reserved.Privacy Policy&nbsp;&nbsp;<a
+    class="footerLink"
+    href="copyright/copyright.html"
+    target="_blank"
+    >著作權聲明</a
+></div>
 </div>
 </div>
 
@@ -1056,7 +1061,7 @@ var app = new Vue({
         //我的歡唱
         axios.get(`https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9997&member_id=${this.member_id}`)
         .then( (res) => {
-          // console.log(res)
+          console.log(res)
           vm.CategoryTitleMySong = Object.keys(res.data)[0];
           //沒有值就push到data內
           if(res.data[vm.CategoryTitleMySong][0].Id=='') return;

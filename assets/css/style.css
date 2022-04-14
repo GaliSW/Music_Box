@@ -227,7 +227,7 @@ body.modal-open #header {
     font-style: normal;
     font-weight: 300;
     font-size: 12px;
-    line-height: 14px;
+    line-height: 16px;
     letter-spacing: 0.1em;
     color: rgba(255, 255, 255, 0.5);
     padding: 10px;
@@ -3084,9 +3084,9 @@ textarea {
     }
 }
 @media (max-width: 1200px) {
-    .only_pc {
+    /* .only_pc {
         height: calc(100vh - 114px) !important;
-    }
+    } */
 }
 @media (min-width: 992px) {
     .only_pc {
@@ -3298,6 +3298,7 @@ textarea {
     display: flex;
     cursor: default;
 }
+
 .collect_wrapper .tool_bar .view_icon img,
 .collect_wrapper .tool_bar .video_icon img {
     margin-right: 4px;
@@ -3342,6 +3343,21 @@ textarea {
 .returnBtn,
 .header_title {
     display: none;
+}
+@media (min-width: 991px) and (max-width: 1530px) {
+    .collect_wrapper .tool_bar .video_icon {
+        position: absolute;
+        top: 25px;
+        left: 0;
+    }
+    .collect_wrapper .tool_bar .view_icon {
+        position: absolute;
+        top: 25px;
+        left: 65px;
+    }
+    .collect_wrapper .title {
+        margin-top: 25px;
+    }
 }
 @media (max-width: 991px) {
     .collect_header {
@@ -3692,6 +3708,11 @@ textarea {
     z-index: 1;
     font-weight: 500;
 }
+/* @media (max-width: 1200px) {
+    .item_less {
+        height: unset !important;
+    }
+} */
 @media (max-width: 991px) {
     .login_landing {
         height: 40px;
@@ -3890,4 +3911,15 @@ textarea {
     height: 100%;
     background-color: #000;
     z-index: 2;
+}
+.footerLink {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0em;
+}
+.footerLink:hover {
+    color: rgba(255, 255, 255, 0.8);
 }

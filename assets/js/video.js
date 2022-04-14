@@ -65,7 +65,7 @@ var app = new Vue({
         tutorEndTime: [], //老師講解每段結束時間
         tutorHover: [], //老師講解Hover陣列
         tutorStart: [], //老師講解開始段落的編號
-        lastTutorTime: 0, //前一句老師講解結束時間
+        lastTutorTime: "0", //前一句老師講解結束時間
         lastTutorHover: 0, //前一句老師講解結束時間
         tutorMb: false, //手機版解說畫面控制
         tutorstate: 1, //手機版解說播放狀態
@@ -108,67 +108,99 @@ var app = new Vue({
                     let nowSub = document.getElementById(
                         `sIndex${subtitleIndex - 1}`
                     );
-                    //下一句開始時間
-                    // console.log(nowSub.attributes["data-tutorseek"].value);
-                    if (nowSub.attributes["data-tutorseek"].value !== "0") {
-                        //老師講解結束時間
-                        this.tutorMb = true;
-                        let tutorEndTime =
-                            nowSub.attributes["data-tutorseek"].value;
 
+                    //下一句開始時間
+                    let tutorEndTime =
+                        nowSub.attributes["data-tutorseek"].value;
+                    // console.log(nowSub.attributes["data-tutorseek"].value);
+                    if (
+                        nowSub.attributes["data-tutorseek"].value !== "0" &&
+                        nowSub.attributes["data-tutorseek"].value !== "null"
+                    ) {
+                        //老師講解結束時間
+
+                        this.tutorMb = true;
+
+                        if (app.lastTutorTime == undefined) {
+                            app.lastTutorTime = 0;
+                        }
+                        console.log(app.lastTutorTime);
                         if (window.innerWidth < 991) {
+                            player.pauseVideo();
+
                             player3.seekTo(app.lastTutorTime);
                             player3.unMute().playVideo();
                         } else {
+                            player.pauseVideo();
                             player2.seekTo(app.lastTutorTime);
                             player2.unMute().playVideo();
                         }
-                        player.pauseVideo();
-                        app.lastTutorTime = tutorEndTime; //紀錄目前老師講解時間
-                        setTimeout(() => {
-                            for (
-                                let i = app.lastTutorHover;
-                                i < subtitleIndex;
-                                i++
-                            ) {
-                                let li = document.getElementById(`sIndex${i}`);
+                        function delay() {
+                            return new Promise(function (resolve, reject) {
+                                setTimeout(() => {
+                                    const lastTutor = app.lastTutorHover;
+                                    let toLi = [];
+                                    for (
+                                        let i = lastTutor;
+                                        i < subtitleIndex;
+                                        i++
+                                    ) {
+                                        let li = document.getElementById(
+                                            `sIndex${i}`
+                                        );
 
-                                if (
-                                    li.attributes["data-tutorseek"].value !==
-                                    "null"
-                                ) {
-                                    li.classList.add("active_tutor");
-                                }
-                            }
-                            document.querySelector(
-                                `.tutorPara${subtitleIndex - 1}`
-                            ).style.display = "none";
-                            const topLi = document.getElementById(
-                                `sIndex${app.lastTutorHover}`
-                            ).offsetTop;
+                                        if (
+                                            li.attributes["data-tutorseek"]
+                                                .value !== "null"
+                                        ) {
+                                            toLi.push(i);
+                                            li.classList.add("active_tutor");
+                                        }
+                                    }
+                                    document.querySelector(
+                                        `.tutorPara${subtitleIndex - 1}`
+                                    ).style.display = "none";
 
-                            const container =
-                                document.querySelector(".subtitle_items");
+                                    console.log(
+                                        document.querySelector(
+                                            ".subtitle_items li.active"
+                                        )
+                                    );
+                                    document
+                                        .querySelector(
+                                            ".subtitle_items li.active"
+                                        )
+                                        .classList.remove("active");
 
-                            document
-                                .querySelector(".subtitle_items li.active")
-                                .classList.remove("active");
-                            container.scrollTo({
-                                top: topLi, //包含上下行距
-                                behavior: "smooth",
+                                    app.tutorstate = 1;
+                                    document
+                                        .querySelector(".video_pre_img ")
+                                        .classList.add("none");
+                                    app.lastTutorHover = subtitleIndex; //紀錄目前Hover的區間
+                                    app.lastTutorTime = tutorEndTime; //紀錄目前老師講解時間
+                                    resolve(toLi[0]);
+                                    //老師解說片段加上顏色
+                                }, 500);
                             });
-                            app.lastTutorHover = subtitleIndex; //紀錄目前Hover的區間
-                            app.tutorstate = 1;
-                            document
-                                .querySelector(".video_pre_img ")
-                                .classList.add("none");
-                        }, 500);
+                        }
+                        delay().then(function (value) {
+                            if (value !== undefined) {
+                                const container =
+                                    document.querySelector(".subtitle_items");
+
+                                const topLi = document.getElementById(
+                                    `sIndex${value}`
+                                ).offsetTop;
+
+                                container.scrollTo({
+                                    top: topLi, //包含上下行距
+                                });
+                            }
+                        });
                     }
                 }
             } else {
-                setTimeout(() => {
-                    this.findPara = false;
-                }, 500);
+                this.findPara = false;
             }
         },
         nowPlaying: function () {
@@ -199,7 +231,6 @@ var app = new Vue({
                 if (this.repeat == 0 || !this.singleMode) {
                     listWindowContent.scrollTo({
                         top: sutitleBlkTop, //包含上下行距
-                        behavior: "smooth",
                     });
                 }
             }
@@ -222,6 +253,11 @@ var app = new Vue({
     },
     methods: {
         tutorMark() {
+            for (let j = 0; j < this.subTitle.length; j++) {
+                document
+                    .getElementById(`sIndex${j}`)
+                    .classList.remove("active_tutor");
+            }
             if (this.tutor) {
                 for (let i = 0; i < this.tutorStart.length; i++) {
                     document.querySelector(
@@ -240,6 +276,8 @@ var app = new Vue({
                         `sIndex${this.tutorStart[i]}`
                     ).style.borderLeft = "none";
                 }
+                player2.pauseVideo();
+                player3.pauseVideo();
             }
         },
         //youtube iframe API
@@ -433,8 +471,9 @@ var app = new Vue({
                             }
                             app.playstate = 1;
                             if (app.tutorExist) {
-                                // player2.pauseVideo();
-                                // player3.pauseVideo();
+                                app.tutorMark();
+                                player2.pauseVideo();
+                                player3.pauseVideo();
                             }
                             app.timer = setInterval(app.fnTimeChecking, 10);
                             //點擊計算
@@ -455,6 +494,7 @@ var app = new Vue({
                         }
                         if (e.data == 2) {
                             app.playstate = 0;
+                            console.log("stop");
                             clearInterval(app.timer);
                         }
                         if (e.data == 0) {
@@ -497,6 +537,9 @@ var app = new Vue({
 
                     function onPlayerReady3(evt) {
                         player3.mute().playVideo();
+                        setTimeout(() => {
+                            player3.pauseVideo();
+                        }, 500);
                     }
                     function onPlayerStateChange3(e) {
                         // console.log(e.data);
@@ -558,16 +601,32 @@ var app = new Vue({
             }
             //老師講解模式
             if (this.tutor && this.nowPlaying >= 1) {
-                const player2Time = player2.getCurrentTime().toFixed(2);
-                const player3Time = player3.getCurrentTime().toFixed(2);
-                const tutorEndTime = document.getElementById(
+                const player2Time = player2.getCurrentTime().toFixed(1);
+                const player3Time = player3.getCurrentTime().toFixed(1);
+                if (
+                    document.getElementById(`sIndex${this.nowPlaying - 1}`)
+                        .attributes["data-tutorseek"].value == "null"
+                )
+                    return;
+
+                const tutorEndTime = Number(
+                    document.getElementById(`sIndex${this.nowPlaying - 1}`)
+                        .attributes["data-tutorseek"].value
+                ).toFixed(1);
+
+                // console.log(player2Time);
+                // console.log(tutorEndTime);
+                const seekValue = document.getElementById(
                     `sIndex${this.nowPlaying - 1}`
                 ).attributes["data-tutorseek"].value;
+                // console.log(seekValue);
 
                 if (
-                    player2Time == tutorEndTime ||
-                    player3Time == tutorEndTime
+                    (player2Time == tutorEndTime && Number(player2Time) > 0) ||
+                    (player3Time == tutorEndTime && Number(player3Time) > 5)
                 ) {
+                    // debugger;
+                    // console.log("end");
                     player2.pauseVideo();
                     player3.pauseVideo();
                     player.playVideo();
@@ -593,10 +652,9 @@ var app = new Vue({
                     ).offsetTop;
 
                     if (this.singleMode) return; //單句模式不滾動
-                    //提前觸發
+                    // 提前觸發
                     listWindowContent.scrollTo({
                         top: sutitleBlkTop, //包含上下行距
-                        behavior: "smooth",
                     });
                 }
             }
@@ -606,7 +664,7 @@ var app = new Vue({
             if (this.audioStatus) {
                 document.getElementById(
                     `audio${this.nowPlayAudioIndex}`
-                ).currentTime = 0;
+                ).currentTime = 1;
                 document
                     .getElementById(`audio${this.nowPlayAudioIndex}`)
                     .pause();
@@ -633,9 +691,11 @@ var app = new Vue({
                     player3.mute().playVideo();
                     this.tutorMb_pre = false;
                 }
+                console.log("play");
             }
             if (state == 0) {
                 player.pauseVideo();
+                console.log("puase");
             }
         },
         //控制老師解說播放狀態
@@ -643,8 +703,11 @@ var app = new Vue({
             this.audioStatus = false;
             this.tutorstate = state;
             if (state == 1) {
-                player2.playVideo();
-                player3.playVideo();
+                if (window.innerWidth > 991) {
+                    player2.playVideo();
+                } else {
+                    player3.playVideo();
+                }
             }
             if (state == 0) {
                 player2.pauseVideo();
@@ -767,7 +830,7 @@ var app = new Vue({
                     tutorHoverArr.push(i + 1);
                 }
             }
-            console.log(tutorHoverArr);
+
             app.lastTutorTime = tutorArr.slice(-1)[0];
             if (tutorHoverArr.length == 0) {
                 app.lastTutorHover = 0;
@@ -837,7 +900,7 @@ var app = new Vue({
                         .querySelector(".video_pre_img ")
                         .classList.add("none");
                     if (playerTime == playerEndTime) {
-                        // console.log("match");
+                        console.log("match");
                         player.pauseVideo();
                         player2.seekTo(seekTutorTime);
                         player2.playVideo();
@@ -921,7 +984,6 @@ var app = new Vue({
         //切換配音tab
         tabChange(evt) {
             if (evt == 0) {
-                let timeArr = [];
                 this.tutor = false;
                 this.tutorMb = false;
                 if (this.tutorExist) {
@@ -958,9 +1020,9 @@ var app = new Vue({
                 this.nowTab = 1;
                 this.hint = "歌手列表:開啟";
                 let timeArr = [];
-                this.tutor = false;
-                this.tutorMb = false;
-                this.tutorMark();
+                // this.tutor = false;
+                // this.tutorMb = false;
+                // this.tutorMark();
                 player.playVideo();
                 player.stopVideo();
                 if (this.tutorExist) {
@@ -971,38 +1033,43 @@ var app = new Vue({
                 for (let i = 0; i < allLi.length; i++) {
                     allLi[i].classList.remove("active_tutor");
                 }
-                for (let i = 0; i < this.likeData.length; i++) {
-                    let duration;
-                    let time = document.getElementById(`audio${i}`).duration;
-
-                    let min = Math.floor(time / 60);
-                    let sec = (time % 60).toFixed(0);
-                    if (min < 10 && sec < 10) {
-                        duration = `0${min}:0${sec}`;
-                    } else if (min < 10 && sec == 10) {
-                        duration = `0${min}:${sec}`;
-                    } else if (min < 10 && sec > 10) {
-                        duration = `0${min}:${sec}`;
-                    } else if (min > 10 && sec < 10) {
-                        duration = `${min}:0${sec}`;
-                    } else {
-                        duration = `${min}:${sec}`;
-                    }
-                    timeArr.push(duration);
-                }
-                this.audioTime = timeArr;
-
+                this.getAudioTime();
                 //預載所有音檔
                 setTimeout(() => {
                     for (let i = 0; i < this.likeData.length; i++) {
                         document.getElementById(`audio${i}`).preload;
-                        document.getElementById(`audio${i}`).currentTime = 0.5;
+                        document.getElementById(`audio${i}`).currentTime = 0;
                     }
                 }, 100);
             } else {
                 this.nowTab = 0;
                 this.hint = "歌手列表:關閉";
             }
+        },
+        //取得配音時間
+        getAudioTime() {
+            let timeArr = [];
+            for (let i = 0; i < this.likeData.length; i++) {
+                let duration;
+                let time = document.getElementById(`audio${i}`).duration;
+                console.log(time);
+                let min = Math.floor(time / 60);
+                let sec = (time % 60).toFixed(0);
+                if (min < 10 && sec < 10) {
+                    duration = `0${min}:0${sec}`;
+                } else if (min < 10 && sec == 10) {
+                    duration = `0${min}:${sec}`;
+                } else if (min < 10 && sec > 10) {
+                    duration = `0${min}:${sec}`;
+                } else if (min > 10 && sec < 10) {
+                    duration = `${min}:0${sec}`;
+                } else {
+                    duration = `${min}:${sec}`;
+                }
+                timeArr.push(duration);
+            }
+            console.log(timeArr);
+            this.audioTime = timeArr;
         },
         //取得相關推薦資料
         getPageData() {
@@ -1098,6 +1165,7 @@ var app = new Vue({
                             this.tutor = false;
                             this.tutorMb = false;
                             this.tutorMark();
+                            console.log("close");
                             const teacherBtn =
                                 document.querySelector(".teacherBtn");
                             setTimeout(() => {
@@ -1397,6 +1465,9 @@ var app = new Vue({
                         return false;
                     }
                     this.likeData = res.data[Object.keys(res.data)];
+                    setTimeout(() => {
+                        this.getAudioTime();
+                    }, 1500);
                 })
                 .catch((error) => console.log(error));
         },
@@ -1601,16 +1672,47 @@ var app = new Vue({
         // === 開始錄音&倒數GIF ===
         // ==========================================
         goRec() {
+            this.singleMode = false; //單句模式初始化
             //介面改變
-            this.tutor = false;
-            this.tutorMb = false;
-            this.tutorMark();
             if (this.tutorExist) {
+                console.log("close_pc");
+                this.tutor = false;
+                this.tutorMb = false;
+                this.tutorMark();
                 const teacherBtn = document.querySelector(".teacherBtn");
                 teacherBtn.classList.add("none");
                 player2.pauseVideo();
                 player3.pauseVideo();
             }
+            //init 字幕區塊
+
+            //字幕滾動區
+            const listWindowContent = document.querySelector(".subtitle_items");
+            //字幕視窗高度
+            const listWindowHeight = listWindowContent.offsetHeight;
+            //字幕視窗上方與瀏覽器距離
+            const listWindowTop = listWindowContent.offsetTop;
+            //滾動觸發
+            const listWindowBottom = listWindowHeight - listWindowTop;
+
+            //字幕區塊高(每句高度都不同)
+            const sutitleBlkHeight =
+                document.getElementById("sIndex0").offsetHeight;
+            //正在播放的字幕與瀏覽器距離 (會隨歌曲撥放而跳句)
+            const sutitleBlkTop = document.getElementById("sIndex0").offsetTop;
+
+            listWindowContent.scrollTo({
+                top: sutitleBlkTop, //包含上下行距
+            });
+
+            this.ch_content = "";
+            this.en_content = "";
+            if (this.nowPlaying > 0) {
+                document
+                    .querySelector(".subtitle_items li.active")
+                    .classList.remove("active");
+            }
+
             app.recOpen();
             player.playVideo();
             player.unMute();
@@ -1863,20 +1965,19 @@ var app = new Vue({
             const audio = document.getElementById(`audio${index}`);
             const audioPlay = document.getElementById(`audioPlay${index}`);
             const time = audio.duration - audio.currentTime;
+
             //點選別的音檔 init原先音檔
             if (
                 this.nowPlayAudioIndex !== index &&
                 this.nowPlayAudioIndex !== -1
             ) {
-                document.getElementById(
-                    `audio${this.nowPlayAudioIndex}`
-                ).currentTime = 0;
-                document
-                    .getElementById(`audio${this.nowPlayAudioIndex}`)
-                    .pause();
                 document
                     .querySelector(`.audioTimer${this.nowPlayAudioIndex}`)
                     .classList.add("none");
+
+                // document.getElementById(
+                //     `audio${this.nowPlayAudioIndex}`
+                // ).currentTime = 0;
 
                 document
                     .querySelector(`.audioLength${this.nowPlayAudioIndex}`)
@@ -1885,7 +1986,11 @@ var app = new Vue({
                     .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
                     .classList.remove("click");
                 player.seekTo(0);
+                audio.load();
                 audio.currentTime = 0.5;
+                document
+                    .getElementById(`audio${this.nowPlayAudioIndex}`)
+                    .pause();
                 this.goTimer(false);
             }
 
@@ -1903,10 +2008,14 @@ var app = new Vue({
                 audioPlay.classList.add("click");
                 // player.mute().playVideo();
                 player.setVolume(10);
+                audio.addEventListener("canplay", function () {
+                    audio.play();
+                });
 
+                // audio.currentTime = 0.5;
                 setTimeout(() => {
                     audio.play();
-                }, 500);
+                }, 0);
 
                 player.playVideo();
 
