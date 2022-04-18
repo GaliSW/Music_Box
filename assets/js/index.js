@@ -305,8 +305,9 @@ var app = new Vue({
                 return false;
             } else if (input.value.length == 0) {
                 // 未填寫內容
-                input.style.outline = "1px solid #E84149";
-                input.style.boxShadow = " 0px 0px 0px 4px rgb(232, 65, 73,0.1)";
+                // input.style.outline = "1px solid #E84149";
+                input.style.borderRadius = "100px";
+                input.style.boxShadow = " 0px 0px 0px 4px rgb(232, 65, 73,0.5)";
                 input.setAttribute("placeholder", "請填寫內容");
                 input.classList.add("input_change");
                 // app.alert = "請填寫內容";

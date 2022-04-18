@@ -2552,7 +2552,7 @@ body.collect_page .tab_container .video_category {
     visibility: hidden;
 }
 .login_form .radio input[type="radio"]::after {
-    content: url(../img/input_radio.svg);
+    content: url(../img/input_radio_mb.svg);
     display: inline-block;
     width: 16px;
     height: 16px;

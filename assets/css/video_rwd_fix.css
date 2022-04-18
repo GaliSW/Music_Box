@@ -135,6 +135,15 @@
     transition: all 0.3s ease;
     white-space: nowrap;
 }
+.video_mb_blur {
+    position: absolute;
+    top: 0;
+    display: none;
+    width: 100%;
+    height: calc(100% - 50px);
+    z-index: 1;
+    /* border: 1px solid red; */
+}
 @media (max-width: 1530px) {
     #player_wrap {
         height: 460px;
@@ -163,6 +172,9 @@
     }
     .video_blur {
         display: none;
+    }
+    .video_mb_blur {
+        display: block;
     }
 }
 @media (max-width: 480px) {

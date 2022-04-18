@@ -280,7 +280,7 @@
                 <div>
                     <a
                         class="ads_mb"
-                        href="https://funday.asia/"
+                        href="https://fundayasia.pse.is/45fpmc"
                         v-if="ads"
                         target="_blank"
                     >
@@ -387,13 +387,21 @@
                             >
                         </li>
                         <div class="podcast" @click="podcast = !podcast">
-                            <img src="./images/web_icon/podcast.svg" alt="" />
+                            <img
+                                src="./images/web_icon/podcast_mb.svg"
+                                alt=""
+                            />
+                            <img
+                                class="podcast_play"
+                                src="./images/web_icon/podcast_play.svg"
+                                alt=""
+                            />
                             <span>前往Podcast收聽</span>
                         </div>
                         <div class="radio" @click="fnRadio">
                             <img
                                 class="radio_bg"
-                                src="./images/web_icon/radio.svg"
+                                src="./images/web_icon/radio_mb.svg"
                                 alt=""
                             />
                             <img
@@ -609,11 +617,10 @@
             <div id="footer">
                 <div class="copyright">
                     © 2021 Brainstorm Digital Communications Corp. All rights
-                    reserved.Privacy Policy&nbsp;&nbsp;<a
+                    reserved.Privacy Policy&nbsp;&nbsp;<span
                         class="footerLink"
-                        href="copyright/copyright.html"
-                        target="_blank"
-                        >著作權聲明</a
+                        onclick="toCopyRight()"
+                        >著作權聲明</span
                     >
                 </div>
             </div>

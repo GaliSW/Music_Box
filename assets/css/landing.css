@@ -12025,6 +12025,7 @@ body {
 }
 
 .masthead {
+    cursor: pointer;
     position: relative;
     width: 100vw;
     height: 40vh;
@@ -12046,6 +12047,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    cursor: pointer;
 }
 
 .title {

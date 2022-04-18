@@ -268,6 +268,10 @@
 
 
       <div class="all_wrap" id="app" v-cloak>
+        <!-- 讀取蓋板 -->
+        <div class="loading_blk">
+          <div class="lds-roller roller-center"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
         <!-- full screen  -->
         <div
         id="fullscreen"
@@ -288,7 +292,7 @@
     <!-- ads -->
     <div class="ad_blk ad_bottom " style="bottom:105px;">
       <div>
-          <a class="ads_mb" href="https://funday.asia/" target="_blank" v-if="ads">
+          <a class="ads_mb" href="https://fundayasia.pse.is/45fpmc" target="_blank" v-if="ads">
               <img src="./images/web_icon/ads_mobile.png" alt="" />
           </a>
           <img
@@ -342,6 +346,7 @@
         <div id="video_frame_top">
           <div id="video_playing">
             <div class="video_blur"></div>
+            <div class="video_mb_blur"></div>
             <div class="singer_notification" v-if="singerMode">
               <img
                 v-if="singerImg == ''"
@@ -805,11 +810,10 @@
 
     <!--footer-->
     <div id="footer">
-      <div class="copyright">© 2021 Brainstorm Digital Communications Corp. All rights reserved.Privacy Policy&nbsp;&nbsp;<a
+      <div class="copyright">© 2021 Brainstorm Digital Communications Corp. All rights reserved.Privacy Policy&nbsp;&nbsp;<span
         class="footerLink"
-        href="copyright/copyright.html"
-        target="_blank"
-        >著作權聲明</a
+        onclick="toCopyRight()"
+        >著作權聲明</span
     ></div>
     </div>
   </div>
@@ -1185,7 +1189,9 @@
             $("#logoImg").addClass("none");
         }
     }, 6000);
-
+    function toCopyRight() {
+    window.open("https://music.funday.asia/copyright/copyright.html");
+}
   function toggleFullScreen(elem) {
     // ## The below if statement seems to work better ## if ((document.fullScreenElement && document.fullScreenElement !== null) || (document.msfullscreenElement && document.msfullscreenElement !== null) || (!document.mozFullScreen && !document.webkitIsFullScreen)) {
     if (

@@ -1,8 +1,6 @@
-//logo及其他連結設定
-// $("#logo").click(function(){
-//     location.href='index.html';
-// });
-
+function toCopyRight() {
+    window.open("https://music.funday.asia/copyright/copyright.html");
+}
 //預載圖片
 var img = new Image();
 // img.src="../img/input_radio_do.svg"
@@ -51,7 +49,7 @@ $(window).scroll(function () {
     if (window.innerWidth > 549) {
         if (Math.ceil(wh + c) >= h - 34) {
             // $(".ad_blk").css({ bottom: "34px" });
-            $(".message_board_blk").css({ bottom: "34px" });
+            $(".message_board_blk").css({ bottom: "36px" });
         } else {
             // $(".ad_blk").css({ bottom: "0px" });
             $(".message_board_blk").css({ bottom: "0px" });
@@ -59,7 +57,7 @@ $(window).scroll(function () {
     } else {
         if (Math.ceil(wh + c) >= h - 34) {
             $(".ad_blk_index").css({ bottom: "104px" });
-            $(".message_board_blk").css({ bottom: "48px " });
+            $(".message_board_blk").css({ bottom: "52px " });
         } else {
             $(".ad_blk_index").css({ bottom: "56px" });
             $(".message_board_blk").css({ bottom: "0px" });

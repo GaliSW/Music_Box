@@ -83,6 +83,8 @@ var app = new Vue({
         singerFile: "",
         singerTime: "",
         ads: true, //廣告預設開啟
+        mobileType: "",
+        firstTab: true, //第一次按tab
     },
     computed: {},
     watch: {
@@ -95,6 +97,7 @@ var app = new Vue({
                 !this.findPara
             ) {
                 //增加播放行數
+                // console.log(val);
 
                 let subtitleIndex = this.startTimeArr.indexOf(val);
                 // console.log(subtitleIndex);
@@ -127,8 +130,11 @@ var app = new Vue({
                         console.log(app.lastTutorTime);
                         if (window.innerWidth < 991) {
                             player.pauseVideo();
-
                             player3.seekTo(app.lastTutorTime);
+                            // setTimeout(() => {
+                            //     player3.unMute().playVideo();
+                            //     console.log("play tutor");
+                            // }, 100);
                             player3.unMute().playVideo();
                         } else {
                             player.pauseVideo();
@@ -161,29 +167,31 @@ var app = new Vue({
                                         `.tutorPara${subtitleIndex - 1}`
                                     ).style.display = "none";
 
-                                    console.log(
+                                    if (
                                         document.querySelector(
                                             ".subtitle_items li.active"
-                                        )
-                                    );
-                                    document
-                                        .querySelector(
-                                            ".subtitle_items li.active"
-                                        )
-                                        .classList.remove("active");
+                                        ) !== null
+                                    ) {
+                                        document
+                                            .querySelector(
+                                                ".subtitle_items li.active"
+                                            )
+                                            .classList.remove("active");
+                                    }
 
                                     app.tutorstate = 1;
                                     document
                                         .querySelector(".video_pre_img ")
                                         .classList.add("none");
                                     app.lastTutorHover = subtitleIndex; //紀錄目前Hover的區間
-                                    app.lastTutorTime = tutorEndTime; //紀錄目前老師講解時間
-                                    resolve(toLi[0]);
+                                    resolve(toLi[0], tutorEndTime);
+                                    // resolve(tutorEndTime);
                                     //老師解說片段加上顏色
                                 }, 500);
                             });
                         }
-                        delay().then(function (value) {
+                        delay().then(function (value, tutorEndTime) {
+                            app.lastTutorTime = tutorEndTime; //紀錄目前老師講解時間
                             if (value !== undefined) {
                                 const container =
                                     document.querySelector(".subtitle_items");
@@ -458,6 +466,9 @@ var app = new Vue({
                         } else {
                             app.allTime = `${min}:${sec}`;
                         }
+                        document
+                            .querySelector(".loading_blk")
+                            .classList.add("none");
                     }
                     function onPlayerStateChange(e) {
                         //		console.log("Player state changed", e.data);
@@ -469,13 +480,21 @@ var app = new Vue({
                                 app.playstate = 0;
                                 return false;
                             }
+
                             app.playstate = 1;
                             if (app.tutorExist) {
                                 app.tutorMark();
                                 player2.pauseVideo();
                                 player3.pauseVideo();
                             }
+                            // app.fnPlay(1);
                             app.timer = setInterval(app.fnTimeChecking, 10);
+                            //手機板老師講解預載
+                            // if (app.tutorMb_pre) {
+                            //     player3.mute().playVideo();
+                            //     app.tutorMb_pre = false;
+                            //     console.log("pre");
+                            // }
                             //點擊計算
                             let mid = 0; //預設給0
                             if (app.member_id !== null) {
@@ -494,7 +513,32 @@ var app = new Vue({
                         }
                         if (e.data == 2) {
                             app.playstate = 0;
-                            console.log("stop");
+                            if (app.audioStatus) {
+                                document
+                                    .getElementById(
+                                        `audio${app.nowPlayAudioIndex}`
+                                    )
+                                    .pause();
+                                document
+                                    .querySelector(
+                                        `.audioTimer${app.nowPlayAudioIndex}`
+                                    )
+                                    .classList.add("none");
+
+                                document
+                                    .querySelector(
+                                        `.audioLength${app.nowPlayAudioIndex}`
+                                    )
+                                    .classList.remove("none");
+                                document
+                                    .getElementById(
+                                        `audioPlay${app.nowPlayAudioIndex}`
+                                    )
+                                    .classList.remove("click");
+                                player.seekTo(0);
+                                app.goTimer(false);
+                                app.audioStatus = false;
+                            }
                             clearInterval(app.timer);
                         }
                         if (e.data == 0) {
@@ -514,14 +558,10 @@ var app = new Vue({
                             }
                         }
                     }
-                    function onPlayerError(evt) {
-                        // console.log("error");
-                        // console.log(evt);
-                    }
+                    function onPlayerError(evt) {}
 
                     function onPlayerReady2(evt) {
                         evt.target.pauseVideo();
-                        // console.log("123");
                     }
                     function onPlayerStateChange2(e) {
                         if (e.data == 1) {
@@ -537,12 +577,12 @@ var app = new Vue({
 
                     function onPlayerReady3(evt) {
                         player3.mute().playVideo();
-                        setTimeout(() => {
-                            player3.pauseVideo();
-                        }, 500);
+                        // setTimeout(() => {
+                        //     player3.pauseVideo();
+                        // }, 1000);
                     }
                     function onPlayerStateChange3(e) {
-                        // console.log(e.data);
+                        console.log(e.data);
                         if (e.data == 1) {
                             app.tutorstate = 1;
                             app.timer = setInterval(app.fnTimeChecking, 10);
@@ -579,10 +619,7 @@ var app = new Vue({
                 if (min < 10 && sec < 10) {
                     this.currentTime = `0${min}:0${sec}`;
                     this.currentTimeMin = `0${min}:0${minsec}`;
-                } else if (min < 10 && sec == 10) {
-                    this.currentTime = `0${min}:${sec}`;
-                    this.currentTimeMin = `0${min}:${minsec}`;
-                } else if (min < 10 && sec > 10) {
+                } else if (min < 10 && sec >= 10) {
                     this.currentTime = `0${min}:${sec}`;
                     this.currentTimeMin = `0${min}:${minsec}`;
                 } else if (min > 10 && sec < 10) {
@@ -661,27 +698,7 @@ var app = new Vue({
         },
         //控制播放狀態
         fnPlay(state) {
-            if (this.audioStatus) {
-                document.getElementById(
-                    `audio${this.nowPlayAudioIndex}`
-                ).currentTime = 1;
-                document
-                    .getElementById(`audio${this.nowPlayAudioIndex}`)
-                    .pause();
-                document
-                    .querySelector(`.audioTimer${this.nowPlayAudioIndex}`)
-                    .classList.add("none");
-
-                document
-                    .querySelector(`.audioLength${this.nowPlayAudioIndex}`)
-                    .classList.remove("none");
-                document
-                    .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
-                    .classList.remove("click");
-                player.seekTo(0);
-                this.goTimer(false);
-                this.audioStatus = false;
-            }
+            console.log("play");
             this.playstate = state;
             if (state == 1) {
                 player.setVolume(100);
@@ -691,7 +708,6 @@ var app = new Vue({
                     player3.mute().playVideo();
                     this.tutorMb_pre = false;
                 }
-                console.log("play");
             }
             if (state == 0) {
                 player.pauseVideo();
@@ -788,6 +804,7 @@ var app = new Vue({
             if (this.tutorMb_pre) {
                 player3.mute().playVideo();
                 this.tutorMb = false;
+                console.log("pre");
             }
             if (this.tutorExist) {
                 player2.pauseVideo();
@@ -990,41 +1007,97 @@ var app = new Vue({
                     player2.pauseVideo();
                     player3.pauseVideo();
                 }
+                setTimeout(() => {
+                    this.getAudioTime();
+                }, 1500);
+                setTimeout(() => {
+                    this.nowTab = 1;
+                    this.firstTab = false;
+                }, 3000);
                 let allLi = document.querySelectorAll(".active_tutor");
                 for (let i = 0; i < allLi.length; i++) {
                     allLi[i].classList.remove("active_tutor");
                 }
-                for (let i = 0; i < this.likeData.length; i++) {
-                    let duration;
-                    let time = document.getElementById(`audio${i}`).duration;
-
-                    let min = Math.floor(time / 60);
-                    let sec = (time % 60).toFixed(0);
-                    if (min < 10 && sec < 10) {
-                        duration = `0${min}:0${sec}`;
-                    } else if (min < 10 && sec == 10) {
-                        duration = `0${min}:${sec}`;
-                    } else if (min < 10 && sec > 10) {
-                        duration = `0${min}:${sec}`;
-                    } else if (min > 10 && sec < 10) {
-                        duration = `${min}:0${sec}`;
-                    } else {
-                        duration = `${min}:${sec}`;
-                    }
-                    timeArr.push(duration);
-                }
-                this.audioTime = timeArr;
                 return false;
             }
             if (this.nowTab == 0) {
-                this.nowTab = 1;
-                this.hint = "歌手列表:開啟";
-                let timeArr = [];
-                // this.tutor = false;
-                // this.tutorMb = false;
-                // this.tutorMark();
-                player.playVideo();
-                player.stopVideo();
+                if (this.firstTab && this.mobileType == "") {
+                    this.hint = "歌手列表:讀取中";
+                    setTimeout(() => {
+                        this.getAudioTime();
+                    }, 1500);
+                    setTimeout(() => {
+                        this.nowTab = 1;
+                        this.hint = "歌手列表:開啟";
+                        this.firstTab = false;
+                    }, 3000);
+                    document
+                        .querySelector(`.audioLength${this.nowPlayAudioIndex}`)
+                        .classList.remove("none");
+                    document
+                        .querySelector(`.audioTimer${this.nowPlayAudioIndex}`)
+                        .classList.add("none");
+
+                    document
+                        .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
+                        .classList.remove("click");
+                    for (let i = 0; i < this.likeData.length; i++) {
+                        document.getElementById(`audio${i}`).preload;
+                        app.goTimer(false);
+                        app.audioStatus = false;
+                        if (app.mobileType == "ios") {
+                            document.getElementById(`audio${i}`).play();
+                            document.getElementById(`audio${i}`).pause();
+                            document.getElementById(
+                                `audio${i}`
+                            ).currentTime = 0;
+                        }
+                    }
+                } else if (
+                    this.playstate == 0 &&
+                    this.mobileType == "ios" &&
+                    this.firstTab
+                ) {
+                    this.hint = "歌手列表:讀取中";
+                    setTimeout(() => {
+                        this.getAudioTime();
+                    }, 1500);
+                    player.playVideo();
+                    setTimeout(() => {
+                        player.pauseVideo();
+                    }, 500);
+                    setTimeout(() => {
+                        this.nowTab = 1;
+                        this.hint = "歌手列表:開啟";
+                        this.firstTab = false;
+                    }, 3000);
+                    document
+                        .querySelector(`.audioLength${this.nowPlayAudioIndex}`)
+                        .classList.remove("none");
+                    document
+                        .querySelector(`.audioTimer${this.nowPlayAudioIndex}`)
+                        .classList.add("none");
+
+                    document
+                        .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
+                        .classList.remove("click");
+                    for (let i = 0; i < this.likeData.length; i++) {
+                        document.getElementById(`audio${i}`).preload;
+                        app.goTimer(false);
+                        app.audioStatus = false;
+                        if (app.mobileType == "ios") {
+                            document.getElementById(`audio${i}`).play();
+                            document.getElementById(`audio${i}`).pause();
+                            document.getElementById(
+                                `audio${i}`
+                            ).currentTime = 0;
+                        }
+                    }
+                } else {
+                    this.nowTab = 1;
+                    this.hint = "歌手列表:開啟";
+                }
+
                 if (this.tutorExist) {
                     player2.pauseVideo();
                     player3.pauseVideo();
@@ -1033,17 +1106,16 @@ var app = new Vue({
                 for (let i = 0; i < allLi.length; i++) {
                     allLi[i].classList.remove("active_tutor");
                 }
-                this.getAudioTime();
+                // this.getAudioTime();
                 //預載所有音檔
-                setTimeout(() => {
-                    for (let i = 0; i < this.likeData.length; i++) {
-                        document.getElementById(`audio${i}`).preload;
-                        document.getElementById(`audio${i}`).currentTime = 0;
-                    }
-                }, 100);
             } else {
                 this.nowTab = 0;
                 this.hint = "歌手列表:關閉";
+                if (this.mobileType == "ios") {
+                    player.stopVideo();
+                    this.firstTab = true;
+                    app.playstate = 0;
+                }
             }
         },
         //取得配音時間
@@ -1052,7 +1124,10 @@ var app = new Vue({
             for (let i = 0; i < this.likeData.length; i++) {
                 let duration;
                 let time = document.getElementById(`audio${i}`).duration;
-                console.log(time);
+                // console.log(time);
+                if (time == "NaN") {
+                    this.getAudioTime();
+                }
                 let min = Math.floor(time / 60);
                 let sec = (time % 60).toFixed(0);
                 if (min < 10 && sec < 10) {
@@ -1068,7 +1143,6 @@ var app = new Vue({
                 }
                 timeArr.push(duration);
             }
-            console.log(timeArr);
             this.audioTime = timeArr;
         },
         //取得相關推薦資料
@@ -1465,9 +1539,6 @@ var app = new Vue({
                         return false;
                     }
                     this.likeData = res.data[Object.keys(res.data)];
-                    setTimeout(() => {
-                        this.getAudioTime();
-                    }, 1500);
                 })
                 .catch((error) => console.log(error));
         },
@@ -1673,9 +1744,9 @@ var app = new Vue({
         // ==========================================
         goRec() {
             this.singleMode = false; //單句模式初始化
+
             //介面改變
             if (this.tutorExist) {
-                console.log("close_pc");
                 this.tutor = false;
                 this.tutorMb = false;
                 this.tutorMark();
@@ -1707,7 +1778,10 @@ var app = new Vue({
 
             this.ch_content = "";
             this.en_content = "";
-            if (this.nowPlaying > 0) {
+            if (
+                this.nowPlaying > 0 &&
+                document.querySelector(".subtitle_items li.active") !== null
+            ) {
                 document
                     .querySelector(".subtitle_items li.active")
                     .classList.remove("active");
@@ -1771,6 +1845,7 @@ var app = new Vue({
         // ==========================================
         reRec() {
             //刪除舊音檔
+            this.isUpload = false;
             this.nowPlaying = -1;
             this.audioPlayMode = 0;
             player.pauseVideo();
@@ -1951,20 +2026,24 @@ var app = new Vue({
                 app.hint = "歡唱錄音中";
                 return;
             }
+            this.singleMode = false;
+            const audio = document.getElementById(`audio${index}`);
+            const audioPlay = document.getElementById(`audioPlay${index}`);
+            const time = audio.duration - audio.currentTime;
             if (!this.audioStatus) {
                 player.seekTo(0);
                 this.ch_content = "";
                 this.en_content = "";
+                audio.currentTime = 0;
                 this.audioStatus = true;
-                this.tutor = false;
-                this.tutorMb = false;
-                this.tutorMark();
+                if (this.tutorExist) {
+                    this.tutor = false;
+                    this.tutorMb = false;
+                    this.tutorMark();
+                }
             } else if (this.recMode) {
                 return;
             }
-            const audio = document.getElementById(`audio${index}`);
-            const audioPlay = document.getElementById(`audioPlay${index}`);
-            const time = audio.duration - audio.currentTime;
 
             //點選別的音檔 init原先音檔
             if (
@@ -1986,8 +2065,9 @@ var app = new Vue({
                     .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
                     .classList.remove("click");
                 player.seekTo(0);
+                // alert();
                 audio.load();
-                audio.currentTime = 0.5;
+                audio.currentTime = 0;
                 document
                     .getElementById(`audio${this.nowPlayAudioIndex}`)
                     .pause();
@@ -2007,17 +2087,24 @@ var app = new Vue({
                 }
                 audioPlay.classList.add("click");
                 // player.mute().playVideo();
-                player.setVolume(10);
-                audio.addEventListener("canplay", function () {
-                    audio.play();
-                });
+                player.setVolume(20);
+                // audio.addEventListener("canplay", function () {
+                //     audio.play();
+                // });
+                if (app.mobileType == "ios") {
+                    player.playVideo();
 
-                // audio.currentTime = 0.5;
-                setTimeout(() => {
-                    audio.play();
-                }, 0);
-
-                player.playVideo();
+                    setTimeout(() => {
+                        audio.play();
+                        audio.currentTime = player.getCurrentTime();
+                    }, 500);
+                } else {
+                    player.playVideo();
+                    setTimeout(() => {
+                        audio.play();
+                        audio.currentTime = player.getCurrentTime();
+                    }, 1000);
+                }
 
                 // === 秒數倒數 ===
                 let timer = Math.round(time * 10) / 10;
@@ -2030,6 +2117,14 @@ var app = new Vue({
                     .querySelector(`.audioLength${index}`)
                     .classList.add("none");
             }
+        },
+        //配音校正
+        audioBalance(index) {
+            // player.seekTo(0);
+            // document.getElementById(`audio${index}`).currentTime = 0;
+            // player.pauseVideo();
+            // document.getElementById(`audio${index}`).pause();
+            // console.log("balance");
         },
         //配音時間倒數
         goTimer(status, timer, index) {
@@ -2058,7 +2153,6 @@ var app = new Vue({
                 }, 100);
             } else {
                 clearInterval(this.sid);
-                // this.audioTimer = "";
             }
         },
         // === 秒數計算 ===
@@ -2088,6 +2182,42 @@ var app = new Vue({
         },
     },
     created() {
+        //判斷裝置
+        let browser = {
+            versions: (function () {
+                var u = navigator.userAgent,
+                    app = navigator.appVersion;
+                return {
+                    trident: u.indexOf("Trident") > -1, //IE核心
+                    presto: u.indexOf("Presto") > -1, //opera核心
+                    webKit: u.indexOf("AppleWebKit") > -1, //蘋果、谷歌核心
+                    gecko: u.indexOf("Gecko") > -1 && u.indexOf("KHTML") == -1, //火狐核心
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否為移動終端
+                    ios: !!u.match(/\(i[^;] ;( U;)? CPU. Mac OS X/), //ios終端
+                    android: u.indexOf("Android") > -1 || u.indexOf("Adr") > -1, //android終端
+                    iPhone: u.indexOf("iPhone") > -1, //是否為iPhone或者QQHD瀏覽器
+                    iPad: u.indexOf("iPad") > -1, //是否iPad
+                    webApp: u.indexOf("Safari") == -1, //是否web應該程式，沒有頭部與底部
+                    weixin: u.indexOf("MicroMessenger") > -1, //是否微信 （2015-01-22新增）
+                    qq: u.match(/\sQQ/i) == " qq", //是否QQ
+                };
+            })(),
+            language: (
+                navigator.browserLanguage || navigator.language
+            ).toLowerCase(),
+        };
+        if (browser.versions.iPhone) {
+            this.mobileType = "ios";
+            // alert("iPhone");
+        }
+        // if (browser.versions.ios) {
+        //     this.mobileType = "ios";
+        //     alert("ios");
+        // }
+        // if (browser.versions.webkit) {
+        //     this.mobileType = "webkit";
+        //     alert("ios");
+        // }
         let hash = window.location.href;
 
         if (location.hash.indexOf("mid") > -1) {
@@ -2108,6 +2238,7 @@ var app = new Vue({
                     this.singerName = res.data.content.nickName;
                     this.singerFile = `https://funday.asia/FundayKtv/files/${this.singerCid}-${this.singerMid}-${this.videoId}.mp3`;
                 });
+            this.hint = "歌手列表:讀取中";
             this.nowTab = 1;
             setTimeout(() => {
                 this.tabChange(0);
@@ -2151,7 +2282,7 @@ var app = new Vue({
                                     json
                                 )
                                 .then((res) => {
-                                    // console.log(res);
+                                    console.log(res);
                                     if (res.data.StateId == 0) {
                                         alert("此Facebook帳號尚未註冊");
                                     } else {
