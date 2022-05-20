@@ -1,0 +1,329 @@
+#player_wrap {
+    position: relative;
+    width: 100%;
+    /* height: 100%; */
+    height: 100%;
+    /* padding-bottom: 56.25%; */
+}
+#player_wrap_index {
+    position: relative;
+    width: 100%;
+}
+#player_wrap iframe,
+#player_wrap_index iframe {
+    position: absolute;
+    top: -20%;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+#player_wrap_index {
+    overflow: hidden;
+}
+#player_wrap_index iframe {
+    width: 190%;
+    height: 150%;
+}
+.teacher_video {
+    position: relative;
+}
+.teacher_blur_wrapper {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.video_pre_img {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    background-image: url("../../images/web_icon/teacher-cover.png");
+    background-size: cover;
+    background-position: center;
+}
+.video_pre_img img {
+    width: 100%;
+}
+#player_wrap_teacher {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+#player_wrap_teacher iframe {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+}
+#player_wrap_teacher_mobile {
+    position: relative;
+    width: 100%;
+    height: 400px;
+}
+#player_wrap_teacher_mobile iframe {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+}
+.none {
+    display: none !important;
+    /* border: 1px solid red; */
+}
+/* s */
+.countDown_wrapper {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.5;
+}
+.countDown img {
+    /* border: 1px solid red; */
+    position: absolute;
+    height: 30%;
+    /* width: 30%; */
+    left: 50%;
+    top: 50%;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+}
+#uploadProgress {
+    color: #fff;
+    position: absolute;
+    top: -75%;
+    z-index: 3;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    background-color: #fe7523;
+    padding: 5px 10px;
+    text-align: center;
+    border-radius: 4px;
+}
+.hint {
+    /* border: 1px solid red; */
+    position: absolute;
+    z-index: 2;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(25, 24, 27, 0.8);
+    border-radius: 4px;
+    font-family: "Noto Sans TC";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    color: #ffffff;
+    padding: 10px 22px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+.video_mb_blur {
+    position: absolute;
+    top: 0;
+    display: none;
+    width: 100%;
+    height: calc(100% - 50px);
+    z-index: 1;
+    /* border: 1px solid red; */
+}
+@media (max-width: 1530px) {
+    #player_wrap {
+        /* height: 460px; */
+    }
+}
+@media (max-width: 991px) {
+    #uploadProgress {
+        top: -100px;
+    }
+    #player_wrap_index iframe {
+        height: 120%;
+    }
+    .hint {
+        top: 45%;
+    }
+    .countDown img {
+        /* width: 100%; */
+    }
+    #player_wrap,
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
+        height: 400px;
+    }
+    #player_wrap iframe {
+        height: 100%;
+    }
+    .video_blur {
+        display: none;
+    }
+    .video_mb_blur {
+        display: block;
+    }
+}
+@media (max-width: 480px) {
+    #player_wrap_index iframe {
+        height: 120%;
+        width: 150%;
+    }
+    #player_wrap,
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
+        height: 300px;
+    }
+}
+@media (max-width: 380px) {
+    #player_wrap,
+    #player_wrap_teacher_mobile,
+    #player_wrap_index {
+        height: 200px;
+    }
+}
+#teacher_btn {
+    display: none;
+}
+.teacher_btn_open {
+    display: none;
+    position: relative;
+    width: 30px;
+    height: 12px;
+    background: #f74768;
+    border-radius: 100px;
+    margin: 0 0 0 4px;
+}
+.teacher_btn_close {
+    position: relative;
+    width: 30px;
+    height: 12px;
+    background: #c4c4c4;
+    border-radius: 100px;
+    margin: 0 0 0 4px;
+}
+.teacher_btn_close img {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+}
+.teacher_btn_open img {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+}
+#teacher_btn:checked ~ .teacher_btn_open {
+    display: block;
+}
+#teacher_btn:checked ~ .teacher_btn_close {
+    display: none;
+}
+#fullscreen {
+    position: fixed;
+    height: 80px;
+    z-index: 997;
+    cursor: pointer;
+}
+.teacher_video_mobile {
+    display: none;
+}
+
+.video_blur {
+    position: absolute;
+    top: 0;
+    /* border: 1px solid red; */
+    width: 100%;
+    height: 30%;
+    z-index: 1;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.8) 0.46%,
+        rgba(0, 0, 0, 0) 50.48%
+    );
+}
+
+.singer_notification {
+    /* border: 1px solid red; */
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.5) 47.4%,
+        rgba(0, 0, 0, 0) 100%
+    );
+    color: #fff;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+}
+.singer_notification img {
+    height: 20px;
+    width: 20px;
+    margin-right: 4px;
+    border-radius: 50%;
+}
+.singer_notification .male {
+    color: #7096c3;
+    margin-right: 4px;
+}
+.singer_notification .female {
+    color: #f74768;
+    margin-right: 4px;
+}
+@media (max-width: 1200px) {
+    #fullscreen {
+        display: none;
+    }
+}
+@media (max-width: 991px) {
+    .disabled {
+        display: none !important;
+    }
+    .teacher_video_mobile {
+        display: block;
+    }
+    .singer_notification {
+        height: 32px;
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+    }
+}
+.en {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+.tw {
+    font-size: 14px;
+}
+/* .video_main_body {
+    padding-top: 50px !important;
+} */
+.rec_sub {
+    position: absolute;
+    top: -180px;
+    left: 0;
+    width: 100%;
+}

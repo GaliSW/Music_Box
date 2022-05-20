@@ -1,0 +1,84 @@
+.podcast_pop {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 548px;
+    height: 288px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box;
+    border-radius: 8px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+}
+.podcast_pop .pop_close {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 22px;
+}
+.podcast_pop .pop_close img {
+    cursor: pointer;
+}
+.podcast_pop h1 {
+    cursor: default;
+    display: block;
+    text-align: center;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    color: #ffffff;
+    margin: 0;
+}
+.podcast_pop h2 {
+    cursor: default;
+    width: 432px;
+    margin: 24px auto;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+    color: #ffffff;
+    opacity: 0.7;
+}
+.podcast_pop .link_blk {
+    display: flex;
+    justify-content: center;
+}
+.podcast_pop .link_blk a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #ffffff;
+    margin: 0 25px;
+    cursor: pointer;
+}
+.podcast_pop .link_blk a img {
+    width: 60px;
+    margin-bottom: 10px;
+}
+@media (max-width: 991px) {
+    .podcast_pop {
+        width: 100%;
+        top: unset;
+        left: unset;
+        bottom: 0;
+        left: 0;
+        transform: translate(0, 0);
+        border-radius: 8px 8px 0 0;
+    }
+}
+@media (max-width: 480px) {
+    .podcast_pop h2 {
+        width: 360px;
+    }
+}

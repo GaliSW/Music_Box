@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>FunMusic</title>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+
+        <!-- Favicon -->
+        <link
+            rel="shortcut icon"
+            href="images/web_icon/favicon.ico"
+            type="image/x-icon"
+        />
+    </head>
+
+    <body></body>
+    <script>
+        window.onload = function () {
+            const url = location.href;
+            let loaderUrl;
+            new Promise((resolve, reject) => {
+                if (
+                    url.indexOf("utm_source") > -1 &&
+                    url.indexOf("vId") == -1
+                ) {
+                    loaderUrl = `${url.split("?")[0]}?${
+                        url.split("?")[1].split("&")[0]
+                    }`;
+                } else if (
+                    url.indexOf("utm_source") > -1 &&
+                    url.indexOf("vId") > -1
+                ) {
+                    loaderUrl = `${url.split("?")[0]}?${
+                        url.split("?")[1].split("&")[0]
+                    }&${url.split("?")[1].split("&")[1]}&${
+                        url.split("?")[1].split("&")[2]
+                    }`;
+                } else {
+                    loaderUrl = url;
+                }
+                resolve();
+            }).then(() => {
+                if (loaderUrl.indexOf("?") != -1) {
+                    //之後去分割字串把分割後的字串放進陣列中
+                    const ary1 = loaderUrl.split("?");
+                    console.log(ary1);
+                    const name = ary1[1].split("&");
+                    const adString = name[0].split("=");
+                    //  取得ADid值
+                    const ADid = adString[1];
+                    // console.log(name[1]);
+                    sessionStorage.setItem("ADid", ADid);
+
+                    if (name[1] == undefined) {
+                        location.href = "index.html";
+                    } else {
+                        console.log(name);
+                        const pageString = name[1].split("=");
+                        console.log(pageString);
+                        const cateString = name[2].split("=");
+                        console.log(cateString);
+                        const vId = pageString[1];
+                        const cateId = cateString[1];
+                        location.href = `video.html?categoryId=${cateId}&videoId=${vId}`;
+                    }
+                } else {
+                    location.href = "index.html";
+                }
+            });
+        };
+    </script>
+</html>
+<!-- ADid=1&vId=1&cate=1&utm_source=myworst&utm_id=AD_FB -->

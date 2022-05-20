@@ -1,0 +1,312 @@
+.tool_bar_audio {
+    position: absolute;
+    bottom: 0;
+    background: rgb(131, 76, 43);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.tool_bar_audio .function01 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tool_bar_audio .function01 > div {
+    margin: 0 4px;
+}
+.tool_bar_audio .time_now {
+    color: #fff;
+    font-family: Noto Sans TC;
+    font-size: 18px;
+    padding: 8px;
+}
+.tool_bar_audio .time_now span {
+    font-weight: bold;
+}
+.tool_bar_audio .buootn {
+    font-family: Noto Sans TC;
+    color: #fff;
+    font-size: 16px;
+    line-height: 21px;
+}
+.tool_bar_audio .buootn a {
+    text-align: center;
+    width: 140px;
+    color: #fff;
+    padding: 4px 10px;
+    background: #fe7523;
+    border-radius: 6px;
+    display: inline-block;
+    text-decoration: none;
+    vertical-align: middle;
+    line-height: 24px;
+    margin: 0 auto;
+}
+.tool_bar_audio .buootn.stop {
+    background: #fe7523;
+    color: #fff;
+    border-radius: 4px;
+}
+.tool_bar_audio .buootn.stop a:before {
+    content: url(../../images/web_icon/buootn_stop_icon.svg);
+    display: inline-block;
+    padding-right: 8px;
+    vertical-align: initial;
+}
+.tool_bar_audio .function02 {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.tool_bar_audio .function02 .center {
+    display: flex;
+    align-items: center;
+}
+.tool_bar_audio .function02 .center > div {
+    /* margin: 0 20px; */
+}
+.tool_bar_audio .function02 .center .play_bar {
+    display: flex;
+    align-items: center;
+}
+.tool_bar_audio .function02 .center .play_bar span {
+    /* padding: 0 24px; */
+    margin: 0 20px;
+}
+body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
+    width: 41px;
+}
+.tool_bar_audio .buootn.upload a:before {
+    content: url(../../images/web_icon/buootn_todo_Go.svg);
+    display: inline-block;
+    vertical-align: middle;
+    width: 14px;
+    height: 26px;
+    margin-right: 8px;
+}
+.tool_bar_audio .buootn.todo_Go a:before {
+    content: url(../../images/web_icon/buootn_upload.svg);
+    display: inline-block;
+    padding-right: 8px;
+    vertical-align: middle;
+}
+.tool_bar_audio .buootn.todo_Go .done:before {
+    content: url(../../images/web_icon/singer_share.svg);
+    display: inline-block;
+    padding-right: 8px;
+    vertical-align: middle;
+}
+.tool_bar_audio .buootn .done {
+    width: 100%;
+    color: #fe7523;
+    padding: 4px 10px;
+    background: #fff;
+    border-radius: 6px;
+    display: inline-block;
+    text-decoration: none;
+    vertical-align: middle;
+    line-height: 24px;
+}
+.tool_bar_audio .repeat,
+.tool_bar_audio .audio_control {
+    font-family: Noto Sans TC;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+    margin-left: 10px;
+}
+.tool_bar_audio .repeat a {
+    background-color: transparent;
+    color: #bd8665;
+    padding-left: 8px;
+    text-decoration: none !important;
+}
+.tool_bar_audio .audio_control a {
+    background-color: transparent;
+    color: #fff;
+    padding-left: 8px;
+    text-decoration: none !important;
+}
+.repeat_check {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+.chooseBlk {
+    /* border: 1px solid red; */
+    position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 3;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.chooseBlk .into {
+    padding: 10px 70px;
+    margin-top: 80px;
+    background: #fe7523;
+    border-radius: 4px;
+    font-family: "Noto Sans TC";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.95);
+}
+.chooseBlk .leave {
+    padding: 10px 70px;
+    margin-top: 25px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 4px;
+    font-family: "Noto Sans TC";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    color: #fe7523;
+}
+@media (max-width: 1366px) {
+    .tool_bar_audio .function02 .center .play_bar span {
+        padding: 0px;
+        margin: 0 10px;
+    }
+}
+@media (max-width: 991px) {
+    #video_frame_bottom .category_videos {
+        display: none;
+    }
+    .subtitle {
+        height: calc(100vh - 500px) !important;
+    }
+    .tool_bar_audio {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        margin: 0px;
+        background: rgb(102, 47, 14);
+        padding: 0px;
+        z-index: 2;
+        height: 40px;
+    }
+    .tool_bar_audio .function01 {
+        width: 100%;
+    }
+    .tool_bar_audio .function01 > div {
+        width: 50%;
+        margin: 0px;
+    }
+    .tool_bar_audio .function01 .time_now {
+        text-align: center;
+        padding: 0px;
+    }
+    .tool_bar_audio .buootn {
+    }
+    .tool_bar_audio .buootn a {
+        border-radius: 0px;
+        display: block;
+        text-align: center;
+    }
+    .tool_bar_audio .function01 .buootn a {
+        padding: 8px;
+        height: 40px;
+    }
+    .tool_bar_audio .function02 .buootn a {
+        padding: 8px;
+        height: 40px;
+    }
+    #footer {
+        display: none;
+    }
+    .tool_bar_audio .function02 {
+        background: #fe7523;
+    }
+    .tool_bar_audio .function02 .center {
+        position: absolute;
+        height: 60px;
+        bottom: 40px;
+        width: 100%;
+        background: rgb(131, 76, 43);
+        left: 0;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+    .tool_bar_audio .function02 a {
+    }
+    .function02 .dubbing_left,
+    .function02 .dubbing_right {
+        width: 50%;
+        margin: 0px;
+    }
+    .function02 .dubbing_right {
+        border-left: 1px solid rgb(131, 76, 43);
+    }
+    .function02 .dubbing_left {
+        border-right: 1px solid rgb(131, 76, 43);
+    }
+    .tool_bar_audio .function02 .buootn.repeat {
+        border-right: 1px solid #000;
+    }
+    .tool_bar_audio .repeat,
+    .tool_bar_audio .audio_control {
+        flex-direction: column;
+        margin: 0;
+    }
+    .tool_bar_audio .repeat img,
+    .tool_bar_audio .audio_control img {
+        margin-bottom: 5px;
+    }
+    .tool_bar_audio .audio_control a,
+    .tool_bar_audio .repeat a {
+        padding-left: 0;
+    }
+    .tool_bar_audio .buootn .done {
+        border-radius: 0px;
+    }
+    .tool_bar_audio .buootn.stop {
+        border-radius: 0px;
+    }
+}
+@media (max-width: 600px) {
+    /* .tool_bar_audio .function02 .center {
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;
+    }
+    .tool_bar_audio .function02 .center > div {
+        margin: 0px;
+    }
+    .tool_bar_audio .function02 .center .play_bar {
+        display: grid;
+        text-align: center;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: center;
+    }
+    body.dubbing_page .tool_bar_audio .function02 .center .play_bar span {
+        margin: 0px;
+    }
+    body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play {
+    }
+    .tool_bar_audio .function02 .center .buootn a {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0px;
+    }
+    body.dubbing_page .tool_bar_audio .function02 .center .buootn a:before {
+        padding-right: 0px;
+    } */
+}
+@media (max-width: 380px) {
+    .tool_bar_audio .function02 .center .buootn a {
+        font-size: 14px;
+    }
+    .tool_bar_audio .function02 .center {
+        padding: 0 10px;
+    }
+}
