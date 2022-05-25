@@ -338,23 +338,44 @@
             </div>
             <!--header-->
             <div id="header">
-                <a id="logo" href="./">
-                    <span class="img rotateX" id="logoImg"
-                        ><img src="images/web_icon/funMusic.svg" alt="FUNDAY"
-                    /></span>
-                    <span class="logo_text rotateX none" id="logoText">
-                        <div>聽音樂學英文</div>
-                    </span>
-                </a>
+                <div class="header_left mobile_hidden">
+                    <a id="logo" href="./">
+                        <span class="img rotateX" id="logoImg"
+                            ><img
+                                src="images/web_icon/funMusic.svg"
+                                alt="FUNDAY"
+                        /></span>
+                        <span class="logo_text rotateX none" id="logoText">
+                            <div>聽音樂學英文</div>
+                        </span>
+                    </a>
+                    <div class="subWeb">
+                        <a href="https://tube.funday.asia" target="_blank"
+                            >FunTube</a
+                        >
+                        <a href="https://map.funday.asia" target="_blank"
+                            >FunMap</a
+                        >
+                        <a href="https://funday.asia" target="_blank">FunDay</a>
+                    </div>
+                </div>
+                <input type="checkbox" id="navCheck" />
+                <div class="header_left mobile_visible">
+                    <label for="navCheck">
+                        <img src="images/web_icon/funMusic.svg" alt="FUNDAY" />
+                        <img src="images/web_icon/nav_btn.svg" alt=""
+                    /></label>
+                </div>
+                <div class="header_center mobil_visible">聽音樂學英文</div>
                 <div id="login_blk">
-                    <div class="gift_index">
+                    <!-- <div class="gift_index">
                         <a href="./landing.html"
                             ><img
                                 src="./images/web_icon/gift.svg"
                                 alt=""
                             />送好禮</a
                         >
-                    </div>
+                    </div> -->
                     <div class="myFav_index" @click="toMyFav">
                         <a href="#"
                             ><img
@@ -375,7 +396,6 @@
                             >免費加入</a
                         >
                     </div>
-                    <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
                     <div id="menu">
                         <div class="logout_mobile" id="logout">
                             <img src="./images/web_icon/logout.svg" alt="" />
@@ -384,6 +404,25 @@
                             ><a href="#" id="logout"> </a
                         ></span>
                     </div>
+                </div>
+                <div class="nav_bar mobile_visible">
+                    <ul>
+                        <li>
+                            <a href="https://tube.funday.asia" target="_blank"
+                                >FunTube</a
+                            >
+                        </li>
+                        <li>
+                            <a href="https://map.funday.asia" target="_blank"
+                                >FunMap</a
+                            >
+                        </li>
+                        <li>
+                            <a href="https://funday.asia" target="_blank"
+                                >FunDay</a
+                            >
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="notification_wrapper_mobile">
@@ -990,7 +1029,7 @@
                 </div>
             </div>
             <!-- Ads Block -->
-            <div class="ad_blk ad_blk_index">
+            <!-- <div class="ad_blk ad_blk_index">
                 <div>
                     <!-- <a class="ads_pc" href="https://funday.asia/" v-cloak>
                         <img
@@ -1022,7 +1061,7 @@
                         alt=""
                     />
                 </div>
-            </div>
+            </div> -->
             <!--footer-->
             <div id="footer">
                 <div class="copyright">

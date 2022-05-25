@@ -317,7 +317,7 @@
                 />
             </div>
             <!-- ads -->
-            <div class="ad_blk ad_bottom" style="bottom: 105px">
+            <!-- <div class="ad_blk ad_bottom" style="bottom: 105px">
                 <div>
                     <a
                         class="ads_mb"
@@ -335,7 +335,7 @@
                         alt=""
                     />
                 </div>
-            </div>
+            </div> -->
             <!--header-->
             <div id="header">
                 <a id="logo" href="./" class="collect_header">
@@ -347,14 +347,14 @@
                     </span>
                 </a>
                 <div id="login_blk" class="collect_header">
-                    <div class="gift_index">
+                    <!-- <div class="gift_index">
                         <a href="./landing.html" style="margin-right: 28px"
                             ><img
                                 src="./images/web_icon/gift.svg"
                                 alt=""
                             />送好禮</a
                         >
-                    </div>
+                    </div> -->
                     <div class="myFav_index" @click="toMyFav">
                         <a href="#"
                             ><img
@@ -2038,7 +2038,8 @@
                                 if (response.data.length !== 0) {
                                     const length = response.data.length;
                                     if (length < 7) {
-                                        app.notifications = response.data.reverse();
+                                        app.notifications =
+                                            response.data.reverse();
                                     } else {
                                         app.notifications = response.data
                                             .reverse()
@@ -2175,9 +2176,10 @@
                                                     "cindx",
                                                     res.data.cindx
                                                 );
-                                                const url = sessionStorage.getItem(
-                                                    "para"
-                                                );
+                                                const url =
+                                                    sessionStorage.getItem(
+                                                        "para"
+                                                    );
                                                 location.href = `https://music.funday.asia/video_collect.html`;
                                             }
                                         });

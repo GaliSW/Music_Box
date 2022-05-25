@@ -1280,7 +1280,7 @@ body.video_page .switch_tab ul.subtitle_items {
     padding: 0px;
     background-color: #000;
     list-style-type: none;
-    height: 100%;
+    height: calc(100vh - 350px);
     overflow-y: auto;
     position: relative;
 }
@@ -1299,7 +1299,7 @@ body.video_page .switch_tab ul.subtitle_items::-webkit-scrollbar-thumb {
     background-color: #999;
 }
 body.video_page .switch_tab ul.subtitle_items.off {
-    /* height: 767px; */
+    height: 100%;
 }
 
 body.video_page .switch_tab .noWord,
