@@ -113,7 +113,6 @@ var app = new Vue({
                     let nowSub = document.getElementById(
                         `sIndex${subtitleIndex - 1}`
                     );
-                    console.log(nowSub);
                     //下一句開始時間
                     let tutorEndTime =
                         nowSub.attributes["data-tutorseek"].value;
@@ -192,8 +191,7 @@ var app = new Vue({
                         delay().then(function (value) {
                             if (value !== undefined) {
                                 const container =
-                                    document.querySelector(".tab_container");
-
+                                    document.querySelector(".subtitle_items");
                                 const topLi = document.getElementById(
                                     `sIndex${value}`
                                 ).offsetTop;
@@ -213,12 +211,23 @@ var app = new Vue({
         },
         nowPlaying: function () {
             if (this.nowPlaying != -1 && !this.findPara) {
-                console.log("1");
                 if ($(".subtitle_items li.active").length == 0) return;
                 if (this.DrWordModal) return;
                 //字幕滾動區
-                const listWindowContent =
-                    document.querySelector(".tab_container");
+                let listWindowContent;
+                if (window.innerWidth > 991) {
+                    if (this.tutor) {
+                        listWindowContent =
+                            document.querySelector(".subtitle_items");
+                    } else {
+                        listWindowContent =
+                            document.querySelector(".tab_container");
+                    }
+                } else {
+                    listWindowContent =
+                        document.querySelector(".subtitle_items");
+                }
+
                 //字幕視窗高度
                 const listWindowHeight = listWindowContent.offsetHeight;
                 //字幕視窗上方與瀏覽器距離
@@ -683,7 +692,7 @@ var app = new Vue({
                         .classList.add("active");
 
                     const listWindowContent =
-                        document.querySelector(".tab_container");
+                        document.querySelector(".subtitle_items");
                     //字幕區塊高(每句高度都不同)
                     const sutitleBlkHeight = document.querySelector(
                         ".subtitle_items li.active"
@@ -697,7 +706,6 @@ var app = new Vue({
                     // 提前觸發
                     listWindowContent.scrollTo({
                         top: sutitleBlkTop, //包含上下行距
-                        behavior: "smooth",
                     });
                     this.tutorPlaying = false;
                 }
@@ -2263,13 +2271,13 @@ var app = new Vue({
                 .split("&")[2]
                 .split("=")[1]
                 .replace("#", "");
-            console.log(this.member_id);
-            console.log(this.customer_id);
             resolve();
         }).then(() => {
-            this.getPageData();
-            this.getVideo();
-            this.getLikeData();
+            setTimeout(() => {
+                this.getPageData();
+                this.getVideo();
+                this.getLikeData();
+            }, 1000);
         });
 
         if (sessionStorage.getItem("playMethods") !== null) {

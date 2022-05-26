@@ -366,7 +366,7 @@
                         <img src="images/web_icon/nav_btn.svg" alt=""
                     /></label>
                 </div>
-                <div class="header_center mobil_visible">聽音樂學英文</div>
+                <div class="header_center mobile_visible">聽音樂學英文</div>
                 <div id="login_blk">
                     <!-- <div class="gift_index">
                         <a href="./landing.html"
@@ -450,7 +450,7 @@
             </div>
             <div v-if="pre_height" class="pre_height">預載</div>
             <!--main-body-->
-            <div id="main-body">
+            <div id="main-body" v-cloak>
                 <!--這邊是側邊條-->
                 <div id="sidebar">
                     <div class="navbar_button"></div>
@@ -1031,20 +1031,6 @@
             <!-- Ads Block -->
             <!-- <div class="ad_blk ad_blk_index">
                 <div>
-                    <!-- <a class="ads_pc" href="https://funday.asia/" v-cloak>
-                        <img
-                            v-if="ads"
-                            class="ad_open"
-                            src="./images/web_icon/index_ads.png"
-                            alt=""
-                        />
-                        <img
-                            class="ad_close animate__animated animate__pulse"
-                            src="./images/web_icon/index_ads_close.png"
-                            v-else
-                            alt=""
-                        />
-                    </a> -->
                     <a
                         class="ads_mb"
                         href="https://fundayasia.pse.is/45fpmc"
