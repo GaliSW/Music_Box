@@ -2277,7 +2277,7 @@ var app = new Vue({
                 this.getPageData();
                 this.getVideo();
                 this.getLikeData();
-            }, 1000);
+            }, 3000);
         });
 
         if (sessionStorage.getItem("playMethods") !== null) {

@@ -512,7 +512,7 @@ var app = new Vue({
                     `https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${this.member_id}`
                 )
                 .then((res) => {
-                    // console.log(res.data.Category);
+                    console.log(res);
 
                     vm.sidebar = res.data.Category;
 
@@ -542,6 +542,12 @@ var app = new Vue({
                             vm.sidebar[i].Category = "Country鄉村";
                         }
                         if (vm.sidebar[i].Category == "Rap饒舌樂") {
+                            vm.sidebar[i].Category = "";
+                        }
+                        if (
+                            vm.sidebar[i].Category ==
+                            "Teacher's Notes老師解說             "
+                        ) {
                             vm.sidebar[i].Category = "";
                         }
                     }
