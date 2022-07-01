@@ -167,7 +167,7 @@
         display: none;
     }
     #video_playing .video_bar .tool_bar {
-        padding: 0;
+        padding: 10px 16px;
         position: relative;
     }
     .play_desktop {

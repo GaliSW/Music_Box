@@ -468,6 +468,7 @@ var app = new Vue({
                         document
                             .querySelector(".loading_blk")
                             .classList.add("none");
+                        player.playVideo();
                     }
                     function onPlayerStateChange(e) {
                         //		console.log("Player state changed", e.data);
@@ -865,7 +866,20 @@ var app = new Vue({
                 player.seekTo(gotoTime);
             }
         },
-        fnTimeBar(e) {},
+
+        //時間軸跳轉
+        turnTo(e) {
+            const elm = document.querySelector(".allTime_bar");
+            const length = elm.offsetWidth;
+            const xPos = e.pageX - elm.offsetLeft;
+            const allTime = player.getDuration();
+            const nowTime = (xPos / length) * allTime;
+            player.seekTo(nowTime);
+            document.querySelector(".goTime_bar").style.width = `${
+                (xPos / length) * 100
+            }%`;
+        },
+
         //單句循環模式
         fnSentenceRepeat() {
             //找到目前撥放的句數與下一句的句數
@@ -1304,20 +1318,19 @@ var app = new Vue({
             vm.baseForm = "";
             vm.NoWord = false;
             evt.target.classList.add("select");
+            const blkHeight = evt.pageY + 430;
+            const windowHeight = window.innerHeight;
+            const adjust = blkHeight - (blkHeight - windowHeight);
             if (window.innerWidth > 600) {
-                const el = evt.target;
-                var rect = el.getBoundingClientRect();
-                // console.log(rect.left);
-                if (rect.left > 1400) {
-                    $(".DrWord").css({
-                        left: rect.left - 155,
-                        top: rect.top + 25,
-                    });
+                document.querySelector(".DrWord").style.right = "25px";
+                if (blkHeight < windowHeight) {
+                    console.log("not over");
+                    document.querySelector(".DrWord").style.top = `${
+                        evt.pageY + 10
+                    }px`;
                 } else {
-                    $(".DrWord").css({
-                        left: rect.left,
-                        top: rect.top + 25,
-                    });
+                    document.querySelector(".DrWord").style.top =
+                        adjust - 420 + "px";
                 }
             }
 
@@ -1905,6 +1918,7 @@ var app = new Vue({
             formData.append("member_id", `${mid}`);
             formData.append("customer_id", `${cid}`);
             formData.append("musicbox_id", `${vid}`);
+            console.log(formData);
             for (var pair of formData.entries()) {
                 // console.log(pair[0] + ", " + pair[1]);
             }

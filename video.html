@@ -36,7 +36,7 @@
         <!-- Favicon -->
         <link
             rel="shortcut icon"
-            href="images/web_icon/favicon.ico"
+            href="images/web_icon/FD-favicon.ico"
             type="image/x-icon"
         />
 
@@ -398,6 +398,9 @@
                         <a href="https://map.funday.asia" target="_blank"
                             >FunMap</a
                         >
+                        <a href="https://dic.funday.asia" target="_blank">
+                            FunDictionary
+                        </a>
                         <a href="https://funday.asia" target="_blank">FunDay</a>
                     </div>
                 </div>
@@ -687,7 +690,10 @@
                                 </div>
                                 <div class="time_bar" v-show="!recMode">
                                     <div class="go_time">{{currentTime}}</div>
-                                    <div class="allTime_bar" @click="fnTimeBar">
+                                    <div
+                                        class="allTime_bar"
+                                        @click="turnTo($event)"
+                                    >
                                         <span class="goTime_bar"></span>
                                     </div>
                                     <div class="end_time">{{allTime}}</div>
@@ -1159,6 +1165,7 @@
                                                     v-show="captions == 1 || captions == 2"
                                                 >
                                                     <span
+                                                        :class="{no_hover:recMode}"
                                                         v-for="(item,index) in subtitle_en[index]"
                                                         @click.stop="fnSearchWord(item,$event)"
                                                         >{{item}}</span

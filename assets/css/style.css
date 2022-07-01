@@ -1902,6 +1902,7 @@ body.video_page .video_category .video_items .items_list .item {
     border-radius: 8px;
     position: relative;
     margin-top: 8px;
+    cursor: pointer;
 }
 #video_playing .video_bar .time_bar .allTime_bar .goTime_bar {
     display: inline-block;
@@ -3620,6 +3621,8 @@ textarea {
     position: relative;
     display: flex;
     margin-top: 8px;
+    flex-wrap: wrap;
+    padding-right: 20px;
 }
 .category_wrapper .tool_bar .subtitles {
     font-family: Noto Sans TC;

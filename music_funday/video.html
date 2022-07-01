@@ -36,7 +36,7 @@
         <!-- Favicon -->
         <link
             rel="shortcut icon"
-            href="images/web_icon/favicon.ico"
+            href="images/web_icon/FD-favicon.ico"
             type="image/x-icon"
         />
 
@@ -315,7 +315,9 @@
 
             <!--header-->
             <div id="header">
-                <!--這裏的連結請到myjs.js裏去調整-->
+                <div class="header_left">
+                    <img src="./images/web_icon/LOGO.svg" alt="" />
+                </div>
                 <div id="login_blk">
                     <div
                         class="teacherBtn"
@@ -360,7 +362,13 @@
                     <!--這邊是影音部份-->
                     <div id="video_frame_top">
                         <div id="video_playing">
-                            <div class="video_blur"></div>
+                            <div class="video_blur" v-if="playstate ==0"></div>
+                            <div
+                                class="video_title mobile_hidden"
+                                v-if="playstate ==0"
+                            >
+                                {{title}}
+                            </div>
                             <div class="video_mb_blur"></div>
                             <div class="singer_notification" v-if="singerMode">
                                 <img
@@ -577,7 +585,10 @@
                                 </div>
                                 <div class="time_bar" v-show="!recMode">
                                     <div class="go_time">{{currentTime}}</div>
-                                    <div class="allTime_bar" @click="fnTimeBar">
+                                    <div
+                                        class="allTime_bar"
+                                        @click="turnTo($event)"
+                                    >
                                         <span class="goTime_bar"></span>
                                     </div>
                                     <div class="end_time">{{allTime}}</div>
@@ -1049,6 +1060,7 @@
                                                     v-show="captions == 1 || captions == 2"
                                                 >
                                                     <span
+                                                        :class="{no_hover:recMode}"
                                                         v-for="(item,index) in subtitle_en[index]"
                                                         @click.stop="fnSearchWord(item,$event)"
                                                         >{{item}}</span

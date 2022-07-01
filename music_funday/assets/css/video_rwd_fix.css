@@ -12,7 +12,7 @@
 #player_wrap iframe,
 #player_wrap_index iframe {
     position: absolute;
-    top: -20%;
+    top: -10%;
     /* left: 50%; */
     /* transform: translate(-50%, -50%); */
     width: 100%;
@@ -144,6 +144,14 @@
     z-index: 1;
     /* border: 1px solid red; */
 }
+.video_title {
+    position: absolute;
+    left: 40px;
+    top: 40px;
+    z-index: 3;
+    font-size: 22px;
+    color: #fff;
+}
 @media (max-width: 1530px) {
     #player_wrap {
         /* height: 460px; */
@@ -175,6 +183,9 @@
     }
     .video_mb_blur {
         display: block;
+    }
+    .video_title {
+        display: none;
     }
 }
 @media (max-width: 480px) {

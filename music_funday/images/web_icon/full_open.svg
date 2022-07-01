@@ -1,7 +1,7 @@
 <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_d_3094_10992)">
-<rect x="10" y="10" width="60" height="60" rx="30" fill="#F74768"/>
-<path d="M49 39V31H41L44.29 34.29L34.29 44.29L31 41V49H39L35.71 45.71L45.71 35.71L49 39Z" fill="#fff"/>
+<rect x="10" y="10" width="60" height="60" rx="30" fill="white"/>
+<path d="M49 39V31H41L44.29 34.29L34.29 44.29L31 41V49H39L35.71 45.71L45.71 35.71L49 39Z" fill="#0D2D53"/>
 </g>
 <defs>
 <filter id="filter0_d_3094_10992" x="-4" y="0" width="88" height="88" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">

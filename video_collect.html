@@ -37,7 +37,7 @@
         <!-- Favicon -->
         <link
             rel="shortcut icon"
-            href="images/web_icon/favicon.ico"
+            href="images/web_icon/FD-favicon.ico"
             type="image/x-icon"
         />
 
@@ -356,6 +356,9 @@
                         <a href="https://map.funday.asia" target="_blank"
                             >FunMap</a
                         >
+                        <a href="https://dic.funday.asia" target="_blank">
+                            FunDictionary
+                        </a>
                         <a href="https://funday.asia" target="_blank">FunDay</a>
                     </div>
                 </div>
@@ -2231,6 +2234,12 @@
                                 vm.sidebar[i].Category = "Country鄉村";
                             }
                             if (vm.sidebar[i].Category == "Rap饒舌樂") {
+                                vm.sidebar[i].Category = "";
+                            }
+                            if (
+                                vm.sidebar[i].Category ==
+                                "Teacher's Notes老師解說"
+                            ) {
                                 vm.sidebar[i].Category = "";
                             }
                         }

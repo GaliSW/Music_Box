@@ -72,13 +72,13 @@ var app = new Vue({
     methods: {
         initYoutube() {
             const _ = this;
-            const youtubeUrl = `https://www.youtube-nocookie.com/embed/${app.myVideoId}?enablejsapi=1&controls=0&showinfo=0&mute=1&autoplay=1&rel=0&cc_lang_pref=en&cc_load_policy=0`;
+            const youtubeUrl = `https://www.youtube.com/embed/${app.myVideoId}?enablejsapi=1`;
             this.ytUrl = youtubeUrl;
             this.player = new YT.Player("player", {
                 playerVars: {
+                    autoplay: 0,
                     playsinline: 1,
                     loop: 1,
-                    mute: 1,
                     rel: 0, //2018後就沒用了
                     controls: 0,
                     overlay: 0,
@@ -98,15 +98,16 @@ var app = new Vue({
             });
         },
         onPlayerReady(evt) {
-            // console.log("Player ready");
-            // evt.target.mute();
+            evt.target.mute();
             evt.target.playVideo();
         },
         onPlayerStateChange(evt) {
-            // console.log(evt.data);
             if (evt.data == 0) {
                 evt.target.seekTo(0);
                 evt.target.playVideo();
+            }
+            if (evt.data == 1) {
+                evt.target.setVolume(100);
             }
         },
         bannerToUrl() {
@@ -512,7 +513,7 @@ var app = new Vue({
                     `https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${this.member_id}`
                 )
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
 
                     vm.sidebar = res.data.Category;
 
@@ -545,8 +546,7 @@ var app = new Vue({
                             vm.sidebar[i].Category = "";
                         }
                         if (
-                            vm.sidebar[i].Category ==
-                            "Teacher's Notes老師解說             "
+                            vm.sidebar[i].Category == "Teacher's Notes老師解說"
                         ) {
                             vm.sidebar[i].Category = "";
                         }

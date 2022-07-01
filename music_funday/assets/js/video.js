@@ -5,6 +5,7 @@ var app = new Vue({
         videoId: "", //API內該篇影片id
         related: {}, //相關推薦
         likeData: {},
+        title: "",
         subTitle: {}, //歌詞細節
         songInfo: {}, //日前歌曲資訊
         ytUrl: "", //youtubeId
@@ -305,13 +306,13 @@ var app = new Vue({
             //內頁歌曲
             axios
                 .get(
-                    `https://funday.asia/api/MusicboxWeb/MusicboxJson.asp?indx=${vm.videoId}&member_id=${vm.member_id}`
+                    `https://funday.asia/api/MusicboxWeb/MusicboxJson.asp?indx=${vm.videoId}&member_id=${vm.member_id} `
                 )
                 .then((res) => {
                     vm.subTitle = res.data.data;
                     vm.others = res.data.others;
                     vm.songInfo = res.data.info;
-                    // console.log(res);
+                    vm.title = res.data.info.title;
                     //字串時間
                     vm.startTimeArr = vm.subTitle.map((ele, idx, array) => {
                         // console.log(ele.time.slice(0, -1));
@@ -480,9 +481,11 @@ var app = new Vue({
                         document
                             .querySelector(".loading_blk")
                             .classList.add("none");
+
+                        player.playVideo();
                     }
                     function onPlayerStateChange(e) {
-                        //		console.log("Player state changed", e.data);
+                        console.log("Player state changed", e.data);
                         //-1:未開始 0:結束 1:正在播放 2:已暫停 3:緩衝 5:已插入影片
                         if (e.data == 1) {
                             if (Number(sessionStorage.getItem("mfree")) > 1) {
@@ -877,7 +880,18 @@ var app = new Vue({
                 player.seekTo(gotoTime);
             }
         },
-        fnTimeBar(e) {},
+        //時間軸跳轉
+        turnTo(e) {
+            const elm = document.querySelector(".allTime_bar");
+            const length = elm.offsetWidth;
+            const xPos = e.pageX - elm.offsetLeft;
+            const allTime = player.getDuration();
+            const nowTime = (xPos / length) * allTime;
+            player.seekTo(nowTime);
+            document.querySelector(".goTime_bar").style.width = `${
+                (xPos / length) * 100
+            }%`;
+        },
         //單句循環模式
         fnSentenceRepeat() {
             //找到目前撥放的句數與下一句的句數
@@ -1257,20 +1271,19 @@ var app = new Vue({
             vm.baseForm = "";
             vm.NoWord = false;
             evt.target.classList.add("select");
+            const blkHeight = evt.pageY + 430;
+            const windowHeight = window.innerHeight;
+            const adjust = blkHeight - (blkHeight - windowHeight);
             if (window.innerWidth > 600) {
-                const el = evt.target;
-                var rect = el.getBoundingClientRect();
-                // console.log(rect.left);
-                if (rect.left > 1400) {
-                    $(".DrWord").css({
-                        left: rect.left - 155,
-                        top: rect.top + 25,
-                    });
+                document.querySelector(".DrWord").style.right = "25px";
+                if (blkHeight < windowHeight) {
+                    console.log("not over");
+                    document.querySelector(".DrWord").style.top = `${
+                        evt.pageY + 10
+                    }px`;
                 } else {
-                    $(".DrWord").css({
-                        left: rect.left,
-                        top: rect.top + 25,
-                    });
+                    document.querySelector(".DrWord").style.top =
+                        adjust - 420 + "px";
                 }
             }
 
@@ -1288,7 +1301,7 @@ var app = new Vue({
                 .replace(",", "");
             $(".Dr_title .word h3").html(str);
             const md5str = md5(`${str}|Funday1688`);
-
+            // console.log(md5str);
             axios
                 .get(
                     `https://funday.asia/api/dr.eye.asp?keyword=${str}&Fundaykey=${md5str}`
@@ -1854,13 +1867,14 @@ var app = new Vue({
             document.getElementById("uploadProgress").classList.remove("none");
             var formData = new FormData();
             const blob = this.recBlob[0];
-            const cid = sessionStorage.getItem("cindx");
+            const cid = this.customer_id;
             const mid = this.member_id;
             const vid = this.videoId.replace("#", "");
             formData.append("upfile", blob, `${cid}-${mid}-${vid}.mp3`);
             formData.append("member_id", `${mid}`);
             formData.append("customer_id", `${cid}`);
             formData.append("musicbox_id", `${vid}`);
+            // console.log(mid, cid, vid);
             for (var pair of formData.entries()) {
                 // console.log(pair[0] + ", " + pair[1]);
             }
@@ -2170,7 +2184,7 @@ var app = new Vue({
         let hash = window.location.href;
 
         if (location.hash.indexOf("mid") > -1) {
-            console.log(location.hash);
+            // console.log(location.hash);
             this.singerMode = true;
             let str = location.hash.replace("#", "").split("=")[1];
             this.singerCid = str.split("-")[0];

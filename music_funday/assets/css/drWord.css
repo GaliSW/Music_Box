@@ -145,6 +145,10 @@
     color: #ffb78c;
     text-decoration: underline;
 }
+.subtitle_items .en .no_hover:hover {
+    color: #b6b6b6;
+    text-decoration: none;
+}
 .subtitle_items .en .select {
     color: #ffb78c;
     font-weight: bold;
