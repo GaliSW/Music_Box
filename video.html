@@ -98,20 +98,6 @@
         </script>
         <!-- End Google Tag Manager -->
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-128191330-5"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-
-            gtag("config", "UA-128191330-5");
-        </script>
         <!-- Facebook Pixel Code -->
         <script>
             !(function (f, b, e, v, n, t, s) {
@@ -462,11 +448,6 @@
                     >
                         <img src="./images/web_icon/share.svg" alt="" />
                     </div>
-                    <!-- <div class="join_mobile"><img src="./images/web_icon/login.svg" alt=""></div> -->
-                    <!-- <div id="menu">
-          <div class="logout_mobile" id="logout"><img src="./images/web_icon/logout.svg" alt=""></div> 
-          <span class="logout"><a href="#" id="logout"> 登出</a></span>
-        </div> -->
                 </div>
             </div>
 
@@ -762,6 +743,21 @@
                                                     alt=""
                                             /></span>
                                         </div>
+                                        <input
+                                            type="checkbox"
+                                            id="original"
+                                            class="none"
+                                        />
+                                        <label
+                                            for="original"
+                                            class="original"
+                                            v-if="audioStatus"
+                                        >
+                                            <span>背景原音</span>
+                                            <div @click="voiceController">
+                                                <div></div>
+                                            </div>
+                                        </label>
                                     </div>
                                     <div class="middle">
                                         <!-- 播放方式 1:循環 2:單曲 3:隨機, -->
@@ -891,12 +887,12 @@
                                             <img
                                                 src="./images/web_icon/list_close.svg"
                                                 alt="#"
-                                                v-if="nowTab == 0"
+                                                v-if="nowtab == 0"
                                             />
                                             <img
                                                 src="./images/web_icon/list_open.svg"
                                                 alt="#"
-                                                v-if="nowTab == 1"
+                                                v-if="nowtab == 1"
                                             />
                                         </div>
                                         <div class="favbtn_mobile">
@@ -917,15 +913,6 @@
                                                 alt=""
                                             />
                                         </div>
-                                        <!-- <div>
-                    <input type="checkbox" id="teacher_btn">
-                    <label for="teacher_btn" class="teacher_btn_close">
-                      <img src="./images/web_icon/teacher_close.svg"alt="">
-                    </label>
-                    <label for="teacher_btn" class="teacher_btn_open">
-                      <img src="./images/web_icon/teacher_open.svg"alt="">
-                    </label>
-                  </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -1057,40 +1044,30 @@
                                 v-if="songInfo.tutor_url"
                             >
                                 <!-- mobile 老師解說 -->
-                                <!-- <div class="teacher_bar only_pad">
-					<div class="button video_switch" @click="tutor=!tutor">老師解說 
-					<span>
-            <img :src="tutor==true?'images/web_icon/teacher_video_switch_icon02.svg':'images/web_icon/teacher_video_switch_icon02_off.svg'" class="button_icon"></span>
-					</div>
-					<div class="buootn cutover03" @click="paragraph=!paragraph">
-					<span class="cut01" style="display: inline;"><img :src="paragraph==true?'images/web_icon/teacher_bar_cut_a01.svg':'images/web_icon/teacher_bar_cut_a02.svg'">{{paragraph==true?'分段':'整首' }}</span> 
-					</div>
-				</div> -->
-                                <!-- mobile 老師解說 -->
                             </div>
                             <!--這一塊是頁籤式電影列表切換-->
                             <div class="switch_tab">
-                                <ul class="tabs video_tab">
+                                <!-- <ul class="tabs video_tab">
+                                    
                                     <li
                                         @click="tabChange"
-                                        :class="{active:nowTab == 0}"
+                                        :class="{active:nowtab == 0}"
                                     >
                                         <a href="#">中英字幕</a>
                                     </li>
-                                    <!--頁籤1-->
+                                    
                                     <li
                                         @click="tabChange"
-                                        :class="{active:nowTab == 1}"
+                                        :class="{active:nowtab == 1}"
                                     >
                                         <a href="#">歌手</a>
                                     </li>
-                                    <!--頁籤2-->
-                                </ul>
+                                </ul> -->
                                 <div class="tab_container">
                                     <div
                                         id="tab1"
                                         class="tab_content"
-                                        v-show="nowTab == 0"
+                                        v-show="nowtab == 0 || nowtab == 2"
                                     >
                                         <!--頁籤1的內容-->
                                         <div
@@ -1126,15 +1103,6 @@
                                                 ></div>
                                             </div>
                                             <!-- PC 老師解說 -->
-                                            <!-- <div class="teacher_bar no_pad" v-if="songInfo.tutor_url">
-                      
-                      <div class="button video_switch" @click="tutor=!tutor">老師解說
-                        <span> <img :src="tutor==true?'images/web_icon/teacher_video_switch_icon02.svg':'images/web_icon/teacher_video_switch_icon02_off.svg'" class="button_icon"></span></div>
-                      
-                      <div class="buootn cutover03" @click="paragraph=!paragraph">
-                        <span class="cut01" style="display: inline;"><img :src="paragraph==true?'images/web_icon/teacher_bar_cut_a01.svg':'images/web_icon/teacher_bar_cut_a02.svg'">{{paragraph==true?'分段':'整首' }}</span>  
-                      </div>
-                    </div> -->
                                         </div>
                                         <div
                                             class="noWord"
@@ -1156,16 +1124,12 @@
                                                 :id="'sIndex' + index"
                                                 @click="fnSeekTo"
                                             >
-                                                <!-- <div class="play-single-line" >
-                        <img src="images/web_icon/subtitle_list_icon.svg" alt="">
-                      </div> -->
-
                                                 <div
                                                     class="en"
                                                     v-show="captions == 1 || captions == 2"
                                                 >
                                                     <span
-                                                        :class="{no_hover:recMode}"
+                                                        :class="{no_hover:recMode || audioStatus}"
                                                         v-for="(item,index) in subtitle_en[index]"
                                                         @click.stop="fnSearchWord(item,$event)"
                                                         >{{item}}</span
@@ -1282,8 +1246,26 @@
                                     <div
                                         id="tab2"
                                         class="tab_content"
-                                        v-show="nowTab == 1"
+                                        v-show="nowtab == 1 || nowtab == 2"
                                     >
+                                        <input
+                                            type="checkbox"
+                                            id="singer_list"
+                                            class="none"
+                                        />
+                                        <div
+                                            class="tab2_title mobile_hidden"
+                                            for="singer_list"
+                                        >
+                                            <label for="singer_list">
+                                                <img
+                                                    src="./images/web_icon/arrow_down.svg"
+                                                    alt=""
+                                                />
+
+                                                <span>配唱列表</span>
+                                            </label>
+                                        </div>
                                         <!--頁籤2的內容-->
                                         <!-- 單一歌手配音 -->
                                         <ul
@@ -1355,7 +1337,7 @@
                                                 class="noSinger"
                                                 v-show="!hasSinger"
                                             >
-                                                尚無歌手歡唱
+                                                尚未有人配音，馬上成為第一人
                                             </div>
                                             <li
                                                 v-for="(item,index) in likeData"
@@ -2487,9 +2469,6 @@
         }
     </script>
     <script>
-        let vh = window.innerHeight * 0.01;
-        // Then we set the value in the --vh custom property to the root of the document
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
         setInterval(() => {
             if ($("#logoImg").hasClass("none")) {
                 $("#logoImg").removeClass("none");

@@ -6,7 +6,7 @@
     height: 27px;
     font-family: Noto Sans TC;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 300;
     font-size: 16px;
     display: flex;
     align-items: center;
@@ -61,7 +61,7 @@
     align-items: center;
     font-family: Noto Sans TC;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 300;
     font-size: 16px;
     cursor: pointer;
     /* line-height: 23px; */

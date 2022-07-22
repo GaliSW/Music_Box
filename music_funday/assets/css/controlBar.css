@@ -2,11 +2,11 @@
     border: 0.5px solid #ffffff;
     box-sizing: border-box;
     border-radius: 100px;
-    width: 96px;
-    height: 27px;
+    width: 100px;
+    height: 28px;
     font-family: Noto Sans TC;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 300;
     font-size: 16px;
     display: flex;
     align-items: center;
@@ -61,7 +61,7 @@
     align-items: center;
     font-family: Noto Sans TC;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 300;
     font-size: 16px;
     cursor: pointer;
     /* line-height: 23px; */
@@ -77,8 +77,8 @@
 .teacherBtn_mobile {
     cursor: pointer;
     position: absolute;
-    top: 24px;
-    right: 28px;
+    top: 40px;
+    right: 40px;
     font-family: Noto Sans TC;
     font-style: normal;
     font-weight: 500;
@@ -138,7 +138,7 @@
     border-radius: 50%;
 }
 .teacherBtn_mobile {
-    top: 134px;
+    top: 145px;
 }
 .goRec p,
 .teacherBtn_mobile p,

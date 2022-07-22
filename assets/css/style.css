@@ -513,8 +513,8 @@ body.modal-open #header {
 }
 #video_list2 {
     position: relative;
-    padding: 0px 16px;
-    background: linear-gradient(0deg, #161616, #161616), #1e134a;
+    padding: 0 0 50px 0;
+    background: #000;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     height: 100%;
     overflow: hidden;
@@ -1190,8 +1190,7 @@ body.category_page .video_category .video_items .item .video_img {
         padding-right: 0px;
     }
     #video_list2 {
-        padding-left: 0px;
-        padding-right: 0px;
+        padding: 0;
     }
     ul.tabs {
         margin-left: 0px;
@@ -1382,8 +1381,7 @@ body.video_page .switch_tab ul.subtitle_items.off {
     height: 767px;
 }
 
-body.video_page .switch_tab .noWord,
-body.video_page .switch_tab .noSinger {
+body.video_page .switch_tab .noWord {
     /* border: 1px solid red; */
     position: absolute;
     display: flex;
@@ -1397,20 +1395,41 @@ body.video_page .switch_tab .noSinger {
     left: 0;
     z-index: 2;
 }
+body.video_page .switch_tab .noSinger {
+    padding: 0 0px;
+    position: relative;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #000;
+}
 body.video_page .switch_tab .back_to_singer {
     background: #ffffff;
-    border-radius: 4px;
+    border-radius: 50px;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    padding: 10px 45px;
+    right: 24px;
+    top: 12px;
+    display: flex;
+    align-items: center;
+    /*transform: translate(-50%, -50%);
+    */
+    line-height: 16px;
+    padding: 6px 20px 5px 20px;
     font-family: "Roboto";
     font-style: normal;
     font-weight: 700;
     font-size: 16px;
     color: #000000;
     cursor: pointer;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    -ms-border-radius: 50px;
+    -o-border-radius: 50px;
 }
 body.video_page .switch_tab ul.subtitle_items > li {
     /* background-image: url(../../images/web_icon/subtitle_list_icon.svg); */
@@ -1487,6 +1506,32 @@ body.video_page .switch_tab ul.subtitle_items > li .play-single-line {
 @media (max-width: 991px) {
     .switch_tab ul.subtitle_items > li.active_tutor:hover {
         background: #f74768;
+    }
+    body.video_page .switch_tab .back_to_singer {
+        right: 50%;
+        /*left: 50%;
+        */
+        top: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translate(50%, -50%);
+        line-height: 16px;
+        padding: 6px 20px 5px 20px;
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        color: #000000;
+        cursor: pointer;
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        -ms-border-radius: 50px;
+        -o-border-radius: 50px;
+        -webkit-transform: translate(50%, -50%);
+        -moz-transform: translate(50%, -50%);
+        -ms-transform: translate(50%, -50%);
+        -o-transform: translate(50%, -50%);
     }
 }
 body.video_page ul.tabs {
@@ -1596,7 +1641,7 @@ body.video_page .video_category .video_items .items_list .item {
 @media (min-width: 992px) {
     body.video_page #video_frame_top {
         grid-template-columns: auto 577px;
-        /* padding: 0px 16px 0px 16px; */
+        padding: 16px 0px;
     }
     body.video_page .video_category .ga_title {
         margin-bottom: 20px;
@@ -1683,9 +1728,9 @@ body.video_page .video_category .video_items .items_list .item {
     .teacher_lecture .teacher_bar {
         padding: 4px 16px;
     }
-    /* body.video_page .switch_tab ul.subtitle_items {
-        height: calc(100vh - 515px) !important;
-    } */
+    body.video_page .switch_tab ul.subtitle_items {
+        height: 100% !important;
+    }
     body.video_page .switch_tab ul.voice_items {
         overflow-y: scroll;
     }
@@ -1774,33 +1819,33 @@ body.video_page .video_category .video_items .items_list .item {
 @media (max-width: 480px) {
     body.video_page .switch_tab ul.subtitle_items.off {
         height: calc(100vh - 392px);
-        /* height: calc((var(--vh, 1vh) * 100)-392px); */
+        height: calc((var(--vh, 1vh) * 100) - 392px);
     }
     .switch_tab div.tab_container {
         height: calc(100vh - 392px);
-        /* height: calc((var(--vh, 1vh) * 100)-392px); */
+        height: calc((var(--vh, 1vh) * 100) - 392px);
     }
     .switch_tab ul.voice_items {
         /* border: 1px solid red; */
         height: calc(100vh - 392px);
-        /* height: calc((var(--vh, 1vh) * 100)-392px); */
+        height: calc((var(--vh, 1vh) * 100) - 392px);
     }
 }
 @media (max-width: 380px) {
     body.video_page .switch_tab ul.subtitle_items.off {
         height: calc(100vh - 292px);
-        /* height: calc((var(--vh, 1vh) * 100)-292px); */
+        height: calc((var(--vh, 1vh) * 100) - 292px);
     }
     .switch_tab div.tab_container {
         height: calc(100vh - 292px);
-        /* height: calc((var(--vh, 1vh) * 100)-292px); */
+        height: calc((var(--vh, 1vh) * 100) - 292px);
     }
     .switch_tab ul.subtitle_items {
         height: 350px;
     }
     .switch_tab ul.voice_items {
         height: calc(100vh - 292px);
-        /* height: calc((var(--vh, 1vh) * 100)-292px); */
+        height: calc((var(--vh, 1vh) * 100) - 292px);
     }
 }
 /********** 以下是影片撥放的控制器 bar */
@@ -1842,7 +1887,7 @@ body.video_page .video_category .video_items .items_list .item {
     background: #174780;
 }
 #video_playing .video_bar {
-    /* position: absolute; */
+    position: absolute;
     width: 100%;
     bottom: 0px;
     color: #fff;
@@ -1866,18 +1911,19 @@ body.video_page .video_category .video_items .items_list .item {
     font-family: Roboto;
     font-weight: 500;
     font-size: 22px;
-    /* line-height: 26px; */
-    height: 90px;
+    line-height: 26px;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 4px;
+    /* padding-top: 4px; */
 }
 #video_playing .video_bar .subtitle .en {
-    font-size: 22px;
+    padding: 5px 0;
+    font-size: 26px;
 }
 #video_playing .video_bar .subtitle .tw {
+    padding: 5px 0;
     font-size: 18px;
 }
 #video_playing .video_bar .time_bar {
@@ -1917,7 +1963,7 @@ body.video_page .video_category .video_items .items_list .item {
 }
 #video_playing .video_bar .tool_bar {
     position: relative;
-    margin: 5px auto 10px auto;
+    margin: 0 auto;
     width: 90%;
     /* padding: 0 32px; */
     height: 42px;
@@ -3075,7 +3121,7 @@ textarea {
         height: 100vh;
     }
     .login_page #top_bar {
-        background: #000;
+        /* background: #000; */
         padding: 8px 16px;
     }
     .login_page #login_body {
@@ -4056,4 +4102,85 @@ textarea {
     z-index: 1000;
     width: 100%;
     height: 100%;
+}
+@media (max-width: 480px) {
+    .modal.login_page {
+        padding-right: 0px !important;
+        position: fixed;
+    }
+    .modal-dialog {
+        margin: 0 auto;
+        max-width: 400px;
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        -webkit-transform: translate(-50%, -50%) !important;
+        -moz-transform: translate(-50%, -50%) !important;
+        -ms-transform: translate(-50%, -50%) !important;
+        -o-transform: translate(-50%, -50%) !important;
+    }
+    .modal-content {
+        border-radius: 0px;
+        border: none;
+    }
+    .login_page #page-body {
+        border-radius: 8px;
+        height: 100%;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        -ms-border-radius: 8px;
+        -o-border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgb(3, 19, 38, 0.95);
+    }
+    .login_page #top_bar {
+        /* background: #0d2d53; */
+        padding: 8px 16px;
+    }
+    .login_page #login_body {
+        margin-top: 28px;
+        padding: 0 5px;
+    }
+    #login_body .slogin {
+        font-size: 22px;
+    }
+    #myModal02 #login_body .slogin {
+        font-size: 22px;
+        display: block;
+    }
+    .login_form .button input[type="submit"] {
+        background: #174780;
+        border: 0.5px solid #000000;
+        color: #fff;
+    }
+    .login_form .button input[type="submit"].change {
+        background: #f2f8ff;
+        color: #0d2d53;
+    }
+    .login_form .button input[type="button"].send {
+        background: #0d2d53;
+        border: 1px solid #0d2d53;
+    }
+    .login_page #page-body.doc #login_body .doc_con {
+        height: unset;
+        overflow-y: unset;
+    }
+    .login_page #page-body.doc #top_bar img {
+        filter: unset;
+    }
+    .login_page #page-body.doc #login_body {
+        height: 50vh;
+        overflow: auto;
+        padding-bottom: 80px;
+    }
+    .login_form .button.login-in input[type="submit"].fb-in {
+        background: #ffffff;
+        border: 1px solid #4f7fb8;
+        color: #0d2d53;
+    }
+    #login_body .form_bottom {
+        margin-bottom: 32px;
+    }
 }

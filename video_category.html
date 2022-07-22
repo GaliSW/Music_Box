@@ -90,20 +90,6 @@
         </script>
         <!-- End Google Tag Manager -->
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-128191330-5"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-
-            gtag("config", "UA-128191330-5");
-        </script>
         <!-- Facebook Pixel Code -->
         <script>
             !(function (f, b, e, v, n, t, s) {
@@ -1645,17 +1631,18 @@
                         })
                         .catch((error) => console.log(error));
                 },
-                getData() {
+                async getData() {
                     let vm = this;
                     let apiUrl;
                     if (vm.page < 2) {
                         for (let i = 1; i < 3; i++) {
-                            axios
+                            await axios
                                 .get(
-                                    `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?PG=${i}&CategoryId=${this.CategoryId}&member_id=${this.member_id}`
+                                    `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?PG=${vm.page}&CategoryId=${this.CategoryId}&member_id=${this.member_id}`
                                 )
                                 .then((res) => {
                                     vm.CategoryTitle = Object.keys(res.data)[0];
+                                    console.log(res.data[vm.CategoryTitle][0]);
                                     if (
                                         res.data[vm.CategoryTitle].length == ""
                                     ) {
@@ -1666,12 +1653,12 @@
                                         vm.data.push(
                                             ...res.data[vm.CategoryTitle]
                                         );
-                                        this.loading = false;
+                                        this.loading = true;
                                     }
-                                })
-                                .catch((error) => console.log(error));
+                                });
+                            vm.page++;
                         }
-                        vm.page = 2;
+                        console.log(vm.data);
                     } else {
                         axios
                             .get(

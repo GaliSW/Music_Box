@@ -53,10 +53,10 @@ var app = new Vue({
         linkedinurl: "", //linkedin分享網址
         URL: "", //本頁網址
         findPara: false, //是否點擊跳句
-        nowTab: 0, //目前tab頁面 0:字幕 1:配音列表
+        nowtab: 0, //目前tab頁面 0:字幕 1:配音列表
         recMode: false, //歡唱模式
         audioPlayMode: 0, //播放錄音模式 0:同步 1:錄音聲音 2:影片聲音
-        audioTime: 0, //音檔長度陣列
+        audioTime: [], //音檔長度陣列
         audioTimer: "", //計時器
         audioStatus: false, //是否正在播放配音
         sid: "", //計時器Interval
@@ -87,6 +87,8 @@ var app = new Vue({
         firstTab: true, //第一次按tab
         tutorPlaying: false,
         firstClick: false, //是否第一次點擊頁面
+        vdVoice: true,
+        audioTimeArr: [], //配音歌手的時間長度
     },
     computed: {},
     watch: {
@@ -259,6 +261,16 @@ var app = new Vue({
         },
     },
     methods: {
+        onResize() {
+            if (window.innerWidth > 991) {
+                app.nowtab = 2;
+            } else {
+                app.nowtab = 0;
+                document.querySelector(".tab_container").style.paddingBottom =
+                    "0px";
+            }
+        },
+
         tutorMark() {
             for (let j = 0; j < this.subTitle.length; j++) {
                 document
@@ -736,7 +748,9 @@ var app = new Vue({
         },
         //控制字幕狀態
         fnCaptions(e) {
-            this.nowTab = 0;
+            if (window.innerWidth < 991) {
+                this.nowtab = 0;
+            }
             //字幕狀態 0:關閉 1:中英 2:英文 3:中文,
             if (e == 0) {
                 this.captions += 1;
@@ -803,7 +817,7 @@ var app = new Vue({
         //按歌詞播放某一段
         fnSeekTo(event) {
             if (this.recMode) return;
-
+            if (this.audioStatus) return;
             //手機板老師講解預載
             if (this.tutorMb_pre) {
                 player3.mute().playVideo();
@@ -869,6 +883,7 @@ var app = new Vue({
 
         //時間軸跳轉
         turnTo(e) {
+            if (this.audioStatus) return;
             const elm = document.querySelector(".allTime_bar");
             const length = elm.offsetWidth;
             const xPos = e.pageX - elm.offsetLeft;
@@ -996,7 +1011,10 @@ var app = new Vue({
         },
         //老師講解
         fnTutor() {
-            if (this.nowTab == 1 || this.recMode) return;
+            if (this.nowtab == 1 || this.recMode) return;
+            if (this.audioStatus) {
+                this.hint = "配音播放中";
+            }
             if (this.tutor) {
                 this.tutor = false;
                 this.tutorMb = false;
@@ -1028,7 +1046,7 @@ var app = new Vue({
                     this.getAudioTime();
                 }, 1500);
                 setTimeout(() => {
-                    this.nowTab = 1;
+                    this.nowtab = 1;
                     this.firstTab = false;
                 }, 3000);
                 let allLi = document.querySelectorAll(".active_tutor");
@@ -1037,14 +1055,14 @@ var app = new Vue({
                 }
                 return false;
             }
-            if (this.nowTab == 0) {
+            if (this.nowtab == 0) {
                 if (this.firstTab && this.mobileType == "") {
                     this.hint = "歌手列表:讀取中";
                     setTimeout(() => {
                         this.getAudioTime();
                     }, 1500);
                     setTimeout(() => {
-                        this.nowTab = 1;
+                        this.nowtab = 1;
                         this.hint = "歌手列表:開啟";
                         this.firstTab = false;
                     }, 3000);
@@ -1084,7 +1102,7 @@ var app = new Vue({
                         player.pauseVideo();
                     }, 500);
                     setTimeout(() => {
-                        this.nowTab = 1;
+                        this.nowtab = 1;
                         this.hint = "歌手列表:開啟";
                         this.firstTab = false;
                     }, 3000);
@@ -1111,7 +1129,7 @@ var app = new Vue({
                         }
                     }
                 } else {
-                    this.nowTab = 1;
+                    this.nowtab = 1;
                     this.hint = "歌手列表:開啟";
                 }
 
@@ -1126,7 +1144,7 @@ var app = new Vue({
                 // this.getAudioTime();
                 //預載所有音檔
             } else {
-                this.nowTab = 0;
+                this.nowtab = 0;
                 this.hint = "歌手列表:關閉";
                 if (this.mobileType == "ios") {
                     player.stopVideo();
@@ -1141,9 +1159,8 @@ var app = new Vue({
             for (let i = 0; i < this.likeData.length; i++) {
                 let duration;
                 let time = document.getElementById(`audio${i}`).duration;
-                // console.log(time);
-                if (time == "NaN") {
-                    this.getAudioTime();
+                if (isNaN(time)) {
+                    time = nanTime;
                 }
                 let min = Math.floor(time / 60);
                 let sec = (time % 60).toFixed(0);
@@ -1286,7 +1303,11 @@ var app = new Vue({
                 $("#myModal09").modal("hide");
                 $("#myModal07").modal("show");
             } else {
-                this.nowTab = 0;
+                if (window.innerWidth < 991) {
+                    this.nowtab = 0;
+                } else {
+                    this.nowtab = 2;
+                }
                 this.hint = "歌手列表:關閉";
                 this.fnCaptions(0);
                 this.captions = 1;
@@ -1307,10 +1328,7 @@ var app = new Vue({
                 document.querySelector(".select").classList.remove("select");
             }
             if (this.recMode) return;
-            // document.documentElement.style.overflowY = "hidden";
-            // document.querySelector(".subtitle_items").style.overflowY =
-            //     "hidden";
-            // body.video_page .switch_tab ul.subtitle_items
+            if (this.audioStatus) return;
             let vm = this;
             vm.DrWordModal = true;
             vm.DrWord = target;
@@ -1555,6 +1573,10 @@ var app = new Vue({
                         return false;
                     }
                     this.likeData = res.data[Object.keys(res.data)];
+
+                    setTimeout(() => {
+                        this.getAudioTime();
+                    }, 3000);
                 })
                 .catch((error) => console.log(error));
         },
@@ -1755,6 +1777,9 @@ var app = new Vue({
             player.seekTo(0);
             this.currentTime = "00:00";
             player.stopVideo();
+            if (window.innerWidth > 991) {
+                this.nowtab = 2;
+            }
         },
         // ==========================================
         // === 開始錄音&倒數GIF ===
@@ -1810,6 +1835,7 @@ var app = new Vue({
             player.pauseVideo();
             player.seekTo(0);
             this.recMode = true;
+            document.getElementById("singer_list").checked = true;
             const countDown = document.querySelector(".countDown");
             const countDown_wrapper =
                 document.querySelector(".countDown_wrapper");
@@ -2032,6 +2058,19 @@ var app = new Vue({
                 audio.pause();
             }
         },
+        //影片聲音開關
+        voiceController() {
+            if (this.vdVoice) {
+                this.vdVoice = false;
+                player.mute();
+                app.hint = "背景原音:關閉";
+            } else {
+                this.vdVoice = true;
+                player.unMute();
+                player.setVolume(50);
+                app.hint = "背景原音:開啟";
+            }
+        },
         //播放配音列表
         playAudio(index) {
             if (Number(sessionStorage.getItem("mfree")) > 1) {
@@ -2044,6 +2083,7 @@ var app = new Vue({
                 app.hint = "歡唱錄音中";
                 return;
             }
+
             this.singleMode = false;
             const audio = document.getElementById(`audio${index}`);
             const audioPlay = document.getElementById(`audioPlay${index}`);
@@ -2105,7 +2145,7 @@ var app = new Vue({
                 }
                 audioPlay.classList.add("click");
                 // player.mute().playVideo();
-                player.setVolume(20);
+                player.setVolume(50);
                 // audio.addEventListener("canplay", function () {
                 //     audio.play();
                 // });
@@ -2204,6 +2244,9 @@ var app = new Vue({
         },
     },
     created() {
+        let vh = window.innerHeight * 0.01;
+        // Then we set the value in the --vh custom property to the root of the document
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
         //判斷裝置
         let browser = {
             versions: (function () {
@@ -2234,7 +2277,6 @@ var app = new Vue({
         let hash = window.location.href;
 
         if (location.hash.indexOf("mid") > -1) {
-            console.log(location.hash);
             this.singerMode = true;
             let str = location.hash.replace("#", "").split("=")[1];
             this.singerCid = str.split("-")[0];
@@ -2245,17 +2287,17 @@ var app = new Vue({
                     `https://musicapi.funday.asia/api/Share/GetMember?customer_id=${this.singerCid}&member_id=${this.singerMid}`
                 )
                 .then((res) => {
-                    console.log(res);
                     this.singerImg = res.data.content.imgUrl;
                     this.singerSex = res.data.content.sex;
                     this.singerName = res.data.content.nickName;
                     this.singerFile = `https://funday.asia/FundayKtv/files/${this.singerCid}-${this.singerMid}-${this.videoId}.mp3`;
                 });
             this.hint = "歌手列表:讀取中";
-            this.nowTab = 1;
-            setTimeout(() => {
-                this.tabChange(0);
-            }, 2000);
+            if (window.innerWidth > 991) {
+                this.nowtab = 2;
+            } else {
+                this.nowtab = 1;
+            }
         }
 
         if (hash.indexOf("videoId") > -1 && hash.indexOf("fbAdd") == -1) {
@@ -2340,6 +2382,10 @@ var app = new Vue({
             this.playMethods = sessionStorage.getItem("playMethods");
         } else {
             this.playMethods = 1;
+        }
+        window.addEventListener("resize", this.onResize, { passive: true });
+        if (window.innerWidth > 991) {
+            this.nowtab = 2;
         }
     },
 });

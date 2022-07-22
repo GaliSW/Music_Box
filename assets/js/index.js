@@ -513,7 +513,7 @@ var app = new Vue({
                     `https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${this.member_id}`
                 )
                 .then((res) => {
-                    // console.log(res);
+                    console.log(res);
 
                     vm.sidebar = res.data.Category;
 
