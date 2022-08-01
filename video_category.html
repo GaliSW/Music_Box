@@ -1634,7 +1634,8 @@
                 async getData() {
                     let vm = this;
                     let apiUrl;
-                    if (vm.page < 2) {
+
+                    if (vm.page <= 1) {
                         for (let i = 1; i < 3; i++) {
                             await axios
                                 .get(
@@ -1642,7 +1643,6 @@
                                 )
                                 .then((res) => {
                                     vm.CategoryTitle = Object.keys(res.data)[0];
-                                    console.log(res.data[vm.CategoryTitle][0]);
                                     if (
                                         res.data[vm.CategoryTitle].length == ""
                                     ) {
@@ -1656,9 +1656,9 @@
                                         this.loading = true;
                                     }
                                 });
-                            vm.page++;
+                            vm.page += 1;
                         }
-                        console.log(vm.data);
+                        vm.page = 2;
                     } else {
                         axios
                             .get(

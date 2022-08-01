@@ -78,10 +78,7 @@
     width: 100%;
     height: 100%;
 }
-.none {
-    display: none !important;
-    /* border: 1px solid red; */
-}
+
 /* s */
 .countDown_wrapper {
     /* border: 1px solid red; */
@@ -231,13 +228,7 @@
 #teacher_btn:checked ~ .teacher_btn_close {
     display: none;
 }
-#fullscreen {
-    position: fixed;
-    bottom: 80px;
-    right: 8px;
-    z-index: 997;
-    cursor: pointer;
-}
+
 .teacher_video_mobile {
     display: none;
 }
@@ -292,11 +283,7 @@
     color: #f74768;
     margin-right: 4px;
 }
-@media (max-width: 1200px) {
-    #fullscreen {
-        display: none;
-    }
-}
+
 @media (max-width: 991px) {
     .disabled {
         display: none !important;

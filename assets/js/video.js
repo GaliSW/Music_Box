@@ -1603,7 +1603,7 @@ var app = new Vue({
             } else if (status == 0) {
                 this.URL = window.location.href.replace("#", "");
                 singer = "";
-                console.log(this.URL);
+                // console.log(this.URL);
             }
 
             document.querySelector(".share_blk").classList.toggle("none");
