@@ -439,35 +439,35 @@ async function mailLoginCheck() {
         return;
     }
 
-    const json = JSON.stringify({
-        ID: account,
-        password: pass,
-        FBID: "",
-    });
+    await axios
+        .get(
+            `https://webaspapi.funday.asia/api/User/Login?ID=${account}&Password=${pass}`
+        )
+        .then((res) => {
+            // console.log(res);
+            if (res.data.IsSuccess) {
+                // 切換登入狀態
+                $("#header #login_blk").hide();
+                $("#header #menu").show();
+                $("#myModal07").modal("hide");
+                sessionStorage.removeItem("mfree");
+                sessionStorage.setItem("mindx", res.data.Content.Mindx);
+                sessionStorage.setItem("cindx", res.data.Content.Cindx);
+                sessionStorage.setItem("nickName", res.data.Content.Nickname);
+                sessionStorage.setItem("sex", res.data.Content.Sex);
+                sessionStorage.setItem("pic", res.data.Content.Pic);
+                localStorage.setItem("fdtk", res.data.Content.Token);
 
-    await axios.post("https://funday.asia/api/Member.asp", json).then((res) => {
-        // console.log(res);
-        if (res.data.StateId == 0) {
-            alert("帳號或密碼錯誤");
-        } else {
-            // 切換登入狀態
-            $("#header #login_blk").hide();
-            $("#header #menu").show();
-            $("#myModal07").modal("hide");
-            sessionStorage.setItem("mindx", res.data.mindx);
-            sessionStorage.setItem("cindx", res.data.cindx);
-            sessionStorage.setItem("nickName", res.data.nickname);
-            sessionStorage.removeItem("mfree");
-            sessionStorage.setItem("sex", res.data.sex);
-            sessionStorage.setItem("pic", res.data.pic);
-            let hash = window.location.href;
-            if (hash.indexOf("landing") > -1) {
-                location.href = `https://music.funday.asia/`;
+                let hash = window.location.href;
+                if (hash.indexOf("landing") > -1) {
+                    location.href = `https://music.funday.asia/`;
+                } else {
+                    window.location.reload();
+                }
             } else {
-                window.location.reload();
+                alert("帳號或密碼錯誤");
             }
-        }
-    });
+        });
 }
 
 //fb 登入檢查

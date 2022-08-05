@@ -33,7 +33,7 @@ async function mailSignUp() {
         tel: pass,
         ADid: 60,
     });
-    
+
     await axios
         .post("https://funday.asia/api/Application.asp", json)
         .then((res) => {

@@ -1924,6 +1924,35 @@
     </body>
     <!-- myjs -->
     <script>
+        if (localStorage.getItem("fdtk")) {
+            const token = localStorage.getItem("fdtk");
+            document.querySelector(".nav_bar").innerHTML = "";
+            str_mb = `<ul>
+                    <li>
+                        <a href="https://tube.funday.asia?fdtk=${token}" target="_blank"
+                            >FunTube</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://map.funday.asia?fdtk=${token}" target="_blank"
+                            >FunMap</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://dic.funday.asia?fdtk=${token}" target="_blank"
+                            >FunDictionary</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://funday.asia/api/SSO.asp?fdtk=${token}" target="_blank">FunDay</a>
+                    </li>
+                </ul>
+            `;
+            document
+                .querySelector(".nav_bar")
+                .insertAdjacentHTML("afterbegin", str_mb);
+        }
+
         const user_id = sessionStorage.getItem("mindx");
 
         if (user_id) {

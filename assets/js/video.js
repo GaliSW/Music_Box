@@ -2326,34 +2326,44 @@ var app = new Vue({
                         if (id == null) {
                             alert("此Facebook帳號尚未註冊");
                         } else {
-                            const json = JSON.stringify({
-                                ID: "",
-                                password: "",
-                                FBID: id,
-                            });
                             axios
-                                .post(
-                                    "https://funday.asia/api/Member.asp",
-                                    json
+                                .get(
+                                    `https://webaspapi.funday.asia/api/User/Login?FBID=${id}`
                                 )
                                 .then((res) => {
                                     console.log(res);
-                                    if (res.data.StateId == 0) {
-                                        alert("此Facebook帳號尚未註冊");
-                                    } else {
+                                    if (res.data.IsSuccess) {
                                         $("#myModal07").modal("hide");
                                         sessionStorage.removeItem("mfree");
                                         sessionStorage.setItem(
                                             "mindx",
-                                            res.data.mindx
+                                            res.data.Content.Mindx
                                         );
                                         sessionStorage.setItem(
                                             "cindx",
-                                            res.data.cindx
+                                            res.data.Content.Cindx
+                                        );
+                                        sessionStorage.setItem(
+                                            "nickName",
+                                            res.data.Content.Nickname
+                                        );
+                                        sessionStorage.setItem(
+                                            "sex",
+                                            res.data.Content.Sex
+                                        );
+                                        sessionStorage.setItem(
+                                            "pic",
+                                            res.data.Content.Pic
+                                        );
+                                        localStorage.setItem(
+                                            "fdtk",
+                                            res.data.Content.Token
                                         );
                                         const url =
                                             sessionStorage.getItem("para");
                                         location.href = `https://music.funday.asia/video.html?${url}`;
+                                    } else {
+                                        alert("此Facebook帳號尚未註冊");
                                     }
                                 });
                         }
@@ -2386,6 +2396,18 @@ var app = new Vue({
         window.addEventListener("resize", this.onResize, { passive: true });
         if (window.innerWidth > 991) {
             this.nowtab = 2;
+        }
+        if (localStorage.getItem("fdtk")) {
+            const token = localStorage.getItem("fdtk");
+            document.querySelector(".subWeb").innerHTML = "";
+            str_pc = `<a href="https://tube.funday.asia?fdtk=${token}" target="_blank">FunTube</a>
+                <a href="https://map.funday.asia?fdtk=${token}" target="_blank">FunMap</a>
+                <a href="https://dic.funday.asia?fdtk=${token}" target="_blank">FunDictionary</a>
+                <a href="https://funday.asia/api/SSO.asp?fdtk=${token}" target="_blank">FunDay</a>
+            `;
+            document
+                .querySelector(".subWeb")
+                .insertAdjacentHTML("afterbegin", str_pc);
         }
     },
 });
