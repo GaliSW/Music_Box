@@ -3,8 +3,10 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+        <meta http-equiv="expires" content="0" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- <title>FunMusic</title> -->
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
         <meta
             name="description"
@@ -17,7 +19,7 @@
         <meta name="author" content="" />
         <meta
             property="og:title"
-            content="FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合"
+            content="FunMusic聽音樂學英文｜讓學習與生活結合"
         />
         <meta property="og:url" content="https://funday.asia" />
         <meta property="og:image" content="https://img.onl/3N4mPn" />
@@ -30,9 +32,12 @@
             content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,看電影學英文,英詞字義,雙語字幕,AI導唱,英聽,聽力練習,線上英語"
         />
 
-        <title>
-            FunMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
-        </title>
+        <title>FunMusic聽音樂學英文｜讓學習與生活結合</title>
+
+        <!-- <meta
+            name="google-signin-client_id"
+            content="424336502494-0lqsgtdqhq1eq58dspl52uc13k168uon.apps.googleusercontent.com"
+        /> -->
 
         <!-- Favicon -->
         <link
@@ -81,6 +86,7 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
         <script src="https://www.youtube.com/iframe_api"></script>
+        <script src="https://accounts.google.com/gsi/client"></script>
 
         <!-- ===================== AD block =======================-->
         <!-- Google Tag Manager -->
@@ -420,7 +426,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="notification_wrapper_mobile">
+            <div class="notification_wrapper_mobile none">
                 <div
                     class="notification_mobile animate__animated"
                     :class="{animate__fadeIn:notiChange}"
@@ -578,13 +584,27 @@
                             <!--這一塊是頁籤式電影列表切換-->
                             <div class="switch_tab">
                                 <ul class="tabs">
-                                    <li><a href="#tab1">熱門歡唱</a></li>
+                                    <li
+                                        :class="{active:tab}"
+                                        @click.prevent="tab = !tab"
+                                    >
+                                        <a href="#tab1">熱門歡唱</a>
+                                    </li>
                                     <!--頁籤1-->
-                                    <li><a href="#tab2">熱門點閱</a></li>
+                                    <li
+                                        :class="{active:!tab}"
+                                        @click.prevent="tab = !tab"
+                                    >
+                                        <a href="#tab2">熱門點閱</a>
+                                    </li>
                                     <!--頁籤2-->
                                 </ul>
                                 <div class="tab_container index_container">
-                                    <div id="tab1" class="tab_content">
+                                    <div
+                                        id="tab1"
+                                        class="tab_content"
+                                        v-if="tab"
+                                    >
                                         <!--頁籤1的內容-->
                                         <ul class="video_items">
                                             <li
@@ -632,7 +652,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <div id="tab2" class="tab_content">
+                                    <div id="tab2" class="tab_content" v-else>
                                         <!--頁籤2的內容-->
                                         <ul class="video_items">
                                             <li
@@ -686,7 +706,11 @@
                         </div>
                     </div>
                     <!-- 下方分類資料 -->
-                    <div id="video_frame_bottom" class="scroll_bar">
+                    <div
+                        id="video_frame_bottom"
+                        class="scroll_bar"
+                        :key="componentKey"
+                    >
                         <div class="category_videos">
                             <!-- 單筆 -->
                             <div
@@ -1115,10 +1139,11 @@
                                         >使用電子信箱加入</a
                                     >
                                 </div>
-                                <div class="login_way fb" id="fb-signin">
+                                <!-- <div class="login_way fb" id="fb-signin">
                                     <a href="#">使用Facebook加入</a>
-                                </div>
+                                </div> -->
                                 <!-- id="fb-signin" data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal06" -->
+                                <div id="google_signup"></div>
                             </div>
                             <div class="form_bottom">
                                 <a
@@ -1597,7 +1622,7 @@
                                 />
                                 <span>聽音樂學英文</span>
                             </div>
-                            <div class="slogin">使用Facebook登入</div>
+                            <div class="slogin">使用Gooogle登入</div>
                             <div class="form_body">
                                 <form
                                     action=""
@@ -1607,7 +1632,7 @@
                                 >
                                     <div class="input">
                                         <input
-                                            id="fb_account_mobile"
+                                            id="google_account_mobile"
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
@@ -1619,7 +1644,7 @@
                                     <div class="row">
                                         <div class="input col-xs-8">
                                             <input
-                                                id="fb_account_name"
+                                                id="google_account_name"
                                                 name="account_name"
                                                 type="text"
                                                 placeholder="中文姓名"
@@ -1647,7 +1672,7 @@
                                     <div class="button">
                                         <input
                                             name="join_in"
-                                            id="fb-signin-submit"
+                                            id="google-signin-submit"
                                             type="button"
                                             value="加入"
                                         />
@@ -1755,13 +1780,14 @@
                                             type="button"
                                             value="登入"
                                         />
-                                        <input
+                                        <!-- <input
                                             id="login_by_fb"
                                             class="fb-in"
                                             name="join_in"
                                             type="button"
                                             value="使用Facebook登入"
-                                        />
+                                        /> -->
+                                        <div id="google_login"></div>
                                     </div>
                                 </form>
                             </div>
@@ -1924,6 +1950,11 @@
     </body>
     <!-- myjs -->
     <script>
+        // axios.defaults.headers = {
+        //     "Cache-Control": "no-cache",
+        //     Pragma: "no-cache",
+        //     Expires: "0",
+        // };
         if (localStorage.getItem("fdtk")) {
             const token = localStorage.getItem("fdtk");
             document.querySelector(".nav_bar").innerHTML = "";
@@ -1963,12 +1994,7 @@
             $("#header #menu").hide();
         }
     </script>
-    <!-- <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js"
-        integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-    ></script> -->
+
     <script type="module" src="assets/js/index.js"></script>
     <script src="assets/js/common.js"></script>
     <script src="assets/js/myjs.js"></script>

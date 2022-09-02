@@ -49,6 +49,8 @@ var app = new Vue({
         ads: true, //廣告預設開啟
         logoIndex: 0, //Logo切換
         firstClick: false, //是否第一次點擊頁面
+        tab: true,
+        componentKey: 0,
     },
     watch: {
         alert: function (val, oldVal) {
@@ -70,13 +72,77 @@ var app = new Vue({
     },
     computed: {},
     methods: {
+        getData() {
+            let vm = this;
+            //GET請求首頁資料
+            const promise1 = new Promise((resolve, reject) => {
+                axios
+                    .get(
+                        `https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${
+                            this.member_id
+                        }&timestamp=${new Date().getTime()}`
+                    )
+                    .then((res) => {
+                        vm.sidebar = res.data.Category;
+                        vm.HotRecording = res.data["Hot Recording"];
+                        vm.HotClick = res.data["Hot Click"];
+                        vm.banner = res.data.Banner[0];
+                        vm.myVideoId = this.banner.Video.split("/")[3];
+                        // console.log(vm.myVideoId);
+                        let result = vm.sidebar.map((element, index, array) => {
+                            //只顯示四筆資料
+                            return {
+                                title: element.Category,
+                                id: element.CategoryId,
+                                data: res.data[element.Category]
+                                    .map((ele2, idx, array) => {
+                                        return {
+                                            ...ele2,
+                                            categoryId: element.CategoryId,
+                                        };
+                                    })
+                                    .slice(0, 4),
+                            };
+                        });
+                        vm.vedioListData = result;
+                        // alert(result[0].data[0].Bookmark);
+                        for (let i = 0; i < vm.sidebar.length; i++) {
+                            if (
+                                vm.sidebar[i].Category ==
+                                "Folk/Country民歌/鄉村"
+                            ) {
+                                vm.sidebar[i].Category = "Country鄉村";
+                            }
+                            if (vm.sidebar[i].Category == "Rap饒舌樂") {
+                                vm.sidebar[i].Category = "";
+                            }
+                            if (
+                                vm.sidebar[i].Category ==
+                                "Teacher's Notes老師解說"
+                            ) {
+                                vm.sidebar[i].Category = "";
+                            }
+                        }
+                        resolve("Success");
+                    })
+                    .catch((error) => console.log(error));
+            });
+
+            promise1.then((successMessage) => {
+                vm.initYoutube();
+                this.pre_height = false;
+            });
+        },
         initYoutube() {
             const _ = this;
-            const youtubeUrl = `https://www.youtube.com/embed/${app.myVideoId}?enablejsapi=1`;
+
+            // const youtubeUrl = `https://www.youtube.com/embed/${app.myVideoId}?enablejsapi=1`;
+            const youtubeUrl = `https://www.youtube.com/embed/${app.myVideoId}?enablejsapi=1&controls=0&showinfo=0&autoplay=1&rel=0&mute=1&loop=1`;
             this.ytUrl = youtubeUrl;
             this.player = new YT.Player("player", {
                 playerVars: {
-                    autoplay: 0,
+                    autoplay: 1,
+                    mute: 1,
                     playsinline: 1,
                     loop: 1,
                     rel: 0, //2018後就沒用了
@@ -98,7 +164,7 @@ var app = new Vue({
             });
         },
         onPlayerReady(evt) {
-            evt.target.mute();
+            // evt.target.mute();
             evt.target.playVideo();
         },
         onPlayerStateChange(evt) {
@@ -514,61 +580,7 @@ var app = new Vue({
             this.pic = pic;
         }
         this.sex = sex;
-        let vm = this;
 
-        //GET請求首頁資料
-        const promise1 = new Promise((resolve, reject) => {
-            axios
-                .get(
-                    `https://funday.asia/API/musicboxweb/defaultList.asp?member_id=${this.member_id}`
-                )
-                .then((res) => {
-                    // console.log(res);
-
-                    vm.sidebar = res.data.Category;
-
-                    vm.HotRecording = res.data["Hot Recording"];
-                    vm.HotClick = res.data["Hot Click"];
-                    vm.banner = res.data.Banner[0];
-                    vm.myVideoId = this.banner.Video.split("/")[3];
-                    // console.log(vm.myVideoId);
-                    let result = vm.sidebar.map((element, index, array) => {
-                        //只顯示四筆資料
-                        return {
-                            title: element.Category,
-                            id: element.CategoryId,
-                            data: res.data[element.Category]
-                                .map((ele2, idx, array) => {
-                                    return {
-                                        ...ele2,
-                                        categoryId: element.CategoryId,
-                                    };
-                                })
-                                .slice(0, 4),
-                        };
-                    });
-                    vm.vedioListData = result;
-                    for (let i = 0; i < vm.sidebar.length; i++) {
-                        if (vm.sidebar[i].Category == "Folk/Country民歌/鄉村") {
-                            vm.sidebar[i].Category = "Country鄉村";
-                        }
-                        if (vm.sidebar[i].Category == "Rap饒舌樂") {
-                            vm.sidebar[i].Category = "";
-                        }
-                        if (
-                            vm.sidebar[i].Category == "Teacher's Notes老師解說"
-                        ) {
-                            vm.sidebar[i].Category = "";
-                        }
-                    }
-                    resolve("Success");
-                })
-                .catch((error) => console.log(error));
-        });
-
-        promise1.then((successMessage) => {
-            vm.initYoutube();
-            this.pre_height = false;
-        });
+        this.getData();
     },
 });

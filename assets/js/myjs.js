@@ -7,6 +7,17 @@ var img = new Image();
 
 //頁籤效果
 $(function () {
+    google.accounts.id.initialize({
+        client_id:
+            "424336502494-0lqsgtdqhq1eq58dspl52uc13k168uon.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+    });
+
+    google.accounts.id.renderButton(document.getElementById("google_signup"), {
+        theme: "outline",
+        size: "large",
+        width: "318px",
+    });
     if (localStorage.getItem("fdtk")) {
         const token = localStorage.getItem("fdtk");
         document.querySelector(".subWeb").innerHTML = "";
@@ -29,7 +40,7 @@ $(function () {
         tokenCheck(token);
     } else {
         if (localStorage.getItem("fdtk") && !sessionStorage.getItem("mindx")) {
-            const token = sessionStorage.getItem("fdtk");
+            const token = localStorage.getItem("fdtk");
             tokenCheck(token);
         } else {
             return false;
@@ -112,7 +123,6 @@ $(window).scroll(function () {
 
 //logoChange
 $(function () {
-    console.log("222");
     setInterval(() => {
         if ($("#logoImg").hasClass("none")) {
             $("#logoImg").removeClass("none");

@@ -17,7 +17,7 @@
         <meta name="author" content="" />
         <meta
             property="og:title"
-            content="FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合"
+            content="FunMusic聽音樂學英文｜讓學習與生活結合"
         />
         <meta property="og:url" content="https://funday.asia" />
         <meta property="og:image" content="https://img.onl/3N4mPn" />
@@ -30,9 +30,9 @@
             content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,看電影學英文,英詞字義,雙語字幕,AI導唱,英聽,聽力練習,線上英語"
         />
 
-        <title>
-            FunMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
-        </title>
+        <title>FunMusic聽音樂學英文｜讓學習與生活結合</title>
+
+        <script src="https://accounts.google.com/gsi/client"></script>
 
         <!-- Favicon -->
         <link
@@ -394,7 +394,7 @@
                 />
                 <h1 class="header_title">我的收藏</h1>
             </div>
-            <div class="notification_wrapper_mobile">
+            <div class="notification_wrapper_mobile none">
                 <div
                     class="notification_mobile animate__animated"
                     :class="{animate__fadeIn:notiChange}"
@@ -1105,10 +1105,11 @@
                                         >使用電子信箱加入</a
                                     >
                                 </div>
-                                <div class="login_way fb" id="fb-signin">
+                                <!-- <div class="login_way fb" id="fb-signin">
                                     <a href="#">使用Facebook加入</a>
-                                </div>
+                                </div> -->
                                 <!-- id="fb-signin" data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal06" -->
+                                <div id="google_signup"></div>
                             </div>
                             <div class="form_bottom">
                                 <a
@@ -1582,7 +1583,7 @@
                                     width="110px"
                                 /><span>聽音樂學英文</span>
                             </div>
-                            <div class="slogin">使用Facebook登入</div>
+                            <div class="slogin">使用Google登入</div>
                             <div class="form_body">
                                 <form
                                     action=""
@@ -1592,7 +1593,7 @@
                                 >
                                     <div class="input">
                                         <input
-                                            id="fb_account_mobile"
+                                            id="google_account_mobile"
                                             name="account_mobile"
                                             type="password"
                                             autocomplete="off"
@@ -1604,7 +1605,7 @@
                                     <div class="row">
                                         <div class="input col-xs-8">
                                             <input
-                                                id="fb_account_name"
+                                                id="google_account_name"
                                                 name="account_name"
                                                 type="text"
                                                 placeholder="中文姓名"
@@ -1632,7 +1633,7 @@
                                     <div class="button">
                                         <input
                                             name="join_in"
-                                            id="fb-signin-submit"
+                                            id="google-signin-submit"
                                             type="button"
                                             value="加入"
                                         />
@@ -1739,13 +1740,14 @@
                                             type="button"
                                             value="登入"
                                         />
-                                        <input
+                                        <!-- <input
                                             id="login_by_fb"
                                             class="fb-in"
                                             name="join_in"
                                             type="button"
                                             value="使用Facebook登入"
-                                        />
+                                        /> -->
+                                        <div id="google_login"></div>
                                     </div>
                                 </form>
                             </div>
@@ -1976,10 +1978,12 @@
                     //我的歡唱
                     axios
                         .get(
-                            `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9997&member_id=${this.member_id}`
+                            `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9997&member_id=${
+                                this.member_id
+                            }&timestamp=${new Date().getTime()}`
                         )
                         .then((res) => {
-                            console.log(res);
+                            // console.log(res);
                             vm.CategoryTitleMySong = Object.keys(res.data)[0];
                             //沒有值就push到data內
                             if (res.data[vm.CategoryTitleMySong][0].Id == "")
@@ -1996,7 +2000,9 @@
                     //我的最愛
                     axios
                         .get(
-                            `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9996&member_id=${this.member_id}`
+                            `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?CategoryId=9996&member_id=${
+                                this.member_id
+                            }&timestamp=${new Date().getTime()}`
                         )
                         .then((res) => {
                             // console.log(res)

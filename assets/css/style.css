@@ -350,7 +350,7 @@ body.modal-open #header {
 }
 #sidebar ul.channel_list > li {
     margin-top: 24px;
-    background-image: url(../img/list.svg);
+    background-image: url(../../images/web_icon/list.svg);
     background-repeat: no-repeat;
     background-position: left center;
     background-size: 6px;
@@ -2985,7 +2985,11 @@ body.collect_page .tab_container .video_category {
     font-weight: normal;
     font-size: 16px;
     line-height: 23px;
-    margin-bottom: 16px;
+    margin-bottom: 4px;
+}
+#google_signup {
+    display: flex;
+    justify-content: center;
 }
 .login_form .button.login-in input[type="submit"].fb-in {
     background: #3351a0;
@@ -3125,7 +3129,7 @@ textarea {
         padding: 8px 16px;
     }
     .login_page #login_body {
-        max-width: 320px;
+        max-width: 370px;
         margin-top: 40px;
         padding: 0 5px;
     }
@@ -3839,7 +3843,7 @@ textarea {
     }
 }
 .item_less {
-    height: 800px !important;
+    height: 900px !important;
 }
 .item_less_mb {
     height: calc(100vh - 114px);
@@ -4207,7 +4211,6 @@ textarea {
 }
 .none {
     display: none !important;
-    /* border: 1px solid red; */
 }
 #fullscreen {
     position: fixed;

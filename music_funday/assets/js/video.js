@@ -326,8 +326,19 @@ var app = new Vue({
                     vm.title = res.data.info.title;
                     //字串時間
                     vm.startTimeArr = vm.subTitle.map((ele, idx, array) => {
-                        // console.log(ele.time.slice(0, -1));
-                        return ele.time.slice(0, -1);
+                        // console.log(ele.time.slice(0, 6));
+                        if (
+                            ele.time.slice(0, 7).indexOf("00:09.6") > -1 ||
+                            ele.time.slice(0, 7).indexOf("00:09.7") > -1 ||
+                            ele.time.slice(0, 7).indexOf("00:09.8") > -1 ||
+                            ele.time.slice(0, 7).indexOf("00:09.9") > -1
+                        ) {
+                            // console.log(ele.time.slice(0, 5));
+                            console.log("00:9" + ele.time.slice(5, -1));
+                            return "00:9" + ele.time.slice(5, -1);
+                        } else {
+                            return ele.time.slice(0, -1);
+                        }
                         // ele.time.split(":")[0] +
                         // ":" +
                         // ele.time.split(":")[1].split(".")[0]
