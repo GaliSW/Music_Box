@@ -17,7 +17,7 @@
         <meta name="author" content="" />
         <meta
             property="og:title"
-            content="FunMusic聽音樂學英文｜讓學習與生活結合"
+            content="FUNMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合"
         />
         <meta property="og:url" content="https://funday.asia" />
         <meta property="og:image" content="https://img.onl/3N4mPn" />
@@ -30,9 +30,9 @@
             content="聽音樂學英文,英文歡唱,歐美英文,線上英文,學習英文,看電影學英文,英詞字義,雙語字幕,AI導唱,英聽,聽力練習,線上英語"
         />
 
-        <title>FunMusic聽音樂學英文｜讓學習與生活結合</title>
-
-        <script src="https://accounts.google.com/gsi/client"></script>
+        <title>
+            FunMusic聽音樂學英文 | 專業線上英文學習平台，讓學習與生活結合
+        </title>
         <!-- Favicon -->
         <link
             rel="shortcut icon"
@@ -66,6 +66,7 @@
         <script src="assets/js/jquery.min.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://accounts.google.com/gsi/client"></script>
         <script>
             Vue.config.productionTip = false;
         </script>
@@ -399,7 +400,7 @@
                 />
                 <h1 class="header_title">{{CategoryTitle}}</h1>
             </div>
-            <div class="notification_wrapper_mobile none>
+            <div class="notification_wrapper_mobile">
                 <div
                     class="notification_mobile animate__animated"
                     :class="{animate__fadeIn:notiChange}"
@@ -725,8 +726,8 @@
                                 <!-- <div class="login_way fb" id="fb-signin">
                                     <a href="#">使用Facebook加入</a>
                                 </div> -->
-                                <!-- id="fb-signin" data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal06" -->
                                 <div id="google_signup"></div>
+                                <!-- id="fb-signin" data-dismiss="modal" aria-hidden="true" data-toggle="modal" data-target="#myModal06" -->
                             </div>
                             <div class="form_bottom">
                                 <a
@@ -1214,7 +1215,7 @@
                                 >
                                     <div class="input">
                                         <input
-                                            id="google_account_mobile"
+                                            id="fb_account_mobile"
                                             name="account_mobile"
                                             type="password"
                                             placeholder="手機(密碼)"
@@ -1226,7 +1227,7 @@
                                     <div class="row">
                                         <div class="input col-xs-8">
                                             <input
-                                                id="google_account_name"
+                                                id="fb_account_name"
                                                 name="account_name"
                                                 type="text"
                                                 placeholder="中文姓名"
@@ -1254,7 +1255,7 @@
                                     <div class="button">
                                         <input
                                             name="join_in"
-                                            id="google-signin-submit"
+                                            id="fb-signin-submit"
                                             type="button"
                                             value="加入"
                                         />
@@ -1641,11 +1642,7 @@
                         for (let i = 1; i < 3; i++) {
                             await axios
                                 .get(
-                                    `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?PG=${
-                                        vm.page
-                                    }&CategoryId=${this.CategoryId}&member_id=${
-                                        this.member_id
-                                    }&timestamp=${new Date().getTime()}`
+                                    `https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?PG=${vm.page}&CategoryId=${this.CategoryId}&member_id=${this.member_id}`
                                 )
                                 .then((res) => {
                                     vm.CategoryTitle = Object.keys(res.data)[0];
@@ -1910,7 +1907,7 @@
                                 vm.sidebar[i].Category ==
                                 "Teacher's Notes老師解說"
                             ) {
-                                vm.sidebar[i].Category = "";
+                                vm.sidebar[i].Category = "老師解說";
                             }
                         }
                     })

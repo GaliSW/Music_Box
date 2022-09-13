@@ -120,7 +120,7 @@ var app = new Vue({
                                 vm.sidebar[i].Category ==
                                 "Teacher's Notes老師解說"
                             ) {
-                                vm.sidebar[i].Category = "";
+                                vm.sidebar[i].Category = "老師解說";
                             }
                         }
                         resolve("Success");
