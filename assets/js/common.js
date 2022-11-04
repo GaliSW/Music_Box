@@ -85,9 +85,13 @@ $(function () {
         fbLogin();
     });
 
-    //fb註冊流程
+    //google註冊流程
     $("#google-signin-submit").on("click", function () {
         googleSignUp();
+    });
+    //fb註冊流程
+    $("#fb-signin-submit").on("click", function () {
+        fbSignUp();
     });
 
     //註冊流程 簡訊驗證並且加入
@@ -131,7 +135,7 @@ $(function () {
         if (member_id == null) {
             // alert("請先登入會員");
             $("#myModal09").modal("hide");
-            $("#myModal07").modal("show");
+            $("#myModal01").modal("show");
             return;
         } else {
             $("#myModal09").modal("show");
@@ -142,7 +146,7 @@ $(function () {
         if (member_id == null) {
             // alert("請先登入會員");
             $("#myModal09").modal("hide");
-            $("#myModal07").modal("show");
+            $("#myModal01").modal("show");
             return;
         } else {
             $("#myModal09").modal("show");
@@ -192,7 +196,7 @@ async function mailSignUp() {
     }
     const sex = sexColumn.value;
     let adId = 59;
-    if (sessionStorage.getItem("ADid") !== undefined) {
+    if (sessionStorage.getItem("ADid")) {
         adId = sessionStorage.getItem("ADid");
     }
     const json = JSON.stringify({
@@ -221,37 +225,35 @@ async function mailSignUp() {
 
 //FB加入
 function fbLogin(fbLogin) {
-    const returnUrl = window.location.href;
+    // const returnUrl = window.location.href;
     // console.log(returnUrl.split("?")[0]);
-    location.href = `https://funday.asia/api/FBOauth.asp?returnurl=${returnUrl}`;
+    // location.href = `https://funday.asia/api/FBOauth.asp?returnurl=${returnUrl}`;
     // axios.post("https://funday.asia/api/FBOauth.asp").then((res) => {
     //     console.log(res);
     // });
-    // FB.getLoginStatus(
-    //     function (response) {
-    //         console.log(response);
-    //         if (response.status == "connected") {
-    //             GetFbProfile(fbLogin);
-    //             //跑fb 註冊流程
-    //             $("#myModal06").modal("show");
-    //         } else if (
-    //             response.status === "not_authorized" ||
-    //             response.status === "unknown"
-    //         ) {
-    //             //未授權或用戶登出FB網站才讓用戶執行登入動作
-    //             FB.login(function (response) {
-    //                 console.log(response);
-    //                 if (response.status === "connected") {
-    //                     GetFbProfile();
-    //                     $("#myModal06").modal("show");
-    //                 } else {
-    //                     alert("Facebook帳號無法登入");
-    //                 }
-    //             });
-    //         }
-    //     },
-    //     { scope: "email" }
-    // );
+    FB.getLoginStatus(
+        function (response) {
+            if (response.status == "connected") {
+                GetFbProfile(fbLogin);
+                //跑fb 註冊流程
+                $("#myModal10").modal("show");
+            } else if (
+                response.status === "not_authorized" ||
+                response.status === "unknown"
+            ) {
+                //未授權或用戶登出FB網站才讓用戶執行登入動作
+                FB.login(function (response) {
+                    if (response.status === "connected") {
+                        GetFbProfile();
+                        $("#myModal10").modal("show");
+                    } else {
+                        alert("Facebook帳號無法登入");
+                    }
+                });
+            }
+        },
+        { scope: "email" }
+    );
 }
 
 // 拿fb個資
@@ -269,7 +271,7 @@ function GetFbProfile(fbLogin) {
             if (fbLogin !== "fbLogin") {
                 // loginTo(myModal01, myModal06);
                 $("#myModal01").modal("hide");
-                $("#myModal06").modal("show");
+                $("#myModal10").modal("show");
             }
         }
     });
@@ -372,8 +374,8 @@ async function fbSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-    var adId = 59;
-    if (sessionStorage.getItem("ADid") !== undefined) {
+    let adId = 59;
+    if (sessionStorage.getItem("ADid")) {
         adId = sessionStorage.getItem("ADid");
     }
     // console.log(adId);
@@ -392,15 +394,15 @@ async function fbSignUp() {
             if (res.data.StateId == 0) {
                 alert("此帳號已註冊，請進行登入");
                 //loginTo(myModal06, myModal09);
-                $("#myModal06").modal("hide");
+                $("#myModal10").modal("hide");
                 $("#myModal07").modal("show");
             } else {
                 document.cookie = `phone = ${pass}`;
                 sessionStorage.setItem("phone", pass);
                 //loginTo(myModal06, myModal03);
                 //簡訊驗證
-                // $("#myModal06").modal("hide");
-                $("#myModal06").css("display", "none");
+                $("#myModal10").modal("hide");
+                // $("#myModal10").css("display", "none");
                 $("#myModal03").modal("show");
             }
         });
@@ -615,7 +617,8 @@ async function handleCredentialResponse(response) {
         .then((res) => {
             const state = res.data.State;
             if (state === "0") {
-                sessionStorage.setItem("email", res.data.id);
+                sessionStorage.setItem("email", res.data.email);
+                sessionStorage.setItem("gid", res.data.id);
                 $("#myModal01").modal("hide");
                 $("#myModal06").modal("show");
             } else {
@@ -652,6 +655,7 @@ async function handleCredentialResponse(response) {
 
 async function googleSignUp() {
     const mail = sessionStorage.getItem("email");
+    const gid = sessionStorage.getItem("gid");
     const pass = document.getElementById("google_account_mobile").value;
     if (pass == "") {
         alert("請填寫密碼");
@@ -670,17 +674,19 @@ async function googleSignUp() {
         return false;
     }
     const sex = sexColumn.value;
-    var adId = 59;
-    if (sessionStorage.getItem("ADid") !== undefined) {
+    let adId = 59;
+    if (sessionStorage.getItem("ADid")) {
         adId = sessionStorage.getItem("ADid");
     }
     const json = JSON.stringify({
-        ID: mail,
+        ID: gid,
+        FBFemail: mail,
         realname: name,
         sex: sex,
         tel: pass,
         ADid: adId,
     });
+    console.log(adId);
     await axios
         .post("https://funday.asia/api/Application.asp", json)
         .then((res) => {

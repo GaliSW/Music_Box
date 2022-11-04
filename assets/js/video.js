@@ -1363,7 +1363,7 @@ var app = new Vue({
             const blkHeight = evt.pageY + 430;
             const windowHeight = window.innerHeight;
             const adjust = blkHeight - (blkHeight - windowHeight);
-            if (window.innerWidth > 600) {
+            if (window.innerWidth > 991) {
                 document.querySelector(".DrWord").style.right = "25px";
                 if (blkHeight < windowHeight) {
                     console.log("not over");
@@ -2136,10 +2136,6 @@ var app = new Vue({
                     .querySelector(`.audioTimer${this.nowPlayAudioIndex}`)
                     .classList.add("none");
 
-                // document.getElementById(
-                //     `audio${this.nowPlayAudioIndex}`
-                // ).currentTime = 0;
-
                 document
                     .querySelector(`.audioLength${this.nowPlayAudioIndex}`)
                     .classList.remove("none");
@@ -2147,7 +2143,7 @@ var app = new Vue({
                     .getElementById(`audioPlay${this.nowPlayAudioIndex}`)
                     .classList.remove("click");
                 player.seekTo(0);
-                // alert();
+
                 audio.load();
                 audio.currentTime = 0;
                 document
@@ -2168,17 +2164,16 @@ var app = new Vue({
                     player.seekTo(0);
                 }
                 audioPlay.classList.add("click");
-                // player.mute().playVideo();
                 player.setVolume(50);
-                // audio.addEventListener("canplay", function () {
-                //     audio.play();
-                // });
+
                 if (app.mobileType == "ios") {
                     await player.playVideo();
                     setTimeout(() => {
                         audio.play();
-                        audio.currentTime = player.getCurrentTime();
                     }, 500);
+                    setTimeout(() => {
+                        audio.currentTime = player.getCurrentTime() + 0.2;
+                    }, 2000);
                 } else {
                     player.playVideo();
                     setTimeout(() => {
@@ -2201,11 +2196,8 @@ var app = new Vue({
         },
         //配音校正
         audioBalance(index) {
-            // player.seekTo(0);
-            // document.getElementById(`audio${index}`).currentTime = 0;
-            // player.pauseVideo();
-            // document.getElementById(`audio${index}`).pause();
-            // console.log("balance");
+            document.getElementById(`audio${index}`).currentTime =
+                player.getCurrentTime() + 0.5;
         },
         //配音時間倒數
         goTimer(status, timer, index) {
