@@ -331,6 +331,12 @@
                         <a href="https://tube.funday.asia" target="_blank"
                             >FunTube</a
                         >
+                        <a href="https://tales.funday.asia" target="_blank"
+                            >FunTales</a
+                        >
+                        <a href="https://funradio.funday.asia" target="_blank"
+                            >FunRadio</a
+                        >
                         <a href="https://dic.funday.asia" target="_blank">
                             FunDictionary
                         </a>
@@ -2060,6 +2066,7 @@
                 favLessMb: false,
                 ads: true, //廣告預設開啟
                 tab: true,
+                isClick: false, //收藏是否點擊
             },
             computed: {},
             methods: {
@@ -2070,6 +2077,8 @@
                         $("#myModal07").modal("show");
                         return;
                     }
+                    if (this.isClick) return;
+                    this.Click = true;
                     let VideoId = $($event.target).data("videoid");
 
                     //此API在同一個歌曲編號的狀況下，再打一次為取消收藏
@@ -2081,11 +2090,13 @@
                             if (res.data.State == 1) {
                                 //新增成功
                                 $($event.target).addClass("favorites");
+                                app.Click = false;
                             }
 
                             if (res.data.State == 2) {
                                 //刪除成功
                                 $($event.target).removeClass("favorites");
+                                app.Click = false;
                             }
                         })
                         .catch((error) => console.log(error));

@@ -22,6 +22,8 @@ $(function () {
         const token = localStorage.getItem("fdtk");
         document.querySelector(".subWeb").innerHTML = "";
         str_pc = `<a href="https://tube.funday.asia?fdtk=${token}" target="_blank">FunTube</a>
+                <a href="https://tales.funday.asia?fdtk=${token}" target="_blank">FunTales</a>
+                <a href="https://funradio.funday.asia?fdtk=${token}" target="_blank">FunRadio</a>
                 <a href="https://dic.funday.asia?fdtk=${token}" target="_blank">FunDictionary</a>
                 <a href="https://funday.asia/api/SSO.asp?fdtk=${token}" target="_blank">FunDay</a>
             `;
