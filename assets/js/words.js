@@ -13,6 +13,7 @@ var words = {
         "靠么",
         "三小",
         "腦殘",
+        "他媽的",
     ],
 };
 export default words;
