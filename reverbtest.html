@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Reverb Demo</title>
+        <script src="https://cdn.jsdelivr.net/gh/mwmwmw/SimpleSound@1.0.0/WebAudio.js"></script>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                gap: 50px;
+            }
+            div {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Reverb Demo</h1>
+            <select name="source" id="source">
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-214187-872.m4a"
+                >
+                    user人聲
+                </option>
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-675073-872.mp3"
+                >
+                    gary人聲(麥克風 Yeti nano)
+                </option>
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-520780-872.mp3"
+                >
+                    gary人聲(iphone耳機)
+                </option>
+                <option
+                    value="https://mwmwmw.github.io/files/Instruments/DrumBeat.mp3"
+                >
+                    鼓聲
+                </option>
+            </select>
+            <br />
+            <audio
+                id="audio"
+                controls
+                src="https://funday.asia/FundayKtv/files/411-214187-872.m4a"
+                crossorigin="anonymous"
+                loop
+            ></audio>
+            <button id="play-button">Play</button>
+            <button id="pause-button">Pause</button>
+            <br />
+            <label for="reverb-time"
+                >Reverb Time (seconds):
+                <span id="reverbTimeValue">1</span></label
+            >
+            <input
+                type="range"
+                min="0.5"
+                max="5"
+                value="1"
+                step="0.5"
+                id="reverb-time"
+            />
+            <br />
+            <label for="reverb-release"
+                >Reverb release:<span id="reverbReleaseValue">2</span></label
+            >
+            <input
+                type="range"
+                min="0"
+                max="10"
+                value="2"
+                step="1"
+                id="reverb-release"
+            />
+            <br />
+            <label for="reverb-attack"
+                >Reverb attack:<span id="reverbAttackValue">2</span></label
+            >
+            <input
+                type="range"
+                min="0"
+                max="0.1"
+                value="0.001"
+                step="0.01"
+                id="reverb-attack"
+            />
+            <br />
+            <label for="wet-level"
+                >Wet Level:<span id="wetLevelValue">2</span></label
+            >
+            <input
+                type="range"
+                min="0"
+                max="5"
+                value="2"
+                step="0.5"
+                id="wet-level"
+            />
+            <br />
+            <label for="compressor-threshold"
+                >Compressor Threshold (dB):<span id="compressorThresholdValue"
+                    >-86</span
+                ></label
+            >
+            <input
+                type="range"
+                min="-100"
+                max="0"
+                value="-86"
+                step="1"
+                id="compressor-threshold"
+            />
+            <br />
+            <label for="compressor-ratio"
+                >Compressor Ratio:<span id="compressorRatioValue"
+                    >1</span
+                ></label
+            >
+            <input
+                type="range"
+                min="1"
+                max="20"
+                value="1"
+                step="1"
+                id="compressor-ratio"
+            />
+            <br />
+            <label for="compressor-attack"
+                >Compressor Attack (ms):<span id="compressorAttackValue"
+                    >0.1</span
+                ></label
+            >
+            <input
+                type="range"
+                min="0"
+                max="1"
+                value="0.03"
+                step="0.1"
+                id="compressor-attack"
+            />
+            <br />
+            <label for="compressor-release"
+                >Compressor Release (ms):<span id="compressorReleaseValue"
+                    >0.25</span
+                ></label
+            >
+            <input
+                type="range"
+                min="0"
+                max="1"
+                value="0.25"
+                step="0.05"
+                id="compressor-release"
+            />
+            <br />
+        </div>
+        <div>
+            <h1>Original Demo</h1>
+            <select name="source2" id="source2">
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-214187-872.m4a"
+                >
+                    user人聲
+                </option>
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-675073-872.mp3"
+                >
+                    gary人聲(麥克風 Yeti nano)
+                </option>
+                <option
+                    value="https://funday.asia/FundayKtv/files/411-520780-872.mp3"
+                >
+                    gary人聲(iphone耳機)
+                </option>
+                <option
+                    value="https://mwmwmw.github.io/files/Instruments/DrumBeat.mp3"
+                >
+                    鼓聲
+                </option>
+            </select>
+            <br />
+            <audio
+                id="audio2"
+                controls
+                src="https://funday.asia/FundayKtv/files/411-214187-872.m4a"
+                crossorigin="anonymous"
+                loop
+            ></audio>
+            <button id="play-button2">Play</button>
+            <button id="pause-button2">Pause</button>
+        </div>
+        <script>
+            var OfflineAudioContext =
+                window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            class SimpleReverb extends Effect {
+                constructor(context) {
+                    super(context);
+                    this.name = "SimpleReverb";
+                }
+
+                setup(reverbTime = 1) {
+                    this.effect = this.context.createConvolver();
+
+                    this.reverbTime = reverbTime;
+
+                    this.attack = 0.0001;
+                    this.decay = 0.1;
+                    this.release = reverbTime;
+
+                    this.wet = this.context.createGain();
+                    this.input.connect(this.wet);
+                    this.wet.connect(this.effect);
+                    this.effect.connect(this.output);
+                }
+
+                renderTail() {
+                    const tailContext = new OfflineAudioContext(
+                        2,
+                        this.context.sampleRate * this.reverbTime,
+                        this.context.sampleRate
+                    );
+                    tailContext.oncomplete = (buffer) => {
+                        this.effect.buffer = buffer.renderedBuffer;
+                    };
+
+                    const tailOsc = new Noise(tailContext, 1);
+                    tailOsc.init();
+                    tailOsc.connect(tailContext.destination);
+                    tailOsc.attack = this.attack;
+                    tailOsc.decay = this.decay;
+                    tailOsc.release = this.release;
+
+                    tailOsc.on({ frequency: 500, velocity: 1 });
+                    tailContext.startRendering();
+                    setTimeout(() => {
+                        tailOsc.off();
+                    }, 20);
+                }
+
+                set decayTime(value) {
+                    let dc = value / 3;
+                    this.reverbTime = value;
+                    this.attack = 0;
+                    this.decay = 0;
+                    this.release = dc;
+                    return this.renderTail();
+                }
+            }
+
+            class AdvancedReverb extends SimpleReverb {
+                constructor(context) {
+                    super(context);
+                    this.name = "AdvancedReverb";
+                }
+
+                setup(reverbTime = 1, preDelay = 0.03) {
+                    this.effect = this.context.createConvolver();
+
+                    this.reverbTime = reverbTime;
+
+                    this.attack = 0.001;
+                    this.decay = 0.1;
+                    this.release = reverbTime;
+
+                    this.preDelay = this.context.createDelay(reverbTime);
+                    this.preDelay.delayTime.setValueAtTime(
+                        preDelay,
+                        this.context.currentTime
+                    );
+
+                    this.multitap = [];
+
+                    for (let i = 2; i > 0; i--) {
+                        this.multitap.push(
+                            this.context.createDelay(reverbTime)
+                        );
+                    }
+                    this.multitap.map((t, i) => {
+                        if (this.multitap[i + 1]) {
+                            t.connect(this.multitap[i + 1]);
+                        }
+                        t.delayTime.setValueAtTime(
+                            0.001 + i * (preDelay / 2),
+                            this.context.currentTime
+                        );
+                    });
+
+                    this.multitapGain = this.context.createGain();
+                    this.multitap[this.multitap.length - 1].connect(
+                        this.multitapGain
+                    );
+
+                    this.multitapGain.gain.value = 1;
+
+                    this.multitapGain.connect(this.output);
+
+                    this.wet = this.context.createGain();
+
+                    this.input.connect(this.wet);
+                    this.wet.connect(this.preDelay);
+                    this.wet.connect(this.multitap[0]);
+                    this.preDelay.connect(this.effect);
+                    this.effect.connect(this.output);
+                }
+                renderTail() {
+                    const tailContext = new OfflineAudioContext(
+                        2,
+                        this.context.sampleRate * this.reverbTime,
+                        this.context.sampleRate
+                    );
+                    tailContext.oncomplete = (buffer) => {
+                        this.effect.buffer = buffer.renderedBuffer;
+                    };
+                    const tailOsc = new Noise(tailContext, 1);
+                    const tailLPFilter = new Filter(
+                        tailContext,
+                        "lowpass",
+                        2000,
+                        0.2
+                    );
+                    const tailHPFilter = new Filter(
+                        tailContext,
+                        "highpass",
+                        500,
+                        0.1
+                    );
+
+                    tailOsc.init();
+                    tailOsc.connect(tailHPFilter.input);
+                    tailHPFilter.connect(tailLPFilter.input);
+                    tailLPFilter.connect(tailContext.destination);
+                    tailOsc.attack = this.attack;
+                    tailOsc.decay = this.decay;
+                    tailOsc.release = this.release;
+
+                    tailContext.startRendering();
+
+                    tailOsc.on({ frequency: 500, velocity: 1 });
+                    setTimeout(() => {
+                        tailOsc.off();
+                    }, 20);
+                }
+
+                set decayTime(value) {
+                    // let dc = value / 3;
+                    this.reverbTime = value;
+                    // this.attack = 0;
+                    // this.decay = 0;
+                    // this.release = dc;
+                    return this.renderTail();
+                }
+            }
+
+            class DynamicsCompressor extends Effect {
+                constructor(context) {
+                    super(context);
+                    this.name = "DynamicsCompressor";
+                    this._comp = this.context.createDynamicsCompressor();
+                    this.input.connect(this._comp);
+                    this._comp.connect(this.output);
+                }
+
+                set threshold(value) {
+                    this._comp.threshold.setValueAtTime(
+                        value,
+                        this.context.currentTime
+                    );
+                }
+
+                set ratio(value) {
+                    this._comp.ratio.setValueAtTime(
+                        value,
+                        this.context.currentTime
+                    );
+                }
+
+                set attack(value) {
+                    this._comp.attack.setValueAtTime(
+                        value,
+                        this.context.currentTime
+                    );
+                }
+
+                set release(value) {
+                    this._comp.release.setValueAtTime(
+                        value,
+                        this.context.currentTime
+                    );
+                }
+
+                set knee(value) {
+                    this._comp.knee.setValueAtTime(
+                        value,
+                        this.context.currentTime
+                    );
+                }
+
+                process(inputs, outputs) {
+                    const input = inputs[0];
+                    const output = outputs[0];
+
+                    for (let i = 0; i < input.length; i++) {
+                        const value = input[i];
+                        output[i] = this._comp.process([value]);
+                    }
+
+                    return true;
+                }
+            }
+
+            // class Phaser extends Effect {
+            //     constructor(context, rate = 0.2, depth = 10, feedback = 0.8) {
+            //         super(context);
+
+            //         this.context = context;
+            //         this.name = "Phaser";
+            //         this.rate = rate;
+            //         this.depth = depth;
+            //         this.feedback = feedback;
+
+            //         this.lfo = this.context.createOscillator();
+            //         this.lfo.type = "sine";
+            //         // this.lfo.frequency.value = this.rate;
+            //         this.lfo.frequency.value =
+            //             this.rate || this.context.sampleRate / 100; // 使用默认频率值
+            //         this.lfo.start();
+
+            //         this.depthGain = this.context.createGain();
+            //         this.depthGain.gain.value = this.depth;
+
+            //         this.feedbackGain = this.context.createGain();
+            //         this.feedbackGain.gain.value = this.feedback;
+
+            //         this.delay = this.context.createDelay();
+            //         this.delay.delayTime.value = 0.005;
+
+            //         this.lfo.connect(this.depthGain);
+            //         this.depthGain.connect(this.delay.delayTime);
+
+            //         this.delay.connect(this.feedbackGain);
+            //         this.feedbackGain.connect(this.delay);
+
+            //         this.input.connect(this.delay);
+            //         this.delay.connect(this.output);
+            //     }
+
+            //     set rate(value) {
+            //         console.log(this.lfo);
+            //         this.lfo.frequency.value = value;
+            //     }
+
+            //     set depth(value) {
+            //         this.depthGain.gain.value = value;
+            //     }
+
+            //     set feedback(value) {
+            //         this.feedbackGain.gain.value = value;
+            //     }
+
+            //     process(inputs, outputs) {
+            //         const input = inputs[0];
+            //         const output = outputs[0];
+
+            //         for (let i = 0; i < input.length; i++) {
+            //             const value = input[i];
+            //             output[i] = this.delayDelay.process([value]);
+            //         }
+
+            //         return true;
+            //     }
+            // }
+
+            const audio = document.getElementById("audio");
+            const audio2 = document.getElementById("audio2");
+            const playButton = document.getElementById("play-button");
+            const pauseButton = document.getElementById("pause-button");
+            const playButton2 = document.getElementById("play-button2");
+            const pauseButton2 = document.getElementById("pause-button2");
+            const reverbTimeInput = document.getElementById("reverb-time");
+            const reverbAttackInput = document.getElementById("reverb-attack");
+            const reverbReleaseInput =
+                document.getElementById("reverb-release");
+            const wetLevelInput = document.getElementById("wet-level");
+            const compressorThresholdInput = document.getElementById(
+                "compressor-threshold"
+            );
+
+            const compressorRatioInput =
+                document.getElementById("compressor-ratio");
+            const compressorAttackInput =
+                document.getElementById("compressor-attack");
+            const compressorReleaseInput =
+                document.getElementById("compressor-release");
+
+            const context = new AudioContext();
+            const source = context.createMediaElementSource(audio);
+
+            let filter = new Filter(context, "lowpass", 50000, 0.8);
+            filter.setup();
+            let reverb = new AdvancedReverb(context);
+            reverb.setup(2, 0.01);
+            reverb.renderTail();
+            reverb.wet.gain.value = 1;
+            source.connect(reverb.input);
+            reverb.connect(context.destination);
+
+            const compressor = new DynamicsCompressor(context);
+            source.connect(compressor.input);
+            compressor.connect(context.destination);
+            compressor.threshold = -86;
+            compressor.ratio = 1;
+            compressor.attack = 0.003;
+            compressor.release = 0.25;
+            compressor.knee = 30;
+
+            // // 创建一个新的Phaser效果，连接到audioContext上
+            // const phaser = new Phaser(context);
+
+            // // 连接Phaser输入到音频源
+            // source.connect(phaser.input);
+
+            // // 连接Phaser输出到音频目标
+            // phaser.connect(destination);
+
+            let isPlaying = false;
+            let isPlaying2 = false;
+
+            function playAudio() {
+                context.resume().then(() => {
+                    audio.play();
+                    isPlaying = true;
+                    playButton.disabled = true;
+                    pauseButton.disabled = false;
+                });
+            }
+
+            function pauseAudio() {
+                audio.pause();
+                isPlaying = false;
+                playButton.disabled = false;
+                pauseButton.disabled = true;
+            }
+
+            playButton.addEventListener("click", () => {
+                playAudio();
+            });
+
+            pauseButton.addEventListener("click", () => {
+                pauseAudio();
+            });
+
+            reverbTimeInput.addEventListener("input", () => {
+                const reverbTime = parseFloat(reverbTimeInput.value);
+                reverb.decayTime = reverbTime;
+                document.getElementById("reverbTimeValue").innerText =
+                    reverbTime;
+            });
+            reverbAttackInput.addEventListener("input", () => {
+                const reverbAttack = parseFloat(reverbAttackInput.value);
+                reverb.attack = reverbAttack;
+                document.getElementById("reverbAttackValue").innerText =
+                    reverbAttack;
+            });
+            reverbReleaseInput.addEventListener("input", () => {
+                const reverbRelease = parseFloat(reverbReleaseInput.value);
+                reverb.release = reverbRelease;
+                document.getElementById("reverbReleaseValue").innerText =
+                    reverbRelease;
+            });
+
+            wetLevelInput.addEventListener("input", () => {
+                const wetLevel = parseFloat(wetLevelInput.value);
+                reverb.wet.gain.value = wetLevel;
+                document.getElementById("wetLevelValue").innerText = wetLevel;
+            });
+
+            compressorThresholdInput.addEventListener("input", () => {
+                const threshold = parseFloat(compressorThresholdInput.value);
+                // compressor.threshold = threshold;
+                compressor._comp.threshold.setValueAtTime(
+                    threshold,
+                    context.currentTime
+                );
+                document.getElementById("compressorThresholdValue").innerText =
+                    threshold;
+            });
+
+            compressorRatioInput.addEventListener("input", () => {
+                const ratio = parseFloat(compressorRatioInput.value);
+                // compressor.ratio = ratio;
+                compressor._comp.ratio.setValueAtTime(
+                    ratio,
+                    context.currentTime
+                );
+                document.getElementById("compressorRatioValue").innerText =
+                    ratio;
+            });
+
+            compressorAttackInput.addEventListener("input", () => {
+                const attack = parseFloat(compressorAttackInput.value);
+                // compressor.attack = attack;
+                compressor._comp.attack.setValueAtTime(
+                    attack,
+                    context.currentTime
+                );
+                document.getElementById("compressorAttackValue").innerText =
+                    attack;
+            });
+
+            compressorReleaseInput.addEventListener("input", () => {
+                const release = parseFloat(compressorReleaseInput.value);
+                // compressor.release = release;
+                console.log(compressor);
+                compressor._comp.release.setValueAtTime(
+                    release,
+                    context.currentTime
+                );
+                document.getElementById("compressorReleaseValue").innerText =
+                    release;
+            });
+
+            pauseButton.disabled = true;
+        </script>
+        <script>
+            const sourceInput = document.getElementById("source");
+            sourceInput.addEventListener("change", () => {
+                audio.src = sourceInput.value;
+            });
+            const sourceInput2 = document.getElementById("source2");
+            sourceInput2.addEventListener("change", () => {
+                audio2.src = sourceInput2.value;
+            });
+            playButton2.addEventListener("click", () => {
+                playAudio2();
+            });
+
+            pauseButton2.addEventListener("click", () => {
+                pauseAudio2();
+            });
+            function playAudio2() {
+                context.resume().then(() => {
+                    audio2.play();
+                    isPlaying2 = true;
+                    playButton2.disabled = true;
+                    pauseButton2.disabled = false;
+                });
+            }
+
+            function pauseAudio2() {
+                audio2.pause();
+                isPlaying2 = false;
+                playButton2.disabled = false;
+                pauseButton2.disabled = true;
+            }
+            pauseButton2.disabled = true;
+        </script>
+    </body>
+</html>

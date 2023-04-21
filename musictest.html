@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.jsdelivr.net/gh/mwmwmw/SimpleSound@1.0.0/WebAudio.js"></script>
+    </head>
+    <body>
+        <audio
+            id="audio"
+            src="https://funday.asia/FundayKtv/files/411-520780-872.mp3"
+            controls
+            crossorigin="anonymous"
+        ></audio>
+        <button data-playing="false" role="switch" aria-checked="false">
+            <span>Play/Pause</span>
+        </button>
+        <label for="">聲量增益</label>
+        <input type="range" id="volume" min="0" max="2" value="1" step="0.01" />
+        <label for="">音訊平移</label>
+        <input
+            type="range"
+            id="panner"
+            min="-1"
+            max="1"
+            value="0"
+            step="0.01"
+        />
+        <label for="compressor">compressor</label>
+        <input type="checkbox" id="compressor" />
+        <label for="reverb">reverb</label>
+        <input type="checkbox" id="reverb" />
+
+        <script>
+            const volumeControl = document.querySelector("#volume");
+            volumeControl.addEventListener(
+                "input",
+                () => {
+                    gainNode.gain.value = volumeControl.value;
+                    console.log(volumeControl.value);
+                },
+                false
+            );
+
+            const pannerControl = document.querySelector("#panner");
+            pannerControl.addEventListener(
+                "input",
+                () => {
+                    panner.pan.value = pannerControl.value;
+                    console.log(pannerControl.value);
+                },
+                false
+            );
+
+            const compressorControl = document.querySelector("#compressor");
+            compressorControl.addEventListener("click", () => {
+                if (compressorControl.checked) {
+                    console.log("compressor open");
+                    track.connect(compressor).connect(audioContext.destination);
+                } else {
+                    console.log("compressor closed");
+                    compressor.disconnect();
+                }
+            });
+
+            const reverbControl = document.querySelector("#reverb");
+            reverbControl.addEventListener("click", () => {
+                if (reverbControl.checked) {
+                    console.log("reverb open");
+                    track
+                        .connect(filter.input)
+                        .connect(audioContext.destination);
+                } else {
+                    console.log("reverb closed");
+                    filter.input.disconnect();
+                }
+            });
+
+            const AudioContext =
+                window.AudioContext || window.webkitAudioContext;
+
+            const audioContext = new AudioContext();
+            const audioElement = document.querySelector("#audio");
+            const track = audioContext.createMediaElementSource(audioElement);
+            //gainNode
+            const gainNode = audioContext.createGain();
+
+            //panner
+            const pannerOptions = { pan: 0 };
+            const panner = new StereoPannerNode(audioContext, pannerOptions);
+
+            //compressor
+            const compressor = audioContext.createDynamicsCompressor();
+            compressor.threshold.setValueAtTime(-24, audioContext.currentTime);
+            compressor.knee.setValueAtTime(40, audioContext.currentTime);
+            compressor.ratio.setValueAtTime(12, audioContext.currentTime);
+            compressor.attack.setValueAtTime(0, audioContext.currentTime);
+            compressor.release.setValueAtTime(0.25, audioContext.currentTime);
+
+            const playButton = document.querySelector("button");
+
+            var OfflineAudioContext =
+                window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            class SimpleReverb extends Effect {
+                constructor(context) {
+                    super(context);
+                    this.name = "SimpleReverb";
+                }
+
+                setup(reverbTime = 1) {
+                    this.effect = this.context.createConvolver();
+
+                    this.reverbTime = reverbTime;
+
+                    this.attack = 0.0001;
+                    this.decay = 0.1;
+                    this.release = reverbTime;
+
+                    this.wet = this.context.createGain();
+                    this.input.connect(this.wet);
+                    this.wet.connect(this.effect);
+                    this.effect.connect(this.output);
+                }
+
+                renderTail() {
+                    const tailContext = new OfflineAudioContext(
+                        2,
+                        this.context.sampleRate * this.reverbTime,
+                        this.context.sampleRate
+                    );
+                    tailContext.oncomplete = (buffer) => {
+                        this.effect.buffer = buffer.renderedBuffer;
+                    };
+
+                    const tailOsc = new Noise(tailContext, 1);
+                    tailOsc.init();
+                    tailOsc.connect(tailContext.destination);
+                    tailOsc.attack = this.attack;
+                    tailOsc.decay = this.decay;
+                    tailOsc.release = this.release;
+
+                    tailOsc.on({ frequency: 500, velocity: 1 });
+                    tailContext.startRendering();
+                    setTimeout(() => {
+                        tailOsc.off();
+                    }, 20);
+                }
+
+                set decayTime(value) {
+                    let dc = value / 3;
+                    this.reverbTime = value;
+                    this.attack = 0;
+                    this.decay = 0;
+                    this.release = dc;
+                    return this.renderTail();
+                }
+            }
+
+            class AdvancedReverb extends SimpleReverb {
+                constructor(context) {
+                    super(context);
+                    this.name = "AdvancedReverb";
+                }
+
+                setup(reverbTime = 1, preDelay = 0.03) {
+                    this.effect = this.context.createConvolver();
+
+                    this.reverbTime = reverbTime;
+
+                    this.attack = 0.001;
+                    this.decay = 0.1;
+                    this.release = reverbTime;
+
+                    this.preDelay = this.context.createDelay(reverbTime);
+                    this.preDelay.delayTime.setValueAtTime(
+                        preDelay,
+                        this.context.currentTime
+                    );
+
+                    this.multitap = [];
+
+                    for (let i = 2; i > 0; i--) {
+                        this.multitap.push(
+                            this.context.createDelay(reverbTime)
+                        );
+                    }
+                    this.multitap.map((t, i) => {
+                        if (this.multitap[i + 1]) {
+                            t.connect(this.multitap[i + 1]);
+                        }
+                        t.delayTime.setValueAtTime(
+                            0.001 + i * (preDelay / 2),
+                            this.context.currentTime
+                        );
+                    });
+
+                    this.multitapGain = this.context.createGain();
+                    this.multitap[this.multitap.length - 1].connect(
+                        this.multitapGain
+                    );
+
+                    this.multitapGain.gain.value = 1;
+
+                    this.multitapGain.connect(this.output);
+
+                    this.wet = this.context.createGain();
+
+                    this.input.connect(this.wet);
+                    this.wet.connect(this.preDelay);
+                    this.wet.connect(this.multitap[0]);
+                    this.preDelay.connect(this.effect);
+                    this.effect.connect(this.output);
+                }
+                renderTail() {
+                    const tailContext = new OfflineAudioContext(
+                        2,
+                        this.context.sampleRate * this.reverbTime,
+                        this.context.sampleRate
+                    );
+                    tailContext.oncomplete = (buffer) => {
+                        this.effect.buffer = buffer.renderedBuffer;
+                    };
+                    const tailOsc = new Noise(tailContext, 1);
+                    const tailLPFilter = new Filter(
+                        tailContext,
+                        "lowpass",
+                        2000,
+                        0.2
+                    );
+                    const tailHPFilter = new Filter(
+                        tailContext,
+                        "highpass",
+                        500,
+                        0.1
+                    );
+
+                    tailOsc.init();
+                    tailOsc.connect(tailHPFilter.input);
+                    tailHPFilter.connect(tailLPFilter.input);
+                    tailLPFilter.connect(tailContext.destination);
+                    tailOsc.attack = this.attack;
+                    tailOsc.decay = this.decay;
+                    tailOsc.release = this.release;
+
+                    tailContext.startRendering();
+
+                    tailOsc.on({ frequency: 500, velocity: 1 });
+                    setTimeout(() => {
+                        tailOsc.off();
+                    }, 20);
+                }
+
+                set decayTime(value) {
+                    let dc = value / 3;
+                    this.reverbTime = value;
+                    this.attack = 0;
+                    this.decay = 0;
+                    this.release = dc;
+                    return this.renderTail();
+                }
+            }
+
+            // const reverb = new AdvancedReverb(audioContext);
+            let filter = new Filter(audioContext, "lowpass", 50000, 0.8);
+            filter.setup();
+            let verb = new SimpleReverb(audioContext);
+            verb.decayTime = 0.8;
+            verb.wet.gain.value = 2;
+            // const reverb = new Filter(audioContext, "lowpass", 50000, 0.8);
+            // reverb.setup(); // 初始化混響效果，設置混響時間為 2 秒，預延時間為 30 毫秒
+            // let verb = new SimpleReverb(audioContext);
+            // verb.decayTime = 0.8;
+            // verb.wet.gain.value = 2;
+            filter.connect(verb.input);
+            verb.connect(compressor);
+            console.log(filter);
+
+            playButton.addEventListener(
+                "click",
+                () => {
+                    // Check if context is in suspended state (autoplay policy)
+                    if (audioContext.state === "suspended") {
+                        audioContext.resume();
+                    }
+
+                    // Play or pause track depending on state
+                    if (playButton.dataset.playing === "false") {
+                        const compressorControl =
+                            document.querySelector("#compressor");
+                        const reverbControl = document.querySelector("#reverb");
+                        track
+                            .connect(gainNode)
+                            .connect(panner)
+                            .connect(audioContext.destination);
+                        // audioElement.currentTime = 10;
+                        audioElement.play();
+                        // connect to destination
+
+                        playButton.dataset.playing = "true";
+                    } else if (playButton.dataset.playing === "true") {
+                        audioElement.pause();
+                        playButton.dataset.playing = "false";
+                    }
+                },
+                false
+            );
+            audioElement.addEventListener(
+                "ended",
+                () => {
+                    playButton.dataset.playing = "false";
+                },
+                false
+            );
+        </script>
+    </body>
+</html>

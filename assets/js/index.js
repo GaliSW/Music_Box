@@ -51,6 +51,7 @@ var app = new Vue({
         firstClick: false, //是否第一次點擊頁面
         tab: true,
         componentKey: 0,
+        isClick: false, //收藏是否點擊
     },
     watch: {
         alert: function (val, oldVal) {
@@ -193,9 +194,9 @@ var app = new Vue({
                 $("#myModal07").modal("show");
                 return;
             }
-
+            if (this.isClick) return;
             let VideoId = $($event.target).data("videoid");
-
+            this.isClick = true;
             //此API在同一個歌曲編號的狀況下，再打一次為取消收藏
             axios
                 .get(
@@ -205,12 +206,14 @@ var app = new Vue({
                     if (res.data.State == 1) {
                         //新增成功
                         $($event.target).addClass("favorites");
+                        app.isClick = false;
                     }
 
                     if (res.data.State == 2) {
                         //刪除成功
                         // console.log(res);
                         $($event.target).removeClass("favorites");
+                        app.isClick = false;
                     }
                 })
                 .catch((error) => console.log(error));
@@ -297,25 +300,23 @@ var app = new Vue({
         //取得留言訊息
         getMessage() {
             //GET留言板資料
-            function get() {
-                axios
-                    .get(
-                        `https://musicapi.funday.asia/api/BulletinBoard/BulletinBoardLastThirtyRecords
-                `
-                    )
-                    .then((res) => {
-                        app.boardContent = res.data.content.reverse();
-                        app.boardMessage = res.data.content;
-                        app.fnBoardMessage();
-                    })
-                    .catch((error) => console.log(error));
-            }
-
-            get(); //優先執行一次
-
-            setInterval(() => {
-                get();
-            }, 5000);
+            // function get() {
+            //     axios
+            //         .get(
+            //             `https://musicapi.funday.asia/api/BulletinBoard/BulletinBoardLastThirtyRecords
+            //     `
+            //         )
+            //         .then((res) => {
+            //             app.boardContent = res.data.content.reverse();
+            //             app.boardMessage = res.data.content;
+            //             app.fnBoardMessage();
+            //         })
+            //         .catch((error) => console.log(error));
+            // }
+            // get(); //優先執行一次
+            // setInterval(() => {
+            //     get();
+            // }, 5000);
         },
 
         //留言板開關
