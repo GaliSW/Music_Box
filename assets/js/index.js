@@ -300,23 +300,23 @@ var app = new Vue({
         //取得留言訊息
         getMessage() {
             //GET留言板資料
-            // function get() {
-            //     axios
-            //         .get(
-            //             `https://musicapi.funday.asia/api/BulletinBoard/BulletinBoardLastThirtyRecords
-            //     `
-            //         )
-            //         .then((res) => {
-            //             app.boardContent = res.data.content.reverse();
-            //             app.boardMessage = res.data.content;
-            //             app.fnBoardMessage();
-            //         })
-            //         .catch((error) => console.log(error));
-            // }
-            // get(); //優先執行一次
-            // setInterval(() => {
-            //     get();
-            // }, 5000);
+            function get() {
+                axios
+                    .get(
+                        `https://musicapi.funday.asia/api/BulletinBoard/BulletinBoardLastThirtyRecords
+                `
+                    )
+                    .then((res) => {
+                        app.boardContent = res.data.content.reverse();
+                        app.boardMessage = res.data.content;
+                        app.fnBoardMessage();
+                    })
+                    .catch((error) => console.log(error));
+            }
+            get(); //優先執行一次
+            setInterval(() => {
+                get();
+            }, 5000);
         },
 
         //留言板開關

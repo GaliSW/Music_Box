@@ -69,6 +69,7 @@
             Vue.config.productionTip = false;
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/mwmwmw/SimpleSound@1.0.0/WebAudio.js"></script>
 
         <!-- ===================== AD block =======================-->
         <!-- Google Tag Manager -->
@@ -277,10 +278,10 @@
             crossorigin="anonymous"
             src="https://connect.facebook.net/en_US/sdk.js"
         ></script>
-        <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script>
             eruda.init();
-        </script> -->
+        </script>
     </head>
 
     <body class="video_page">
@@ -490,7 +491,7 @@
                             <div class="teacher_video_mobile">
                                 <div
                                     id="player_wrap_teacher_mobile"
-                                    v-show="tutorMb"
+                                    :class="{disabled:!tutorMb}"
                                 >
                                     <iframe
                                         type="text/html"
@@ -949,7 +950,7 @@
                                 <p>分享</p>
                             </div>
 
-                            <div id="audioBox" class="none"></div>
+                            <div id="audioBox" class=""></div>
                             <!-- 分享彈窗 -->
                             <div class="share_blk none">
                                 <div class="share_top">
@@ -1316,6 +1317,7 @@
                                                             class="none"
                                                             :id="'audio' + index"
                                                             controls
+                                                            crossorigin="anonymous"
                                                             :src="item.RecordingFiles"
                                                         ></audio>
                                                     </div>
@@ -1326,6 +1328,7 @@
                                         <ul
                                             class="voice_items"
                                             v-show="!singerMode"
+                                            :class="{pd_55:audioStatus}"
                                         >
                                             <div
                                                 class="noSinger"
@@ -1374,6 +1377,7 @@
                                                     <div>
                                                         <audio
                                                             class="none"
+                                                            crossorigin="anonymous"
                                                             preload="auto|metadata|none"
                                                             :id="'audio' + index"
                                                             controls
@@ -1383,6 +1387,18 @@
                                                 </div>
                                             </li>
                                         </ul>
+                                        <div
+                                            class="audio_control"
+                                            v-if="audioStatus"
+                                        >
+                                            <p>配音音軌:</p>
+                                            <div @click="audioBackward()">
+                                                -0.5s
+                                            </div>
+                                            <div @click="audioForward()">
+                                                +0.5s
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
