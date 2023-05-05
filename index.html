@@ -294,7 +294,6 @@
         <div class="all_wrap" id="app" v-cloak>
             <div
                 v-if="!firstClick"
-                @click="firstClickPage"
                 class="full_blk"
                 data-toggle="modal"
                 data-target="#myModal01"
@@ -328,7 +327,7 @@
                             <div>聽音樂學英文</div>
                         </span>
                     </a>
-                    <div class="subWeb">
+                    <div class="subWeb" v-if="ADid ==''">
                         <a href="https://tube.funday.asia" target="_blank"
                             >FunTube</a
                         >
@@ -342,6 +341,33 @@
                             FunDictionary
                         </a>
                         <a href="https://funday.asia" target="_blank">FunDay</a>
+                    </div>
+                    <div class="subWeb" v-else>
+                        <a
+                            :href="'https://tube.funday.asia/adLanding.html?ADid=' + ADid"
+                            target="_blank"
+                            >FunTube</a
+                        >
+                        <a
+                            :href="'https://tales.funday.asia?ADid=' + ADid"
+                            target="_blank"
+                            >FunTales</a
+                        >
+                        <a
+                            :href="'https://funradio.funday.asia/adLanding.html?ADid=' + ADid"
+                            target="_blank"
+                            >FunRadio</a
+                        >
+                        <a
+                            :href="'https://dic.funday.asia?ADid=' + ADid"
+                            target="_blank"
+                            >FunDictionary</a
+                        >
+                        <a
+                            :href="'https://funday.asia/AD_reflink.asp?ad_id=' + ADid"
+                            target="_blank"
+                            >FunDay</a
+                        >
                     </div>
                 </div>
                 <input type="checkbox" id="navCheck" />
@@ -392,7 +418,7 @@
                     </div>
                 </div>
                 <div class="nav_bar mobile_visible">
-                    <ul>
+                    <ul v-if="ADid ==''">
                         <li>
                             <a href="https://tube.funday.asia" target="_blank"
                                 >FunTube</a
@@ -417,6 +443,43 @@
                         </li>
                         <li>
                             <a href="https://funday.asia" target="_blank"
+                                >FunDay</a
+                            >
+                        </li>
+                    </ul>
+                    <ul v-else>
+                        <li>
+                            <a
+                                :href="'https://tube.funday.asia/adLanding.html?ADid=' + ADid"
+                                target="_blank"
+                                >FunTube</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                :href="'https://tales.funday.asia?ADid=' + ADid"
+                                target="_blank"
+                                >FunTales</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                :href="'https://funradio.funday.asia/adLanding.html?ADid=' + ADid"
+                                target="_blank"
+                                >FunRadio</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                :href="'https://dic.funday.asia?ADid=' + ADid"
+                                target="_blank"
+                                >FunDictionary</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                :href="'https://funday.asia/AD_reflink.asp?ad_id=' + ADid"
+                                target="_blank"
                                 >FunDay</a
                             >
                         </li>

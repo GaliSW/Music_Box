@@ -309,7 +309,10 @@
 }
 @media (max-width: 991px) {
     .disabled {
-        display: none !important;
+        /* display: none !important; */
+        position: absolute !important;
+        top: -100% !important;
+        left: -100% !important;
     }
     .teacher_video_mobile {
         display: block;

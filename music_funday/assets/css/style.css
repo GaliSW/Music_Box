@@ -641,6 +641,9 @@ ul.tabs {
     }
 }
 @media (max-width: 991px) {
+    .mobile_hidden {
+        display: none !important;
+    }
     .switch_tab
         div.tab_container
         ul.video_items
@@ -1457,7 +1460,8 @@ body.video_page .switch_tab ul.voice_items > li {
     line-height: 21px;
     color: #fff;
     border-bottom: 1px solid #737373;
-    padding: 16px 5%;
+    padding: 16px 5px 16px 10px;
+    position: relative;
 }
 body.video_page .switch_tab ul.voice_items > li:after {
     content: "";
@@ -1483,8 +1487,66 @@ body.video_page .switch_tab ul.voice_items > li .sex.woman {
     color: #7096c3;
     background-image: url(../../images/web_icon/sex_man.svg);
 }
+
+body.video_page .switch_tab .audio_control p {
+    margin: 0;
+    font-size: 16px;
+}
+body.video_page .switch_tab .audio_control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 0;
+    background-color: #2a2a2a;
+}
+
+body.video_page .switch_tab .audio_control div {
+    border: 1px solid #fe7523;
+    color: #fe7523;
+    padding: 2px 8px;
+    font-size: 16px;
+    border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    -ms-border-radius: 100px;
+    -o-border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+.video_page .switch_tab .audio_control div:active {
+    background-color: rgba(254, 117, 35, 0.8);
+    color: #000;
+}
+
+@media (max-width: 991px) {
+    body.video_page .switch_tab .pd_55 {
+        padding-bottom: 55px !important;
+    }
+    body.video_page .switch_tab .audio_control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        position: fixed;
+        bottom: 0;
+        padding: 16px 0;
+        width: 100%;
+        background-color: #2a2a2a;
+    }
+    body.video_page .switch_tab .audio_control p {
+        color: #fff;
+    }
+}
 body.video_page .switch_tab ul.voice_items > li .digi {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 150px;
     float: right;
 }
 body.video_page .switch_tab ul.voice_items > li .play_time {

@@ -115,6 +115,50 @@
     text-align: center;
     z-index: 2;
 }
+.rec_alert_pop {
+    padding: 24px;
+    z-index: 3;
+    position: absolute;
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    left: 50%;
+    top: 50%;
+    width: 350px;
+    border-radius: 8px;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+.rec_alert_pop p {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+.rec_alert_pop .action {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+.rec_alert_pop .action div {
+    cursor: pointer;
+    width: calc(100% / 2);
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 8px;
+}
+.rec_alert_pop .action .cancel {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+}
+.rec_alert_pop .action .confirm {
+    background: #f74768;
+    color: #fff;
+}
 .shareBtn_rec {
     cursor: pointer;
     position: absolute;

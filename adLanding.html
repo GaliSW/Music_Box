@@ -8,6 +8,7 @@
         <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
         <meta name="description" content="" />
         <meta name="keywords" content="" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
 
         <!-- Favicon -->
         <link
@@ -47,22 +48,20 @@
                 if (loaderUrl.indexOf("?") != -1) {
                     //之後去分割字串把分割後的字串放進陣列中
                     const ary1 = loaderUrl.split("?");
-                    console.log(ary1);
                     const name = ary1[1].split("&");
                     const adString = name[0].split("=");
                     //  取得ADid值
                     const ADid = adString[1];
                     // console.log(name[1]);
                     sessionStorage.setItem("ADid", ADid);
-
+                    axios.get(
+                        `https://funday.asia/api/AdClick.asp?ad_id=${ADid}`
+                    );
                     if (name[1] == undefined) {
                         location.href = "index.html";
                     } else {
-                        console.log(name);
                         const pageString = name[1].split("=");
-                        console.log(pageString);
                         const cateString = name[2].split("=");
-                        console.log(cateString);
                         const vId = pageString[1];
                         const cateId = cateString[1];
                         location.href = `video.html?categoryId=${cateId}&videoId=${vId}`;

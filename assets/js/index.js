@@ -52,6 +52,7 @@ var app = new Vue({
         tab: true,
         componentKey: 0,
         isClick: false, //收藏是否點擊
+        ADid: "", //廣告參數
     },
     watch: {
         alert: function (val, oldVal) {
@@ -463,6 +464,11 @@ var app = new Vue({
         },
     },
     created() {
+        //判斷是否有ADid
+        if (sessionStorage.getItem("ADid")) {
+            this.ADid = sessionStorage.getItem("ADid");
+            console.log(this.ADid);
+        }
         this.getMessage();
         this.notification();
         // this.logoChange();

@@ -76,6 +76,7 @@
             Vue.config.productionTip = false;
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/mwmwmw/SimpleSound@1.0.0/WebAudio.js"></script>
 
         <!-- ===================== AD block =======================-->
         <!-- Google Tag Manager -->
@@ -246,10 +247,10 @@
             crossorigin="anonymous"
             src="https://connect.facebook.net/en_US/sdk.js"
         ></script>
-        <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script>
             eruda.init();
-        </script> -->
+        </script>
     </head>
 
     <body class="video_page">
@@ -1251,6 +1252,7 @@
                                                             class="none"
                                                             :id="'audio' + index"
                                                             controls
+                                                            crossorigin="anonymous"
                                                             :src="item.RecordingFiles"
                                                         ></audio>
                                                     </div>
@@ -1261,6 +1263,7 @@
                                         <ul
                                             class="voice_items"
                                             v-show="!singerMode"
+                                            :class="{pd_55:audioStatus}"
                                         >
                                             <div
                                                 class="noSinger"
@@ -1312,12 +1315,25 @@
                                                             preload="auto|metadata|none"
                                                             :id="'audio' + index"
                                                             controls
+                                                            crossorigin="anonymous"
                                                             :src="item.RecordingFiles"
                                                         ></audio>
                                                     </div>
                                                 </div>
                                             </li>
                                         </ul>
+                                        <div
+                                            class="audio_control"
+                                            v-if="audioStatus"
+                                        >
+                                            <p>配音音軌:</p>
+                                            <div @click="audioBackward()">
+                                                -0.5s
+                                            </div>
+                                            <div @click="audioForward()">
+                                                +0.5s
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2066,7 +2082,7 @@
         </div>
 
         <!--忘記密碼#myModal08-->
-        <div
+        <!-- <div
             class="modal fade login_page"
             id="myModal08"
             tabindex="-1"
@@ -2140,7 +2156,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!--忘記密碼#myModal08-->
         <div
