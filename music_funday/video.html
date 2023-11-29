@@ -247,10 +247,10 @@
             crossorigin="anonymous"
             src="https://connect.facebook.net/en_US/sdk.js"
         ></script>
-        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script>
             eruda.init();
-        </script>
+        </script> -->
     </head>
 
     <body class="video_page">
@@ -438,10 +438,22 @@
                                             <span>．</span>{{currentTimeMin}}
                                         </div>
                                         <div
+                                            v-if="canCloseRec"
                                             class="buootn stop stopBtn"
                                             @click="recEnd"
                                         >
                                             <a href="#">停止錄製</a>
+                                        </div>
+                                        <div
+                                            v-else
+                                            class="buootn stop stopBtn"
+                                            style="opacity: 0.6"
+                                        >
+                                            <a
+                                                href="#"
+                                                style="cursor: not-allowed"
+                                                >尚未超過60秒</a
+                                            >
                                         </div>
                                         <div
                                             class="buootn todo_Go startBtn none"
@@ -861,6 +873,22 @@
                                 />
                                 <p>分享</p>
                             </div>
+                            <div class="rec_alert_pop" v-if="recAlert">
+                                <p>
+                                    建議使用桌上型電腦，並外接有線耳麥或麥克風，保持網路順暢，最少需錄製60秒
+                                </p>
+                                <div class="action">
+                                    <div
+                                        class="cancel"
+                                        @click="recAlert = !recAlert"
+                                    >
+                                        取消
+                                    </div>
+                                    <div class="confirm" @click="goRec">
+                                        確認
+                                    </div>
+                                </div>
+                            </div>
 
                             <div id="audioBox" class="none"></div>
                             <!-- 分享彈窗 -->
@@ -938,11 +966,16 @@
                         </div>
                         <div id="video_list2">
                             <div class="chooseBlk none">
-                                <div class="into" @click="choose(1)">
-                                    開始歡唱
-                                </div>
-                                <div class="leave" @click="choose(2)">
-                                    離開歡唱
+                                <p>
+                                    建議使用桌上型電腦，並外接有線耳麥或麥克風，保持網路順暢，最少需錄製60秒
+                                </p>
+                                <div class="action">
+                                    <div class="into" @click="choose(1)">
+                                        開始歡唱
+                                    </div>
+                                    <div class="leave" @click="choose(2)">
+                                        離開歡唱
+                                    </div>
                                 </div>
                             </div>
                             <!--這一塊是頁籤式電影列表切換-->
@@ -1017,6 +1050,10 @@
                                                 ></div>
                                                 <div
                                                     class="video_pre_img"
+                                                ></div>
+                                                <div
+                                                    class="video_end_img"
+                                                    v-show="tutorIsEnding"
                                                 ></div>
                                             </div>
                                             <!-- PC 老師解說 -->
@@ -1326,12 +1363,14 @@
                                             class="audio_control"
                                             v-if="audioStatus"
                                         >
-                                            <p>配音音軌:</p>
                                             <div @click="audioBackward()">
-                                                -0.5s
+                                                倒退
                                             </div>
+                                            <p>
+                                                配音音軌：{{audioEffectSeconds}}秒
+                                            </p>
                                             <div @click="audioForward()">
-                                                +0.5s
+                                                快進
                                             </div>
                                         </div>
                                     </div>

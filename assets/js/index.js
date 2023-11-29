@@ -53,6 +53,8 @@ var app = new Vue({
         componentKey: 0,
         isClick: false, //收藏是否點擊
         ADid: "", //廣告參數
+        vdOpen: false, //新手上路是否開啟
+        searchList: [],
     },
     watch: {
         alert: function (val, oldVal) {
@@ -454,13 +456,39 @@ var app = new Vue({
         inputKeydown() {
             const input = document.getElementById("message");
             input.style.outline = "unset";
-            input.setAttribute("placeholder", "說點什麼...");
+            input.setAttribute(
+                "placeholder",
+                "此留言板以交流為主，若有功能異常請使用回報問題按鈕"
+            );
             input.classList.remove("input_change");
             input.style.boxShadow = " 0px 0px 0px 4px rgb(0 ,0, 0,0.1)";
         },
 
         firstClickPage() {
             this.firstClick = true;
+        },
+
+        //搜尋歌曲
+        searchPC() {
+            if (!this.member_id) {
+                $("#myModal01").modal("show");
+                return;
+            } else {
+                const keyword = document.getElementById("keyword").value;
+                if (keyword == "") return;
+                location.href = `video_category.html?keyword=${keyword}`;
+            }
+        },
+        searchMB() {
+            if (!this.member_id) {
+                // alert("請先登入");
+                $("#myModal01").modal("show");
+                return;
+            } else {
+                const keyword = document.getElementById("keywordmb").value;
+                if (keyword == "") return;
+                location.href = `video_category.html?keyword=${keyword}`;
+            }
         },
     },
     created() {
@@ -470,7 +498,7 @@ var app = new Vue({
             console.log(this.ADid);
         }
         this.getMessage();
-        this.notification();
+        // this.notification();
         // this.logoChange();
         let hash = window.location.href;
         sessionStorage.setItem("para", "");

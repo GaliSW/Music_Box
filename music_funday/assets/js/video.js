@@ -96,6 +96,10 @@ var app = new Vue({
         lastTime: 0,
         audioContext: "", //Audio context
         audioContextId: [], // 已經createMedia 的 audio
+        audioEffectSeconds: 0, //配音調校的秒數
+        recAlert: false,
+        canCloseRec: false, //錄音是否超過60s
+        tutorIsEnding: false, //老師已全部講解結束
     },
     computed: {},
     watch: {
@@ -145,6 +149,7 @@ var app = new Vue({
                             player.pauseVideo();
                             player2.seekTo(app.lastTutorTime);
                             player2.unMute().playVideo();
+                            app.tutorIsEnding = false;
                         }
                         function delay() {
                             return new Promise(function (resolve, reject) {
@@ -256,7 +261,6 @@ var app = new Vue({
                 if (this.singleMode) return; //單句模式不滾動
                 //提前觸發
                 if (this.repeat == 0 || !this.singleMode) {
-                    console.log("2");
                     listWindowContent.scrollTo({
                         top: sutitleBlkTop, //包含上下行距
                         behavior: "smooth",
@@ -346,7 +350,7 @@ var app = new Vue({
                             ele.time.slice(0, 7).indexOf("00:09.9") > -1
                         ) {
                             // console.log(ele.time.slice(0, 5));
-                            console.log("00:9" + ele.time.slice(5, -1));
+                            // console.log("00:9" + ele.time.slice(5, -1));
                             return "00:9" + ele.time.slice(5, -1);
                         } else {
                             return ele.time.slice(0, -1);
@@ -670,6 +674,9 @@ var app = new Vue({
         fnTimeChecking() {
             //取得目前時間 秒
             const time = player.getCurrentTime();
+            if (time > 60) {
+                app.canCloseRec = true;
+            }
             //取得影片長度 秒
             const allTime = player.getDuration();
             this.currentTime = time;
@@ -721,8 +728,8 @@ var app = new Vue({
                     `sIndex${this.nowPlaying - 1}`
                 ).attributes["data-tutorseek"].value;
                 //該段老師解說時間結束時 以及 player2&3的時間不為0
-                console.log(app.player3CurrentTime);
-                console.log(tutorEndTime);
+                // console.log(app.player3CurrentTime);
+                // console.log(tutorEndTime);
                 if (
                     (player2Time == tutorEndTime && Number(player2Time) > 0) ||
                     (app.player3CurrentTime == tutorEndTime &&
@@ -748,6 +755,8 @@ var app = new Vue({
                         document
                             .getElementById(`sIndex${app.nowPlaying}`)
                             .classList.add("active");
+
+                        app.tutorIsEnding = true;
 
                         const listWindowContent =
                             document.querySelector(".subtitle_items");
@@ -896,6 +905,13 @@ var app = new Vue({
                 player2.pauseVideo();
                 player3.pauseVideo();
                 this.tutorMark();
+                if (
+                    document
+                        .querySelector(".video_pre_img ")
+                        .classList.contains("none")
+                ) {
+                    this.tutorIsEnding = true;
+                }
             }
             this.findPara = true;
             let gotoTime = $(event.target).data("seek");
@@ -1017,7 +1033,6 @@ var app = new Vue({
                         .querySelector(".video_pre_img ")
                         .classList.add("none");
                     if (playerTime == playerEndTime) {
-                        console.log("match");
                         player.pauseVideo();
                         player2.seekTo(seekTutorTime);
                         player2.playVideo();
@@ -1325,7 +1340,11 @@ var app = new Vue({
             this.captions = 1;
             player.seekTo(0);
             this.currentTime = "00:00";
-            this.goRec();
+            if (window.innerWidth > 991) {
+                app.recAlert = true;
+            } else {
+                app.goRec();
+            }
         },
         //搜尋單字
         fnSearchWord(target, evt) {
@@ -1353,7 +1372,6 @@ var app = new Vue({
             if (window.innerWidth > 600) {
                 document.querySelector(".DrWord").style.right = "25px";
                 if (blkHeight < windowHeight) {
-                    console.log("not over");
                     document.querySelector(".DrWord").style.top = `${
                         evt.pageY + 10
                     }px`;
@@ -1803,7 +1821,8 @@ var app = new Vue({
         // ==========================================
         goRec() {
             this.singleMode = false; //單句模式初始化
-
+            this.recAlert = false;
+            this.canCloseRec = false;
             //介面改變
             if (this.tutorExist) {
                 this.tutor = false;
@@ -2544,26 +2563,26 @@ var app = new Vue({
         },
 
         audioForward() {
+            app.audioEffectSeconds =
+                Math.round((app.audioEffectSeconds + 0.1) * 10) / 10;
             const audio = document.getElementById(
                 `audio${app.nowPlayAudioIndex}`
             );
-            if (app.mobileType == "ios") {
-                audio.currentTime = audio.currentTime + 1;
-            } else {
-                audio.currentTime = audio.currentTime + 0.5;
-            }
-            app.hint = "配音快進0.5秒";
+            audio.currentTime = audio.currentTime + app.audioEffectSeconds;
+            app.hint = `配音快進${app.audioEffectSeconds}秒`;
         },
         audioBackward() {
+            app.audioEffectSeconds =
+                Math.round((app.audioEffectSeconds - 0.1) * 10) / 10;
             const audio = document.getElementById(
                 `audio${app.nowPlayAudioIndex}`
             );
-            if (app.mobileType == "ios") {
-                audio.currentTime = audio.currentTime - 1;
+            if (app.audioEffectSeconds > 0) {
+                audio.currentTime = audio.currentTime - app.audioEffectSeconds;
             } else {
-                audio.currentTime = audio.currentTime - 0.5;
+                audio.currentTime = audio.currentTime + app.audioEffectSeconds;
             }
-            app.hint = "配音倒退0.5秒";
+            app.hint = `配音倒退${app.audioEffectSeconds}秒`;
         },
     },
     created() {

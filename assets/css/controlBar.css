@@ -136,6 +136,8 @@
     font-weight: 500;
     font-size: 16px;
     margin-bottom: 32px;
+    /* display: flex; */
+    /* align-items: center; */
 }
 .rec_alert_pop .action {
     display: flex;

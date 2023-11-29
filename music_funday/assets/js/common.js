@@ -474,38 +474,6 @@ async function mailLoginCheck() {
 function fbLoginCheck() {
     //檢查是否已經在funday用fb註冊
     fbLogin("fbLogin");
-
-    // setTimeout(() => {
-    //     const id = sessionStorage.getItem("id");
-    //     if (id == null) {
-    //         alert("此Facebook帳號尚未註冊");
-    //     } else {
-    //         const json = JSON.stringify({
-    //             ID: "",
-    //             password: "",
-    //             FBID: id,
-    //         });
-    //         axios
-    //             .post("https://funday.asia/api/Member.asp", json)
-    //             .then((res) => {
-    //                 console.log(res);
-    //                 if (res.data.StateId == 0) {
-    //                     alert("此Facebook帳號尚未註冊");
-    //                 } else {
-    //                     $("#myModal07").modal("hide");
-    //                     document
-    //                         .getElementById("login_blk")
-    //                         .classList.add("none");
-    //                     document
-    //                         .getElementById("menu")
-    //                         .classList.remove("none");
-    //                     sessionStorage.setItem("mindx", res.data.mindx);
-    //                     sessionStorage.setItem("cindx", res.data.cindx);
-    //                     // location.reload();
-    //                 }
-    //             });
-    //     }
-    // }, 2000);
 }
 
 //記住我

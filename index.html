@@ -341,6 +341,12 @@
                             FunDictionary
                         </a>
                         <a href="https://funday.asia" target="_blank">FunDay</a>
+                        <a
+                            href="https://funday.asia/subscription/2023"
+                            target="_blank"
+                            class="more_service"
+                            >更多會員服務</a
+                        >
                     </div>
                     <div class="subWeb" v-else>
                         <a
@@ -368,6 +374,12 @@
                             target="_blank"
                             >FunDay</a
                         >
+                        <a
+                            :href="'https://funday.asia/subscription/2023?ad_id=' + ADid"
+                            target="_blank"
+                            class="more_service"
+                            >更多會員服務</a
+                        >
                     </div>
                 </div>
                 <input type="checkbox" id="navCheck" />
@@ -379,15 +391,51 @@
                 </div>
                 <div class="header_center mobile_visible">聽音樂學英文</div>
                 <div id="login_blk">
-                    <!-- 
-                        <div class="gift_index">
-                        <a href="./landing.html"
-                            ><img
-                                src="./images/web_icon/gift.svg"
+                    <div class="search_blk mobile_hidden">
+                        <form @submit.prevent="searchPC()">
+                            <input
+                                type="text"
+                                placeholder="請輸入歌手或歌曲名稱"
+                                autocomplete="off"
+                                id="keyword"
+                            />
+                            <img
+                                src="./images/web_icon/search.png"
                                 alt=""
-                            />送好禮</a
-                        >
-                    </div> -->
+                                @click="searchPC()"
+                            />
+                        </form>
+                    </div>
+                    <div class="search_blk_mb mobile_visible">
+                        <input type="checkbox" id="search_btn" />
+                        <label for="search_btn">
+                            <img
+                                src="./images/web_icon/search_white.svg"
+                                alt=""
+                            />
+                        </label>
+                        <div class="input_area">
+                            <form @submit.prevent="searchMB()">
+                                <input
+                                    type="text"
+                                    placeholder="歌手或歌曲"
+                                    autocomplete="off"
+                                    id="keywordmb"
+                                    enterkeyhint="search"
+                                />
+                                <label for="search_btn">
+                                    <img
+                                        src="./images/web_icon/search_cancel.png"
+                                        alt=""
+                                    />
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tutorial" @click="vdOpen = true">
+                        <img src="./images/web_icon/tutorial.svg" alt="" />
+                        <span class="mobile_hidden">新手上路</span>
+                    </div>
                     <div class="myFav_index" @click="toMyFav">
                         <a href="#"
                             ><img
@@ -446,6 +494,14 @@
                                 >FunDay</a
                             >
                         </li>
+                        <li>
+                            <a
+                                href="https://funday.asia/subscription/2023"
+                                target="_blank"
+                                class="more_service"
+                                >更多會員服務</a
+                            >
+                        </li>
                     </ul>
                     <ul v-else>
                         <li>
@@ -481,6 +537,14 @@
                                 :href="'https://funday.asia/AD_reflink.asp?ad_id=' + ADid"
                                 target="_blank"
                                 >FunDay</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                :href="'https://funday.asia/subscription/2023?ad_id=' + ADid"
+                                target="_blank"
+                                class="more_service"
+                                >更多會員服務</a
                             >
                         </li>
                     </ul>
@@ -566,6 +630,10 @@
                         <div class="recommend" id="open_recommend">
                             <a href="#">我要推薦</a>
                             <img src="images/web_icon/pen.svg" />
+                        </div>
+                        <div class="report" id="open_report">
+                            <a href="#">問題回報</a>
+                            <img src="images/web_icon/alert.svg" />
                         </div>
                     </ul>
                     <!-- <div class="notification_wrapper">
@@ -829,7 +897,6 @@
                                                         >老師解說</a
                                                     >
                                                 </div>
-                                                <div class="blank"></div>
                                                 <div class="number video_icon">
                                                     <img
                                                         src="images/web_icon/video_icon.svg"
@@ -928,6 +995,15 @@
                                     >
                                 </div>
                             </div>
+                            <div class="only_mobile page_bottom">
+                                <div class="report">
+                                    <a href="#" id="open_report_mb"
+                                        ><img
+                                            src="images/web_icon/alert.svg"
+                                        />問題回報</a
+                                    >
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -963,7 +1039,7 @@
                 </div>
             </div>
             <!-- message board -->
-            <div class="message_board_blk" :class="{boardOn:board}">
+            <!-- <div class="message_board_blk" :class="{boardOn:board}">
                 <div class="message_blur"></div>
                 <div
                     class="board_close"
@@ -1061,7 +1137,7 @@
                                 v-on:keyup.enter="send"
                                 v-on:keydown="inputKeydown"
                                 type="text"
-                                placeholder="說點什麼..."
+                                placeholder="此留言板以交流為主，若有功能異常請使用回報問題按鈕"
                             />
                             <img
                                 @click="emoji=!emoji"
@@ -1117,27 +1193,27 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Ads Block -->
-            <!-- <div class="ad_blk ad_blk_index">
-                <div>
-                    <a
-                        class="ads_mb"
-                        href="https://fundayasia.pse.is/45fpmc"
-                        target="_blank"
-                        v-if="ads"
-                    >
-                        <img src="./images/web_icon/ads_mobile.png" alt="" />
-                    </a>
-                    <img
-                        v-if="ads"
-                        @click="ads = !ads"
-                        class="ads_close_btn"
-                        src="./images/web_icon/ads_close_btn.svg"
-                        alt=""
-                    />
-                </div>
             </div> -->
+
+            <div class="tutorial_video" v-if="vdOpen">
+                <div class="wrapper">
+                    <img
+                        src="./images/web_icon/cancel_btn.svg"
+                        alt=""
+                        @click="vdOpen = !vdOpen"
+                    />
+                    <iframe
+                        width="100%"
+                        src="https://www.youtube.com/embed/LZS4-KbGusc?autoplay=1"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                        autoplay="true"
+                    ></iframe>
+                </div>
+            </div>
+
             <!--footer-->
             <div id="footer">
                 <div class="copyright">
@@ -2121,6 +2197,65 @@
                 </div>
             </div>
         </div>
+        <!--回報問題#myModal11-->
+        <div
+            class="modal fade login_page"
+            id="myModal11"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="myModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div id="page-body">
+                        <div id="top_bar">
+                            <div class="icon_pre"></div>
+                            <div class="icon_close">
+                                <a
+                                    href="#"
+                                    data-dismiss="modal"
+                                    aria-hidden="true"
+                                    ><img
+                                        src="images/web_icon/top_bar_close.svg"
+                                /></a>
+                            </div>
+                        </div>
+                        <div id="login_body">
+                            <div class="logo">問題回報</div>
+                            <div class="slogin">
+                                若有任何操作問題請留言，並提供詳細描述協助我們辨識及修復，非常感謝。
+                            </div>
+                            <div class="form_body">
+                                <form
+                                    action=""
+                                    method="get"
+                                    name="login_form"
+                                    class="login_form"
+                                >
+                                    <div class="input">
+                                        <textarea
+                                            name="my_report"
+                                            cols=""
+                                            rows=""
+                                        ></textarea>
+                                    </div>
+                                    <div class="button login-in">
+                                        <input
+                                            id="sendReportMail"
+                                            name="join_in"
+                                            type="button"
+                                            value="送出"
+                                        />
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="form_bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- /.modal結束 -->
     </body>
     <!-- myjs -->
@@ -2156,6 +2291,9 @@
                     </li>
                     <li>
                         <a href="https://funday.asia/api/SSO.asp?fdtk=${token}" target="_blank">FunDay</a>
+                    </li>
+                     <li>
+                        <a href="https://funday.asia/api/SSOGOLink.asp?fdtk=${token}&Path=Subscription" class="more_service">更多會員服務</a>
                     </li>
                 </ul>
             `;

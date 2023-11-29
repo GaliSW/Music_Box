@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recorder</title>
+        <link rel="stylesheet" href="./assets/css/recorder.css" />
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/mwmwmw/SimpleSound@1.0.0/WebAudio.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+    </head>
+    <body>
+        <section id="app" class="recorder">
+            <button class="btn" id="recopen" @click="recOpen()">
+                開啟錄音權限
+            </button>
+            <button id="recstart" class="btn" @click="recStart()">
+                開始錄音
+            </button>
+            <button class="btn" id="recend" @click="recStop()">結束錄音</button>
+            <button class="btn" @click="playAudio()">播放錄音</button>
+            <div id="audioBox"></div>
+            <iframe
+                type="text/html"
+                src="https://www.youtube-nocookie.com/embed/SlPhMPnQ58k?enablejsapi=1&controls=0&showinfo=0&autoplay=0&rel=0&cc_lang_pref=en&cc_load_policy=0"
+                frameborder="0"
+                id="player"
+                enablejsapi="1"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+            >
+            </iframe>
+        </section>
+
+        <script src="./assets/js/recorder_demo.js"></script>
+        <script src="assets/js/recorder.mp3.min.js"></script>
+        <script src="assets/js/extensions/frequency.histogram.view.js"></script>
+        <script src="assets/js/extensions/lib.fft.js"></script>
+    </body>
+</html>

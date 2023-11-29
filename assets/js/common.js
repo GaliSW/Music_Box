@@ -157,6 +157,34 @@ $(function () {
     $(".button #sendRecommendMail").on("click", function () {
         recommand();
     });
+    //我要推薦打開modal
+    $("#open_report").on("click", function () {
+        let member_id = sessionStorage.getItem("mindx");
+        if (member_id == null) {
+            // alert("請先登入會員");
+            $("#myModal11").modal("hide");
+            $("#myModal01").modal("show");
+            return;
+        } else {
+            $("#myModal11").modal("show");
+        }
+    });
+    $("#open_report_mb").on("click", function () {
+        let member_id = sessionStorage.getItem("mindx");
+        if (member_id == null) {
+            // alert("請先登入會員");
+            $("#myModal11").modal("hide");
+            $("#myModal01").modal("show");
+            return;
+        } else {
+            $("#myModal11").modal("show");
+        }
+    });
+
+    //我要推薦 送出表單
+    $(".button #sendReportMail").on("click", function () {
+        report();
+    });
 });
 
 // =============================== 註冊 ================================
@@ -452,6 +480,7 @@ async function mailLoginCheck() {
         )
         .then((res) => {
             if (res.data.IsSuccess) {
+                // console.log(res);
                 // 切換登入狀態
                 $("#header #login_blk").hide();
                 $("#header #menu").show();
@@ -462,6 +491,7 @@ async function mailLoginCheck() {
                 sessionStorage.setItem("nickName", res.data.Content.Nickname);
                 sessionStorage.setItem("sex", res.data.Content.Sex);
                 sessionStorage.setItem("pic", res.data.Content.Pic);
+                sessionStorage.setItem("level", res.data.Content.UserLevel);
                 localStorage.setItem("fdtk", res.data.Content.Token);
 
                 let hash = window.location.href;
@@ -509,6 +539,7 @@ function fbLoginCheck() {
                             .classList.remove("none");
                         sessionStorage.setItem("mindx", res.data.mindx);
                         sessionStorage.setItem("cindx", res.data.cindx);
+                        sessionStorage.setItem("level", res.data.level);
                         location.reload();
                     }
                 });
@@ -535,7 +566,6 @@ function remember() {
 
 //我要推薦
 function recommand() {
-    //  https://funday.asia/api/MusicboxWeb/PromoteSong.asp
     let member_id = sessionStorage.getItem("mindx"),
         recommendMessage = document.querySelector(
             'textarea[name="my_recommend"]'
@@ -558,6 +588,34 @@ function recommand() {
             alert(res.data.message);
             isClick = true;
             $("#myModal09").modal("hide");
+        })
+        .catch((error) => console.log(error));
+}
+
+//問題回報
+function report() {
+    let member_id = sessionStorage.getItem("mindx"),
+        recommendMessage = document.querySelector(
+            'textarea[name="my_report"]'
+        ).value,
+        isClick = false;
+
+    if (!recommendMessage) {
+        alert("請勿輸入空白");
+    }
+    if (isClick == true) return;
+
+    const json = JSON.stringify({
+        member_id: member_id,
+        message: recommendMessage,
+    });
+
+    axios
+        .post(`https://funday.asia/api/MusicboxWeb/CS.asp`, json)
+        .then((res) => {
+            alert(res.data.message);
+            isClick = true;
+            $("#myModal11").modal("hide");
         })
         .catch((error) => console.log(error));
 }
@@ -631,6 +689,10 @@ async function handleCredentialResponse(response) {
                         );
                         sessionStorage.setItem("sex", res.data.Content.Sex);
                         sessionStorage.setItem("pic", res.data.Content.Pic);
+                        sessionStorage.setItem(
+                            "level",
+                            res.data.Content.UserLevel
+                        );
                         localStorage.setItem("fdtk", res.data.Content.Token);
 
                         let hash = window.location.href;

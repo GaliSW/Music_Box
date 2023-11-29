@@ -148,27 +148,38 @@ body.dubbing_page .tool_bar_audio .function02 .center .play_bar span.Play img {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 25px 60px;
 }
-.chooseBlk .into {
-    padding: 10px 70px;
-    margin-top: 80px;
-    background: #fe7523;
+.chooseBlk p {
+    color: #fff;
+    margin-bottom: 32px;
+    font-size: 16px;
+    /* text-align: center; */
+}
+.chooseBlk .action {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    gap: 16px;
+}
+.chooseBlk .action div {
+    width: 50%;
+    text-align: center;
+    padding: 10px 20px;
     border-radius: 4px;
     font-family: "Noto Sans TC";
     font-style: normal;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 16px;
+}
+.chooseBlk .into {
+    background: #fe7523;
     color: rgba(255, 255, 255, 0.95);
 }
 .chooseBlk .leave {
-    padding: 10px 70px;
-    margin-top: 25px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 4px;
-    font-family: "Noto Sans TC";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 24px;
     color: #fe7523;
 }
 @media (max-width: 1366px) {

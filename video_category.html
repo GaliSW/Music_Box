@@ -357,6 +357,25 @@
                             />送好禮</a
                         >
                     </div> -->
+                    <div class="search_blk mobile_hidden">
+                        <form @submit.prevent="searchPC()">
+                            <input
+                                type="text"
+                                placeholder="請輸入歌手或歌曲名稱"
+                                autocomplete="off"
+                                id="keyword"
+                            />
+                            <img
+                                src="./images/web_icon/search.png"
+                                alt=""
+                                @click="searchPC()"
+                            />
+                        </form>
+                    </div>
+                    <div class="tutorial" @click="vdOpen = true">
+                        <img src="./images/web_icon/tutorial.svg" alt="" />
+                        <span class="mobile_hidden">新手上路</span>
+                    </div>
                     <div class="myFav_index" @click="toMyFav">
                         <a href="#"
                             ><img
@@ -393,6 +412,38 @@
                     alt=""
                 />
                 <h1 class="header_title">{{CategoryTitle}}</h1>
+                <div class="feacture">
+                    <div class="search_blk_cate">
+                        <input type="checkbox" id="search_btn_cate" />
+                        <label for="search_btn_cate">
+                            <img
+                                src="./images/web_icon/search_white.svg"
+                                alt=""
+                            />
+                        </label>
+                        <div class="input_area">
+                            <form @submit.prevent="searchMB()">
+                                <input
+                                    type="text"
+                                    placeholder="請輸入歌手或歌曲名稱"
+                                    autocomplete="off"
+                                    id="keywordmb"
+                                    enterkeyhint="search"
+                                />
+                                <label for="search_btn_cate">
+                                    <img
+                                        src="./images/web_icon/search_cancel.png"
+                                        alt=""
+                                    />
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tutorial_cate" @click="vdOpen = true">
+                        <img src="./images/web_icon/tutorial.svg" alt="" />
+                        <span class="mobile_hidden">新手上路</span>
+                    </div>
+                </div>
             </div>
             <div class="notification_wrapper_mobile none">
                 <div
@@ -525,7 +576,10 @@
                                     {{CategoryTitle}}
                                 </div>
                                 <div class="video_items">
-                                    <div class="items_list_category">
+                                    <div
+                                        class="items_list_category"
+                                        :class="{searchHeight:isSearch && !noSearch}"
+                                    >
                                         <div
                                             class="item_category"
                                             v-for="(item,index) in data"
@@ -610,6 +664,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div
+                                        class="noData"
+                                        v-if="noSearch && isSearch"
+                                    >
+                                        無資料
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -653,6 +713,25 @@
                             />SoundOn
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <div class="tutorial_video" v-if="vdOpen">
+                <div class="wrapper">
+                    <img
+                        src="./images/web_icon/cancel_btn.svg"
+                        alt=""
+                        @click="vdOpen = !vdOpen"
+                    />
+                    <iframe
+                        width="100%"
+                        src="https://www.youtube.com/embed/LZS4-KbGusc?autoplay=1"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                        autoplay="true"
+                    ></iframe>
                 </div>
             </div>
 
@@ -1677,6 +1756,7 @@
                 customer_id: "",
                 loading: false,
                 noData: false,
+                noSearch: false,
                 radio: false,
                 podcast: false,
                 notifications: "", //推波
@@ -1689,11 +1769,14 @@
                 ads: true, //廣告預設開啟
                 firstClick: false, //是否第一次點擊頁面
                 isClick: false, //收藏是否點擊
+                vdOpen: false, //新手上路是否開啟
+                isSearch: false, //是否為搜尋資料
             },
             computed: {},
             methods: {
                 handleScroll() {
                     // 獲取捲軸被往下滾動的距離
+                    if (this.isSearch) return;
                     const scrollTop = Math.max(
                         document.documentElement.scrollTop,
                         document.body.scrollTop
@@ -1798,6 +1881,33 @@
                             .catch((error) => console.log(error));
                     }
                 },
+
+                async getSearch(keyword) {
+                    let vm = this;
+                    let apiUrl;
+
+                    await axios
+                        .get(
+                            ` https://funday.asia/api/MusicboxWeb/ClassifyPg.asp?keyword=${keyword}&member_id=${
+                                this.member_id
+                            }&timestamp=${new Date().getTime()}`
+                        )
+                        .then((res) => {
+                            vm.CategoryTitle = keyword;
+                            // vm.data.push(...res.data["無分類"]);
+                            if (res.data["無分類"][0].Id == "") {
+                                vm.noSearch = true;
+                                vm.loading = false;
+                                vm.isSearch = true;
+                                return;
+                            } else {
+                                vm.data.push(...res.data["無分類"]);
+                                vm.loading = false;
+                                vm.isSearch = true;
+                            }
+                        });
+                },
+
                 fnRadio() {
                     const audio = document.getElementById("Fun_audio");
                     if (this.radio) {
@@ -1897,6 +2007,31 @@
 
                 firstClickPage() {
                     this.firstClick = true;
+                },
+
+                //搜尋歌曲
+                searchPC() {
+                    if (!this.member_id) {
+                        $("#myModal01").modal("show");
+                        return;
+                    } else {
+                        const keyword =
+                            document.getElementById("keyword").value;
+                        if (keyword == "") return;
+                        location.href = `video_category.html?keyword=${keyword}`;
+                    }
+                },
+                searchMB() {
+                    if (!this.member_id) {
+                        // alert("請先登入");
+                        $("#myModal01").modal("show");
+                        return;
+                    } else {
+                        const keyword =
+                            document.getElementById("keywordmb").value;
+                        if (keyword == "") return;
+                        location.href = `video_category.html?keyword=${keyword}`;
+                    }
                 },
             },
             created() {
@@ -1999,9 +2134,16 @@
                 this.member_id = member_id;
                 this.customer_id = customer_id;
                 vm.CategoryId = hash.split("?")[1];
-
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const keyword = urlParams.get("keyword");
+                const classify = urlParams.get("classify");
+                if (keyword) {
+                    this.getSearch(keyword);
+                } else {
+                    this.getData();
+                }
                 //取得頁面資料
-                this.getData();
 
                 //取得分類資料
                 axios

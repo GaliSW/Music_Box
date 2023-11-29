@@ -26,6 +26,7 @@ $(function () {
                 <a href="https://funradio.funday.asia?fdtk=${token}" target="_blank">FunRadio</a>
                 <a href="https://dic.funday.asia?fdtk=${token}" target="_blank">FunDictionary</a>
                 <a href="https://funday.asia/api/SSO.asp?fdtk=${token}" target="_blank">FunDay</a>
+                <a href="https://funday.asia/api/SSOGOLink.asp?fdtk=${token}&Path=Subscription" target="_blank" class="more_service">更多會員服務</a>
             `;
         document
             .querySelector(".subWeb")
@@ -56,6 +57,13 @@ $(function () {
                 if (res.data.IsSuccess) {
                     sessionStorage.setItem("mindx", res.data.Content.Mindx);
                     sessionStorage.setItem("cindx", res.data.Content.Cindx);
+                    sessionStorage.setItem("level", res.data.Content.UserLevel);
+                    sessionStorage.setItem(
+                        "nickName",
+                        res.data.Content.Nickname
+                    );
+                    sessionStorage.setItem("sex", res.data.Content.Sex);
+                    sessionStorage.setItem("pic", res.data.Content.Pic);
                     localStorage.setItem("fdtk", token);
                     location.href = "http://music.funday.asia";
                 } else {

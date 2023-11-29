@@ -278,10 +278,10 @@
             crossorigin="anonymous"
             src="https://connect.facebook.net/en_US/sdk.js"
         ></script>
-        <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
         <script>
             eruda.init();
-        </script> -->
+        </script>
     </head>
 
     <body class="video_page">
@@ -382,6 +382,12 @@
                             FunDictionary
                         </a>
                         <a href="https://funday.asia" target="_blank">FunDay</a>
+                        <a
+                            href="https://funday.asia/subscription/2023"
+                            target="_blank"
+                            class="more_service"
+                            >更多會員服務</a
+                        >
                     </div>
                     <div class="subWeb mobile_hidden" v-else>
                         <a
@@ -408,6 +414,12 @@
                             :href="'https://funday.asia/AD_reflink.asp?ad_id=' + ADid"
                             target="_blank"
                             >FunDay</a
+                        >
+                        <a
+                            :href="'https://funday.asia/subscription/2023?ad_id=' + ADid"
+                            target="_blank"
+                            class="more_service"
+                            >更多會員服務</a
                         >
                     </div>
                 </div>
@@ -989,7 +1001,11 @@
                             </div>
                             <div class="rec_alert_pop" v-if="recAlert">
                                 <p>
-                                    建議使用桌上型電腦，並外接有線耳麥或麥克風，保持網路順暢，最少需錄製60秒
+                                    務必使用桌上型電腦、Firefox瀏覽器<img
+                                        src="./images/web_icon/firefox.svg"
+                                        alt=""
+                                        @click="downloadFirefox()"
+                                    /><br />開啟，並外接有線耳機與麥克風，保持網路順暢，否則音質會有問題，最少需錄製60秒。
                                 </p>
                                 <div class="action">
                                     <div
@@ -1081,7 +1097,11 @@
                         <div id="video_list2">
                             <div class="chooseBlk none">
                                 <p>
-                                    建議使用桌上型電腦，並外接有線耳麥或麥克風，保持網路順暢，最少需錄製60秒
+                                    務必使用桌上型電腦、Firefox瀏覽器<img
+                                        src="./images/web_icon/firefox.svg"
+                                        alt=""
+                                        @click="downloadFirefox()"
+                                    /><br />開啟，並外接有線耳機與麥克風，保持網路順暢，否則音質會有問題，最少需錄製60秒。
                                 </p>
                                 <div class="action">
                                     <div class="into" @click="choose(1)">
@@ -1347,11 +1367,13 @@
                                                     >{{item.Pmember_nickname}}</span
                                                 >
                                                 <div class="digi">
-                                                    <span class="play_time">
+                                                    <span
+                                                        class="play_time"
+                                                        @click="playAudio(index)"
+                                                    >
                                                         <span
                                                             :id="'audioPlay' + index"
                                                             class="img"
-                                                            @click="playAudio(index)"
                                                         ></span>
                                                         <span
                                                             :class="'audioLength' + index"
@@ -1409,11 +1431,13 @@
                                                     >{{item.Pmember_nickname}}</span
                                                 >
                                                 <div class="digi">
-                                                    <span class="play_time">
+                                                    <span
+                                                        class="play_time"
+                                                        @click="playAudio(index)"
+                                                    >
                                                         <span
                                                             :id="'audioPlay' + index"
                                                             class="img"
-                                                            @click="playAudio(index)"
                                                         ></span>
                                                         <span
                                                             :class="'audioLength' + index"
@@ -1587,6 +1611,7 @@
             <!-- <div class="only_mobile page_bottom">
       <div class="recommend"><a href="#" id="open_recommend"><img src="images/web_icon/recommend_icon.svg">我要推薦</a> </div>
     </div> -->
+            <iframe src="./record.html" frameborder="0" id="recorder"></iframe>
 
             <!--footer-->
             <div id="footer">
